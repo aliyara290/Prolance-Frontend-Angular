@@ -1,0 +1,27 @@
+<nav class="sticky top-0 w-full bg-[var(--color-card)] border-b border-[var(--color-border)] z-[var(--z-fixed)]">
+  <div class="max-w-[var(--container-width)] mx-auto px-[var(--spacing-lg)] flex items-center justify-between h-[var(--header-height)]">
+    <!-- Logo -->
+    <div class="flex items-center gap-[var(--spacing-sm)]">
+      <div class="w-8 h-8 rounded-[var(--radius-md)] bg-primary flex items-center justify-center shadow-[var(--shadow-sm)]">
+        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </div>
+      <span class="font-[var(--font-bold)] text-[var(--text-xl)] text-[var(--color-text)] tracking-tight">Prolance</span>
+    </div>
+
+    <!-- Links -->
+    <div class="hidden md:flex items-center gap-[var(--spacing-xl)]">
+      <a href="#features" class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Features</a>
+      <a href="#solutions" class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Solutions</a>
+      <a href="#pricing" class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Pricing</a>
+      <a href="#resources" class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Resources</a>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-[var(--spacing-md)]">
+      <a routerLink="/login" class="font-[var(--font-medium)] text-text-sm text-[var(--color-text)] hover:text-primary transition-[var(--transition-fast)]">Log in</a>
+      <a routerLink="/register" class="bg-primary hover:bg-primary-hover text-text-inverse font-[var(--font-medium)]  px-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-[var(--radius-md)] transition-[var(--transition-fast)] shadow-[var(--shadow-sm)]">Start Free Trial</a>
+    </div>
+  </div>
+</nav>
