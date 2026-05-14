@@ -20,8 +20,8 @@
 
     <!-- Actions -->
     <div class="flex items-center gap-[var(--spacing-md)]">
-      <a routerLink="/login" class="font-[var(--font-medium)] text-text-sm text-[var(--color-text)] hover:text-primary transition-[var(--transition-fast)]">Log in</a>
-      <a routerLink="/register" class="bg-primary hover:bg-primary-hover text-text-inverse font-[var(--font-medium)]  px-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-[var(--radius-md)] transition-[var(--transition-fast)] shadow-[var(--shadow-sm)]">Start Free Trial</a>
+      <a (click)="login()" class="cursor-pointer font-[var(--font-medium)] text-text-sm text-[var(--color-text)] hover:text-primary transition-[var(--transition-fast)]">Log in</a>
+      <a (click)="register()" class="cursor-pointer bg-primary hover:bg-primary-hover text-text-inverse font-[var(--font-medium)]  px-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-[var(--radius-md)] transition-[var(--transition-fast)] shadow-[var(--shadow-sm)]">Start Free Trial</a>
     </div>
   </div>
 </nav>
