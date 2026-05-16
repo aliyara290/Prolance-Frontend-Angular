@@ -9,7 +9,21 @@
   "projects": {
     "Prolance-Frontend": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component",
+          "style": "none"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
+        },
+        "@schematics/angular:interceptor": {
+          "type": "interceptor"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",

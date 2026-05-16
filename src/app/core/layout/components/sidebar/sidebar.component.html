@@ -6,7 +6,7 @@
 }
 
 <aside
-  [class]="'h-svh fixed md:static inset-y-0 left-0 z-modal md:z-auto bg-[#223555] text-white flex flex-col transition-all duration-300 ease-in-out ' +
+  [class]="'h-svh fixed md:static inset-y-0 left-0 z-modal md:z-auto bg-[#223555] text-white flex flex-col ' +
                (layoutState.sidebarCollapsed() ? 'w-[64px]' : 'w-[240px]') +
                (layoutState.mobileDrawerOpen() ? ' translate-x-0' : ' -translate-x-full md:translate-x-0')">
 
@@ -17,10 +17,8 @@
 
     @if (layoutState.sidebarCollapsed()) {
       <div class="w-full flex justify-center cursor-pointer">
-        <div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-white font-bold text-sm shadow-sm">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
+        <div class=" rounded flex items-center justify-center text-white font-bold text-sm shadow-sm">
+          <img ngSrc="assets/img/prolance-logo-blue.png" width="110" height="110" alt="">
         </div>
       </div>
     }

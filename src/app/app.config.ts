@@ -3,6 +3,8 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { Store, provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { ConfigService } from './core/config/config.service';
@@ -38,6 +40,19 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideStore({ auth: authReducer }),
-    provideEffects([AuthEffects])
+    provideEffects([AuthEffects]),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: false, // light mode only
+          cssLayer: {
+            name: 'primeng',
+            order: 'tailwind-base, primeng, tailwind-utilities'
+          }
+        }
+      },
+      ripple: true
+    })
   ]
 };

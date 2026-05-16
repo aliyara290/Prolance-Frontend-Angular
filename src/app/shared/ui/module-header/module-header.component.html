@@ -1,0 +1,130 @@
+
+
+<div class="flex items-center justify-between py-4 px-5 border-b border-[#e8eaf0] bg-white rounded-tl-sm rounded-tr-sm">
+
+  <h1 class="text-xl font-semibold text-[#1a2942] tracking-tight shrink-0 mr-6">
+    {{ title }}
+  </h1>
+
+
+
+<!--  <div class="shrink-0 pb-2">-->
+<!--    @if (tabMoreItems.length > 0) {-->
+<!--      <app-dropdown-menu-->
+<!--        [items]="toDropdownItems(tabMoreItems)"-->
+<!--        [iconOnly]="true"-->
+<!--        (itemSelected)="onTabMoreSelected($any($event))"-->
+<!--      />-->
+<!--    }-->
+<!--  </div>-->
+</div>
+
+
+<div class="flex items-center justify-between pr-5 bg-white border-b border-[#e8eaf0]  rounded-bl-sm rounded-br-sm">
+
+  <div class="flex items-center gap-2">
+
+<!--    <button-->
+<!--      type="button"-->
+<!--      (click)="toggleFilterPanel()"-->
+<!--      class="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium text-text-muted border border-[#d9dde8] hover:bg-[#f4f5f8] hover:text-[#1a2942] transition-colors duration-150 focus:outline-none cursor-pointer"-->
+<!--      [class.text-primary]="filterPanelOpen()"-->
+<!--      [class.border-primary]="filterPanelOpen()"-->
+<!--      [class.bg-primary]="filterPanelOpen()"-->
+<!--    >-->
+<!--      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"-->
+<!--           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"-->
+<!--           class="lucide lucide-funnel-icon lucide-funnel">-->
+<!--        <path-->
+<!--          d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/>-->
+<!--      </svg>-->
+<!--      Filter-->
+<!--    </button>-->
+
+<!--    <button-->
+<!--      type="button"-->
+<!--      class="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium text-text-muted border border-[#d9dde8] bg-white hover:bg-[#f4f5f8] hover:text-[#1a2942] transition-colors duration-150 focus:outline-none cursor-pointer"-->
+<!--    >-->
+<!--      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"-->
+<!--           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"-->
+<!--           class="lucide lucide-arrow-down-wide-narrow-icon lucide-arrow-down-wide-narrow">-->
+<!--        <path d="m3 16 4 4 4-4"/>-->
+<!--        <path d="M7 20V4"/>-->
+<!--        <path d="M11 4h10"/>-->
+<!--        <path d="M11 8h7"/>-->
+<!--        <path d="M11 12h4"/>-->
+<!--      </svg>-->
+<!--      Sort-->
+<!--    </button>-->
+
+    <div class="flex items-center gap-0 flex-1 overflow-x-auto no-scrollbar">
+      @for (tab of tabs; track tab.id) {
+        <button
+          type="button"
+          (click)="setActiveTab(tab)"
+          class="relative flex items-center gap-1.5 px-4 text-sm font-medium whitespace-nowrap transition-colors duration-150 focus:outline-none cursor-pointer"
+          [class]="activeTabId === tab.id
+          ? ' text-primary font-bold'
+          : 'border-transparent text-text-muted hover:text-[#1a2942] hover:border-[#c8d0dc]'"
+        >
+          {{ tab.label }}
+          @if (tab.count !== undefined) {
+            <span
+              class="text-xs font-semibold px-1.5 py-0.5 rounded-full"
+              [class]="activeTabId === tab.id
+              ? 'bg-primary text-white'
+              : 'bg-[#eef1f5] text-text-muted'"
+            >{{ tab.count }}</span>
+          }
+        </button>
+        <div class="h-5 w-px bg-[#d9dde8] mx-1"></div>
+      }
+    </div>
+
+    <!-- Separator -->
+<!--    <div class="h-5 w-px bg-[#d9dde8] mx-1"></div>-->
+
+
+    <!--    [class]="activeView() === 'list'-->
+    <!--    ? 'p-1.5 rounded bg-[#e8f0fe] text-primary'-->
+    <!--    : 'p-1.5 rounded text-[#a0aec0] hover:text-text-muted hover:bg-[#f4f5f8]'"-->
+    <div
+      (click)="setView('list')"
+
+      title="List view"
+    >
+      <app-icon-wrapper [icon]="icons.list"></app-icon-wrapper>
+    </div>
+
+  </div>
+
+  <div class="flex items-center gap-2 py-3">
+
+    <div class="flex items-center rounded overflow-hidden shadow-sm">
+      <button
+        type="button"
+        (click)="onPrimaryAction()"
+        class="px-4 py-1.5 bg-primary text-white text-sm font-semibold hover:bg-primary-hover transition-colors duration-150 focus:outline-none cursor-pointer"
+      >
+        {{ primaryActionLabel }}
+      </button>
+
+      @if (primaryActionItems.length > 0) {
+        <app-dropdown-menu
+          [items]="primaryActionItems"
+          [splitChevron]="true"
+          (itemSelected)="onPrimaryActionSelected($event)"
+        />
+      }
+    </div>
+
+    @if (moreActionItems.length > 0) {
+      <app-dropdown-menu
+        [items]="toDropdownItems(moreActionItems)"
+        [iconOnly]="true"
+        (itemSelected)="onMoreActionSelected($any($event))"
+      />
+    }
+
+  </div>
+</div>

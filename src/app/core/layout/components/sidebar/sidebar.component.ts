@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectAuthRoles } from '../../../auth/store/auth.selectors';
@@ -10,7 +10,7 @@ import { WorkspaceSwitcherComponent } from '../workspace-switcher/workspace-swit
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, WorkspaceSwitcherComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, WorkspaceSwitcherComponent, NgOptimizedImage],
   templateUrl: "sidebar.component.html",
 })
 export class SidebarComponent {

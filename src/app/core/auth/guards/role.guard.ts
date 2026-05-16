@@ -7,7 +7,7 @@ import { selectAuthRoles } from '../store/auth.selectors';
 export const roleGuard: CanActivateFn = (route) => {
   const store = inject(Store);
   const router = inject(Router);
-  
+
   const expectedRoles = route.data['roles'] as string[];
 
   if (!expectedRoles || expectedRoles.length === 0) {
@@ -25,3 +25,4 @@ export const roleGuard: CanActivateFn = (route) => {
     })
   );
 };
+

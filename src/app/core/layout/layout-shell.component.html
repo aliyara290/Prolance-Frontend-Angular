@@ -1,8 +1,9 @@
+<link rel="stylesheet" href="../../../styles.css">
 <div class="flex h-screen w-full bg-[#f8f9fb] text-[#121320] overflow-hidden font-sans selection:bg-primary-soft selection:text-primary">
   <app-sidebar />
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative bg-white">
     <app-header />
-    <main class="flex-1 overflow-y-auto overflow-x-hidden relative bg-[#f8f9fb] p-lg" id="main-scroll-container">
+    <main class="flex-1 overflow-y-auto overflow-x-hidden relative bg-bg-muted p-md" id="main-scroll-container">
       <div class="mx-auto w-full h-full min-h-[calc(100vh-60px)]">
         <router-outlet />
       </div>

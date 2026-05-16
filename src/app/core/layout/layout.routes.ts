@@ -8,24 +8,19 @@ export const LAYOUT_ROUTES: Routes = [
     component: LayoutShellComponent,
     canActivate: [authGuard],
     children: [
-      // Example of how future routes will be wired up:
-      // {
-      //   path: 'projects',
-      //   loadChildren: () => import('../../features/projects/projects.routes').then(m => m.PROJECTS_ROUTES)
-      // }
-
-      // Temporary fallback dashboard for testing the layout
-      {
-        path: 'leads',
-        loadComponent: () => import('./components/temp-dashboard/temp-dashboard.component').then(m => m.TempDashboardComponent)
-      },
       {
         path: 'dashboard',
-        loadComponent: () => import('./components/temp-dashboard/temp-dashboard.component').then(m => m.TempDashboardComponent)
+        loadComponent: () =>
+          import('./components/temp-dashboard/temp-dashboard.component').then(m => m.TempDashboardComponent)
+      },
+      {
+        path: 'crm/leads',
+        loadChildren: () =>
+          import('../../features/crm/leads/leads.routes').then(m => m.LEADS_ROUTES)
       },
       {
         path: '',
-        redirectTo: 'leads',
+        redirectTo: 'crm/leads',
         pathMatch: 'full'
       }
     ]

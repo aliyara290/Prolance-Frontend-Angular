@@ -1,0 +1,19 @@
+<app-module-header
+  title="Leads"
+  [tabs]="tabs"
+  [activeTabId]="activeTabId()"
+  primaryActionLabel="Create Lead"
+  [primaryActionItems]="primaryActionItems"
+  [moreActionItems]="moreActions"
+  [tabMoreItems]="tabMoreItems"
+  (tabChange)="onTabChange($event)"
+  (primaryAction)="onCreate()"
+  (primaryActionSelected)="onPrimaryActionSelected($event)"
+  (moreActionSelected)="onMoreAction($event)"
+  (tabMoreSelected)="onTabMore($event)"
+/>
+
+<div class="relative z-[1000] mt-md">
+
+<app-leads-table [leads]="leads()" [totalCount]="totalCount()" />
+</div>

@@ -11,49 +11,28 @@ export const NAVIGATION_CONFIG: NavItem[] = [
     id: 'leads',
     label: 'Leads',
     icon: 'goal',
-    route: '/app/leads',
-    // roles: ['ADMIN', 'SALES'],
-    // children: [
-    //   { id: 'crm-leads', label: 'Leads', route: '/crm/leads', badge: '12' },
-    //   { id: 'crm-opportunities', label: 'Opportunities', route: '/crm/opportunities' },
-    //   { id: 'crm-clients', label: 'Clients', route: '/crm/clients' },
-    // ]
+    route: '/app/crm/leads'
   },
   {
     id: 'deals',
     label: 'Deals',
     icon: 'deals',
-    route: '/app/deals',
+    route: '/app/crm/deals',
     // roles: ['ADMIN', 'SALES'],
-    // children: [
-    //   { id: 'crm-leads', label: 'Leads', route: '/crm/leads', badge: '12' },
-    //   { id: 'crm-opportunities', label: 'Opportunities', route: '/crm/opportunities' },
-    //   { id: 'crm-clients', label: 'Clients', route: '/crm/clients' },
-    // ]
   },
   {
     id: 'clients',
     label: 'Clients',
     icon: 'clients',
-    route: '/app/clients',
+    route: '/app/crm/clients',
     // roles: ['ADMIN', 'SALES'],
-    // children: [
-    //   { id: 'crm-leads', label: 'Leads', route: '/crm/leads', badge: '12' },
-    //   { id: 'crm-opportunities', label: 'Opportunities', route: '/crm/opportunities' },
-    //   { id: 'crm-clients', label: 'Clients', route: '/crm/clients' },
-    // ]
   },
   {
     id: 'contacts',
     label: 'Contacts',
     icon: 'contacts',
-    route: '/app/contacts',
+    route: '/app/crm/contacts',
     // roles: ['ADMIN', 'SALES'],
-    // children: [
-    //   { id: 'crm-leads', label: 'Leads', route: '/crm/leads', badge: '12' },
-    //   { id: 'crm-opportunities', label: 'Opportunities', route: '/crm/opportunities' },
-    //   { id: 'crm-clients', label: 'Clients', route: '/crm/clients' },
-    // ]
   },
 
 
@@ -62,10 +41,6 @@ export const NAVIGATION_CONFIG: NavItem[] = [
     label: 'Projects',
     icon: 'projects',
     route: '/app/projects',
-    // children: [
-    //   { id: 'projects-all', label: 'All Projects', route: '/projects/all' },
-    //   { id: 'projects-board', label: 'Kanban Board', route: '/projects/board' },
-    // ]
   },
 
   {
@@ -73,10 +48,6 @@ export const NAVIGATION_CONFIG: NavItem[] = [
     label: 'Documents',
     icon: 'documents',
     route: '/app/documents',
-    // children: [
-    //   { id: 'projects-all', label: 'All Projects', route: '/projects/all' },
-    //   { id: 'projects-board', label: 'Kanban Board', route: '/projects/board' },
-    // ]
   },
   {
     id: 'settings',
