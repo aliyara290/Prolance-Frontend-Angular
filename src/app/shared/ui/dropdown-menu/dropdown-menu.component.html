@@ -1,4 +1,4 @@
-<div class="relative inline-block text-left h-8">
+<div class="relative flex items-center text-left h-8 ">
 
   <!-- ====================================================
        TRIGGER BUTTON — three modes
@@ -9,12 +9,12 @@
     <button
       type="button"
       (click)="toggle()"
-      class="flex items-center justify-center w-9 h-8 rounded text-text-muted border border-[#d9dde8] bg-[#f1f3f7] text-[#1a2942] transition-colors duration-150 focus:outline-none cursor-pointer"
+      class="flex items-center justify-center text-text-muted  transition-colors duration-150 focus:outline-none cursor-pointer"
       aria-haspopup="true"
       [attr.aria-expanded]="isOpen()"
     >
       <!-- Three dots icon -->
-      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
         <circle cx="4" cy="10" r="1.5" />
         <circle cx="10" cy="10" r="1.5" />
         <circle cx="16" cy="10" r="1.5" />
@@ -25,7 +25,7 @@
     <button
       type="button"
       (click)="toggle()"
-      class="flex items-center justify-center w-9 h-full bg-primary text-white border-l border-l-white  hover:bg-primary-hover transition-colors duration-150 focus:outline-none cursor-pointer"
+      class="flex items-center justify-center w-9 h-full bg-primary text-white border-l border-l-bg  hover:bg-primary-hover transition-colors duration-150 focus:outline-none cursor-pointer"
       aria-haspopup="true"
       [attr.aria-expanded]="isOpen()"
     >
@@ -66,19 +66,19 @@
 
   @if (isOpen()) {
     <div
-      class="absolute !z-[10000] mt-1 min-w-[180px] rounded-lg border border-[#e8eaf0] bg-white shadow-lg py-1 overflow-hidden"
+      class="absolute top-7 !z-[1000000] mt-1 min-w-[180px] rounded-lg border border-border-strong bg-bg shadow-lg p-1 overflow-hidden"
       [class.right-0]="align === 'right'"
       [class.left-0]="align === 'left'"
     >
       @for (item of items; track item.value) {
         @if (item.dividerBefore) {
-          <div class="my-1 border-t border-[#e8eaf0]"></div>
+          <div class="my-1 border-t border-border-strong"></div>
         }
         <button
           type="button"
           [disabled]="item.disabled ?? false"
           (click)="selectItem(item)"
-          class="flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm transition-colors duration-100 hover:bg-[#f4f6fb] disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+          class="flex w-full items-center text-text-muted gap-2.5 px-4 py-2 text-left text-sm transition-colors duration-100 rounded-sm hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
           [class.text-danger]="item.danger"
           [class.text-[#1a2942]]="!item.danger"
         >

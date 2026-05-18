@@ -17,6 +17,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
 import { SharedModule } from 'primeng/api';
 import { Lead, LeadStatus } from '../../types/lead.model';
+import {DropdownMenuComponent, DropdownMenuItem} from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
+import {ModuleHeaderAction} from '../../../../../shared/ui/module-header/module-header.types';
 
 interface SelectOption {
   label: string;
@@ -44,6 +46,7 @@ interface OwnerOption {
     InputIconModule,
     ButtonModule,
     SharedModule,
+    DropdownMenuComponent,
   ],
   templateUrl: './leads-table.component.html',
   styleUrls: ['./leads-table.component.css'],
@@ -95,5 +98,16 @@ export class LeadsTableComponent {
     this.filterStatus = null;
     this.filterOwner = [];
     this.dt.clear();
+  }
+
+  readonly moreActions: DropdownMenuItem[] = [
+    { label: 'Edit', value: 'edit' },
+    { label: 'Send email', value: 'email' },
+    { label: 'Convert to lead', value: 'convert', danger: true, dividerBefore: true },
+    { label: 'Delete', value: 'delete', danger: true, dividerBefore: true },
+  ];
+
+  onMoreAction(action: ModuleHeaderAction): void {
+    console.log('More action:', action.value);
   }
 }

@@ -1,0 +1,52 @@
+<div [class]="isDark() ? 'dark' : ''"
+     class=" text-text font-sans">
+
+  <div class="flex overflow-hidden">
+    <div class="flex flex-col w-full">
+
+      <div class="flex items-center justify-between px-6 py-4 border border-border-strong bg-bg shrink-0 mb-4  rounded-md">
+        <div>
+          <h1 class="text-xl font-semibold text-text">Users</h1>
+          <p class="text-sm text-text-muted mt-1">
+            Manage workspace members and their access
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+
+          <!-- Invite button -->
+          <button
+            (click)="openInviteModal()"
+            class="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
+                   text-white rounded-[var(--radius-md)] text-sm font-medium
+                   transition-colors duration-[var(--transition-fast)] cursor-pointer shadow-[var(--shadow-sm)]"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" x2="19" y1="8" y2="14"/>
+              <line x1="22" x2="16" y1="11" y2="11"/>
+            </svg>
+            Invite User
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Main Split Panel ── -->
+      <div class="flex min-h-[calc(100vh-194px)] bg-bg rounded-md border-1 border-border-strong overflow-hidden">
+        <app-user-list class="flex overflow-hidden" />
+        <app-user-detail *ngIf="selectedUser()" class="flex flex-1 overflow-hidden" />
+      </div>
+
+    </div>
+  </div>
+
+  <!--
+    Modal lives OUTSIDE the overflow-hidden layout containers so its
+    `position: fixed` backdrop covers the full viewport without clipping.
+    display:contents collapses the host element so it doesn't affect flex/block flow.
+  -->
+  <app-user-modal style="display:contents" />
+
+</div>

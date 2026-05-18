@@ -2,13 +2,12 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutStateService } from '../../services/layout-state.service';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
-import {IconWrapperComponent} from '../../../../shared/ui/icon-wrapper/icon-wrapper';
-import {Calendar, Plus, Settings} from "lucide-angular"
+import { LucideAngularModule, Calendar, Plus, Settings } from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, UserMenuComponent, IconWrapperComponent],
+  imports: [CommonModule, UserMenuComponent, LucideAngularModule],
   templateUrl: "header.component.html"
 })
 export class HeaderComponent {

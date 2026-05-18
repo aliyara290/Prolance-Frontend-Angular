@@ -55,5 +55,22 @@ export const NAVIGATION_CONFIG: NavItem[] = [
     icon: 'settings',
     route: '/app/settings',
     // roles: ['ADMIN']
+    children: [
+      {
+        id: 'personal-settings',
+        label: 'Personal settings',
+        route: '/app/settings/personal',
+      },
+      {
+        id: 'users-settings',
+        label: 'Users',
+        route: '/app/settings/users',
+      },
+      {
+        id: 'workspace-settings',
+        label: 'Workspace settings',
+        route: '/app/settings/workspace',
+      }
+    ]
   }
 ];

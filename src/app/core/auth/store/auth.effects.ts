@@ -18,8 +18,8 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.authInitSuccess),
       switchMap(({ payload }) =>
-        this.userApiService.getByKeycloakId(payload.sub).pipe(
-          map(user => AuthActions.loadUserSuccess({ user })),
+        this.userApiService.getByKeycloakId().pipe(
+          map(response => AuthActions.loadUserSuccess({ user: response.data })),
           catchError(error => of(AuthActions.loadUserFailure({ error: error.message })))
         )
       )

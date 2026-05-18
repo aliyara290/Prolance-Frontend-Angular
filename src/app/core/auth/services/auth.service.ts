@@ -47,7 +47,9 @@ export class AuthService {
     if (!this.keycloak) {
       return Promise.reject('Keycloak not initialized');
     }
-    return this.keycloak.logout();
+    return this.keycloak.logout({
+      redirectUri: window.location.origin
+    });
   }
 
   getToken(): string | null {
@@ -72,5 +74,10 @@ export class AuthService {
       await this.logout();
       return false;
     }
+  }
+
+  hasTenantId(): boolean {
+    const parsed = this.getParsedToken();
+    return !!(parsed?.tenant_id || parsed?.tenantId);
   }
 }

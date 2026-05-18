@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import {HeaderComponent} from './core/layout/components/header/header.component';
 
 export const routes: Routes = [
   {
@@ -11,6 +10,10 @@ export const routes: Routes = [
     loadChildren: () => import('./core/layout/layout.routes').then(m => m.LAYOUT_ROUTES)
   },
 
+  {
+    path: 'onboarding',
+    loadChildren: () => import('./features/onboarding/onboarding.routes').then(m => m.ONBOARDING_ROUTES)
+  },
   {
     path: '**',
     redirectTo: ''

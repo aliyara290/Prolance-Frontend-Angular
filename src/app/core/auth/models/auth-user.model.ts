@@ -1,3 +1,4 @@
+
 export interface AuthUser {
   id: string;
   keycloakUserId: string;
@@ -9,4 +10,8 @@ export interface AuthUser {
   department: string | null;
   status: string;
   roles: string[];
+}
+
+export interface AuthUserResponse {
+  data: AuthUser;
 }

@@ -1,0 +1,240 @@
+<!-- ── Trigger Button (rendered by parent, exposed via open()) ── -->
+<!-- This component exposes open() to be called by the parent page -->
+
+<!-- ── Backdrop + Dialog ── -->
+<div
+  *ngIf="isOpen()"
+  class="fixed inset-0 flex items-center justify-center p-4 bg-[var(--color-overlay)]"
+  style="z-index: 1040"
+  (click)="close()"
+>
+  <div
+    class="bg-[var(--color-bg)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] w-full max-w-lg overflow-hidden"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- ── Modal Header ── -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-primary-soft)] flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+               fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" x2="19" y1="8" y2="14"/>
+            <line x1="22" x2="16" y1="11" y2="11"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-base font-semibold text-[var(--color-text)]">Invite User</h2>
+          <p class="text-xs text-[var(--color-text-muted)]">Step {{ step() }} of 2</p>
+        </div>
+      </div>
+      <button
+        (click)="close()"
+        class="w-8 h-8 flex items-center justify-center rounded-[var(--radius-md)]
+               text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ── Step Progress ── -->
+    <div class="flex gap-2 px-6 pt-4">
+      <div class="h-1 flex-1 rounded-full transition-colors duration-300"
+           [ngClass]="step() >= 1 ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-border)]'"></div>
+      <div class="h-1 flex-1 rounded-full transition-colors duration-300"
+           [ngClass]="step() >= 2 ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-border)]'"></div>
+    </div>
+
+    <!-- ════════════════ STEP 1: User Info ════════════════ -->
+    <div *ngIf="step() === 1" class="p-6 space-y-4">
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+            First Name <span class="text-[var(--color-danger)]">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="firstName"
+            placeholder="John"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                   rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                   focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+            Last Name <span class="text-[var(--color-danger)]">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="lastName"
+            placeholder="Doe"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                   rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                   focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+          Email Address <span class="text-[var(--color-danger)]">*</span>
+        </label>
+        <input
+          type="email"
+          [(ngModel)]="email"
+          placeholder="john.doe@company.com"
+          class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                 rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                 focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors"
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+          Username <span class="text-[var(--color-danger)]">*</span>
+        </label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] text-sm select-none">@</span>
+          <input
+            type="text"
+            [(ngModel)]="username"
+            placeholder="john_doe"
+            class="w-full pl-7 pr-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                   rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                   focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+          Password <span class="text-[var(--color-danger)]">*</span>
+        </label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Min. 8 characters"
+          class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                 rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                 focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Job Title</label>
+          <input
+            type="text"
+            [(ngModel)]="jobTitle"
+            placeholder="e.g. Sales Lead"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                   rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                   focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Department</label>
+          <select
+            [(ngModel)]="department"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                   rounded-[var(--radius-md)] text-[var(--color-text)]
+                   focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors cursor-pointer"
+          >
+            <option value="">Select...</option>
+            <option *ngFor="let dept of allDepartments" [value]="dept">{{ dept }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button
+          (click)="nextStep()"
+          [disabled]="!isStep1Valid"
+          class="flex items-center gap-2 px-5 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
+                 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-[var(--radius-md)]
+                 text-sm font-medium transition-colors cursor-pointer"
+        >
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ════════════════ STEP 2: Roles ════════════════ -->
+    <div *ngIf="step() === 2" class="p-6">
+      <p class="text-sm text-[var(--color-text-muted)] mb-4">
+        Choose one or more roles for
+        <span class="font-medium text-[var(--color-text)]">{{ firstName }} {{ lastName }}</span>
+      </p>
+
+      <div class="grid grid-cols-2 gap-2 mb-6">
+        <button
+          *ngFor="let role of allRoles"
+          (click)="toggleRole(role)"
+          class="flex items-center gap-3 px-4 py-3 rounded-[var(--radius-md)] border text-left
+                 transition-all duration-[var(--transition-fast)] cursor-pointer"
+          [ngClass]="hasRole(role)
+            ? 'border-[var(--color-primary)] bg-[var(--color-primary-soft)]'
+            : 'border-[var(--color-border)] bg-[var(--color-bg-muted)] hover:border-[var(--color-border-strong)]'"
+        >
+          <span
+            class="w-4 h-4 rounded flex items-center justify-center shrink-0 border transition-colors"
+            [ngClass]="hasRole(role)
+              ? 'bg-[var(--color-primary)] border-[var(--color-primary)]'
+              : 'border-[var(--color-border-strong)]'"
+          >
+            <svg *ngIf="hasRole(role)" xmlns="http://www.w3.org/2000/svg" width="10" height="10"
+                 viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+          </span>
+          <span class="text-sm font-medium text-[var(--color-text)]">{{ getRoleLabel(role) }}</span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <button
+          (click)="goToStep(1)"
+          class="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-muted)]
+                 hover:text-[var(--color-text)] border border-[var(--color-border)] rounded-[var(--radius-md)]
+                 hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Back
+        </button>
+        <button
+          (click)="submit()"
+          [disabled]="!isStep2Valid"
+          class="flex items-center gap-2 px-5 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
+                 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-[var(--radius-md)]
+                 text-sm font-medium transition-colors cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" x2="19" y1="8" y2="14"/>
+            <line x1="22" x2="16" y1="11" y2="11"/>
+          </svg>
+          Create &amp; Invite
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+

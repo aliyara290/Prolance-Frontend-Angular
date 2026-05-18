@@ -1,0 +1,103 @@
+<div
+  class="w-[400px] min-w-[320px] border-r border-[var(--color-border)] flex flex-col h-full overflow-hidden transition-all duration-300">
+
+  <!-- ── Tab Bar ── -->
+  <div class="flex items-center gap-1 px-4 border-b border-[var(--color-border)] bg-[var(--color-bg)] shrink-0">
+    <button
+      *ngFor="let tab of tabs"
+      (click)="setTab(tab.key)"
+      class="relative flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-[var(--transition-fast)] cursor-pointer"
+      [ngClass]="activeTab() === tab.key
+        ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] -mb-px'
+        : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'"
+    >
+      {{ tab.label }}
+      <span
+        class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-semibold"
+        [ngClass]="activeTab() === tab.key
+          ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
+          : 'bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]'"
+      >
+        {{ getTabCount(tab.key) }}
+      </span>
+    </button>
+  </div>
+
+  <!-- ── Search ── -->
+  <div class="px-4 py-3 border-b border-[var(--color-border)] shrink-0">
+    <div class="relative">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none"
+           xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input
+        type="text"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Search users..."
+        class="w-full pl-9 pr-4 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+               rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+               focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] transition-colors duration-[var(--transition-fast)]"
+      />
+    </div>
+  </div>
+
+  <!-- ── Rows ── -->
+  <div class="flex-1 overflow-y-auto">
+
+    <!-- Empty state -->
+    <div *ngIf="filteredUsers().length === 0"
+         class="flex flex-col items-center justify-center h-40 text-[var(--color-text-muted)]">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+           class="mb-2 opacity-40">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <p class="text-sm">No users found</p>
+    </div>
+
+    <!-- User row -->
+    <div
+      *ngFor="let user of filteredUsers()"
+      (click)="selectUser(user)"
+      class="flex items-center justify-between gap-3 px-4 py-3 border-b border-[var(--color-border)]
+             cursor-pointer transition-colors duration-[var(--transition-fast)] hover:bg-[var(--color-bg-hover)]"
+      [ngClass]="{
+        'bg-[var(--color-primary-soft)] hover:bg-[var(--color-primary-soft)]': selectedUser()?.id === user.id,
+        'grid grid-cols-[2fr_2fr_1.5fr_1fr]': !hasDetailOpen
+      }"
+    >
+      <!-- Avatar + Name -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div
+          class="relative w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 overflow-hidden shadow-sm border-1 border-border"
+        >
+          <img src="assets/img/user-thumbnail.png" class="w-full h-full object-cover" alt="">
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-[var(--color-text)] truncate leading-tight">
+            {{ user.firstName }} {{ user.lastName }}
+          </p>
+          <p class="text-xs text-[var(--color-text-muted)] truncate">
+            {{ user.jobTitle || ('@' + user.username) }}
+          </p>
+        </div>
+      </div>
+
+
+      <div class="flex items-center gap-1">
+        <span class="text-xs text-text-muted" *ngIf="user.roles.length > 0">
+          {{ getRoleLabel(user.roles[0]).toLowerCase().charAt(0).toUpperCase() + getRoleLabel(user.roles[0]).toLowerCase().slice(1) }}
+        </span>
+        @if (user.roles.length > 1) {
+        <span class="text-xs text-text-muted">+{{user.roles.length}}</span>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

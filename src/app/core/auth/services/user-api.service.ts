@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthUser } from '../models/auth-user.model';
+import {AuthUser, AuthUserResponse} from '../models/auth-user.model';
 import { ConfigService } from '../../config/config.service';
 
 @Injectable({
@@ -11,8 +11,9 @@ export class UserApiService {
   private readonly http = inject(HttpClient);
   private readonly configService = inject(ConfigService);
 
-  getByKeycloakId(keycloakId: string): Observable<AuthUser> {
+  getByKeycloakId(): Observable<AuthUserResponse> {
     const apiUrl = this.configService.value.apiGatewayUrl;
-    return this.http.get<AuthUser>(`${apiUrl}/api/v1/users/keycloak/${keycloakId}`);
+    return this.http.get<AuthUserResponse>(`${apiUrl}/tenant/api/v1/tenants/users/byKeycloakId`);
   }
 }
+
