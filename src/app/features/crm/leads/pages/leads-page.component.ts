@@ -1,22 +1,28 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ViewChild, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { LeadsService } from '../services/leads.service';
 import { LeadsTableComponent } from '../components/leads-table/leads-table.component';
+import { LeadModalComponent } from '../components/lead-modal/lead-modal.component';
 import { ModuleHeaderComponent } from '../../../../shared/ui/module-header/module-header.component';
 import { ModuleTab, ModuleHeaderAction } from '../../../../shared/ui/module-header/module-header.types';
 import { DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
+import { Lead } from '../types/lead.model';
 
 @Component({
   selector: 'app-leads-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, LeadsTableComponent],
+  imports: [ModuleHeaderComponent, LeadsTableComponent, LeadModalComponent],
   templateUrl: './leads-page.component.html',
 })
-export class LeadsPageComponent {
+export class LeadsPageComponent implements OnInit {
   private readonly leadsService = inject(LeadsService);
+
+  @ViewChild('leadModal') leadModal!: LeadModalComponent;
 
   readonly leads = this.leadsService.leads;
   readonly totalCount = this.leadsService.totalCount;
+  readonly loading = this.leadsService.loading;
+  readonly error = this.leadsService.error;
 
   readonly tabs: ModuleTab[] = [
     { id: 'all', label: 'All Leads', count: this.leadsService.totalCount() },
@@ -43,12 +49,20 @@ export class LeadsPageComponent {
     { label: 'Manage Views', value: 'manage-views' },
   ];
 
+  ngOnInit(): void {
+    this.leadsService.loadLeads();
+  }
+
   onTabChange(tab: ModuleTab): void {
     this.activeTabId.set(tab.id);
   }
 
   onCreate(): void {
-    console.log('Create Lead clicked');
+    this.leadModal.openCreate();
+  }
+
+  onEditLead(lead: Lead): void {
+    this.leadModal.openEdit(lead);
   }
 
   onPrimaryActionSelected(item: DropdownMenuItem): void {

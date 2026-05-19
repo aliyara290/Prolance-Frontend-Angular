@@ -1,418 +1,81 @@
-import { Injectable, signal } from '@angular/core';
-import { Lead } from '../types/lead.model';
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { ConfigService } from '../../../../core/config/config.service';
+import { Lead, CreateLeadRequest } from '../types/lead.model';
 
-/** Provides mock lead data for UI development.
- *  Replace with real HTTP calls once the backend is ready. */
+interface LeadsResponse {
+  success: boolean;
+  data: Lead[];
+  meta: {
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+  } | null;
+}
+
+interface SingleLeadResponse {
+  success: boolean;
+  data: Lead;
+}
+
 @Injectable({ providedIn: 'root' })
 export class LeadsService {
-  private readonly MOCK_LEADS: Lead[] = [
-    {
-      id: '1', firstName: 'Christopher', lastName: 'Maclead',
-      company: 'Rangoni Of Florence', email: 'christopher-maclead@noemail.invalid',
-      phone: '555-555-5556', source: 'Cold Call', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-03-15'
-    },
-    {
-      id: '2', firstName: 'Carissa', lastName: 'Kidman',
-      company: 'Oh My Goodknits Inc', email: 'carissa-kidman@noemail.invalid',
-      phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-      status: 'contacted', createdAt: '2026-03-18'
-    },
-    {
-      id: '3', firstName: 'James', lastName: 'Merced',
-      company: 'Kwik Kopy Printing', email: 'james-merced@noemail.invalid',
-      phone: '555-555-5555', source: 'Web Download', owner: 'Ali Yara',
-      status: 'qualified', createdAt: '2026-04-01'
-    },
-    {
-      id: '4', firstName: 'Tresa', lastName: 'Sweely',
-      company: 'Morlong Associates', email: 'tresa-sweely@noemail.invalid',
-      phone: '555-555-5555', source: 'Seminar Partner', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-04-05'
-    },
-    {
-      id: '5', firstName: 'Felix', lastName: 'Hirpara',
-      company: 'Chapman', email: 'felix-hirpara@noemail.invalid',
-      phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-      status: 'lost', createdAt: '2026-04-10'
-    },
-    {
-      id: '6', firstName: 'Kayleigh', lastName: 'Lace',
-      company: 'Buckley Miller & Wright', email: 'kayleigh-lace@noemail.invalid',
-      phone: '555-555-5555', source: 'Partner', owner: 'Ali Yara',
-      status: 'contacted', createdAt: '2026-04-12'
-    },
-    {
-      id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-      company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-      phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-04-14'
-    },
-    {
-      id: '8', firstName: 'Michael', lastName: 'Ruta',
-      company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-      phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-      status: 'contacted', createdAt: '2026-03-25'
-    },
-    {
-      id: '9', firstName: 'Theola', lastName: 'Frey',
-      company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-      phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-      status: 'qualified', createdAt: '2026-04-18'
-    },
-    {
-      id: '10', firstName: 'Chau', lastName: 'Kitzman',
-      company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-      phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-03-22'
-    },{
-      id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-      company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-      phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-04-14'
-    },
-    {
-      id: '8', firstName: 'Michael', lastName: 'Ruta',
-      company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-      phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-      status: 'contacted', createdAt: '2026-03-25'
-    },
-    {
-      id: '9', firstName: 'Theola', lastName: 'Frey',
-      company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-      phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-      status: 'qualified', createdAt: '2026-04-18'
-    },
-    {
-      id: '10', firstName: 'Chau', lastName: 'Kitzman',
-      company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-      phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-03-22'
-    },{
-      id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-      company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-      phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-04-14'
-    },
-    {
-      id: '8', firstName: 'Michael', lastName: 'Ruta',
-      company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-      phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-      status: 'contacted', createdAt: '2026-03-25'
-    },
-    {
-      id: '9', firstName: 'Theola', lastName: 'Frey',
-      company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-      phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-      status: 'qualified', createdAt: '2026-04-18'
-    },
-    {
-      id: '10', firstName: 'Chau', lastName: 'Kitzman',
-      company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-      phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-03-22'
-    },{
-      id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-      company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-      phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-      status: 'new', createdAt: '2026-04-14'
-    },
-    {
-      id: '8', firstName: 'Michael', lastName: 'Ruta',
-      company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-      phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-      status: 'contacted', createdAt: '2026-03-25'
-    },
-    {
-      id: '9', firstName: 'Theola', lastName: 'Frey',
-      company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-      phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-      status: 'qualified', createdAt: '2026-04-18'
-    },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },{
-    //   id: '7', firstName: 'Yvonne', lastName: 'Tjepkema',
-    //   company: 'Grayson', email: 'yvonne-tjepkema@noemail.invalid',
-    //   phone: '555-555-5555', source: 'External Referral', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-04-14'
-    // },
-    // {
-    //   id: '8', firstName: 'Michael', lastName: 'Ruta',
-    //   company: 'Buckley Miller & Wright', email: 'michael-gruta@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Online Store', owner: 'Ali Yara',
-    //   status: 'contacted', createdAt: '2026-03-25'
-    // },
-    // {
-    //   id: '9', firstName: 'Theola', lastName: 'Frey',
-    //   company: 'Dal Tile Corporation', email: 'theola-frey@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Cold Call', owner: 'Ali Yara',
-    //   status: 'qualified', createdAt: '2026-04-18'
-    // },
-    // {
-    //   id: '10', firstName: 'Chau', lastName: 'Kitzman',
-    //   company: 'Creative Business Systems', email: 'chau-kitzman@noemail.invalid',
-    //   phone: '555-555-5555', source: 'Advertisement', owner: 'Ali Yara',
-    //   status: 'new', createdAt: '2026-03-22'
-    // },
-  ];
+  private readonly http = inject(HttpClient);
+  private readonly config = inject(ConfigService);
 
-  readonly leads = signal<Lead[]>(this.MOCK_LEADS);
-  readonly totalCount = signal<number>(this.MOCK_LEADS.length);
+  private get apiUrl(): string {
+    return `${this.config.value.apiGatewayUrl}/crm/api/v1/leads`;
+  }
+
+  readonly leads = signal<Lead[]>([]);
+  readonly loading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
+  readonly totalCount = signal<number>(0);
+
+  loadLeads(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    this.http.get<LeadsResponse>(this.apiUrl).subscribe({
+      next: (res) => {
+        this.leads.set(res.data || []);
+        this.totalCount.set(res.meta?.totalElements ?? res.data?.length ?? 0);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load leads', err);
+        this.error.set('Failed to load leads from the server.');
+        this.loading.set(false);
+      }
+    });
+  }
+
+  getLead(id: string): Observable<SingleLeadResponse> {
+    return this.http.get<SingleLeadResponse>(`${this.apiUrl}/${id}`);
+  }
+
+  createLead(payload: CreateLeadRequest): Observable<SingleLeadResponse> {
+    return this.http.post<SingleLeadResponse>(this.apiUrl, payload).pipe(
+      tap(() => this.loadLeads())
+    );
+  }
+
+  updateLead(id: string, payload: Partial<Lead>): Observable<SingleLeadResponse> {
+    return this.http.put<SingleLeadResponse>(`${this.apiUrl}/${id}`, payload).pipe(
+      tap(() => this.loadLeads())
+    );
+  }
+
+  deleteLead(id: string): Observable<{ success: boolean }> {
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this.loadLeads())
+    );
+  }
+
+  convertToDeal(id: string): Observable<{ success: boolean; data: any }> {
+    return this.http.post<{ success: boolean; data: any }>(`${this.apiUrl}/${id}/convert`, {});
+  }
 }

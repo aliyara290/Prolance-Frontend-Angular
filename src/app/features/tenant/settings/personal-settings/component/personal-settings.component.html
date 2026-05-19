@@ -1,0 +1,171 @@
+<div class="w-full">
+
+  <div class="mb-4 bg-bg px-6 py-4 rounded-md border-1 border-border-strong">
+    <h1 class="text-xl font-semibold text-text">Personal Settings</h1>
+    <p class="mt-1 text-sm text-text-muted">Manage your account details and preferences.</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+
+    @if (user$ | async; as user) {
+    <div class="col-span-1">
+      <div class="rounded-md border border-border-strong bg-bg shadow-sm p-6 mb-4">
+
+        <h2 class="text-sm font-semibold text-text mb-5">Profile</h2>
+
+        <div class="flex items-center gap-4 pb-5 mb-5 border-b border-border-strong">
+          <div class="relative shrink-0">
+            <div class="w-16 h-16 rounded-full bg-[var(--color-primary-soft)] border border-border-strong overflow-hidden flex items-center justify-center">
+              @if (avatarPreview()) {
+                <img [src]="avatarPreview()" alt="Avatar" class="w-full h-full object-cover" />
+              } @else {
+                <img src="assets/img/user-thumbnail.png" alt="Avatar" class="w-full h-full object-cover" />
+              }
+            </div>
+            <label
+              for="avatarInput"
+              class="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center cursor-pointer hover:bg-[var(--color-primary-hover)]  shadow"
+            >
+              <lucide-icon [img]="CameraIcon" [size]="12" />
+            </label>
+            <input id="avatarInput" type="file" accept="image/*" class="hidden" (change)="onAvatarChange($event)" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-text">Profile photo</p>
+            <p class="text-xs text-text-muted mt-0.5">JPG, PNG or GIF · Max 2 MB</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium text-text-muted mb-1.5">First Name</label>
+            <input
+              value="{{ user.firstName }}"
+              readonly
+              type="text"
+              placeholder="First name"
+              class="w-full px-3 py-2.5 text-sm rounded-md bg-bg-muted text-text placeholder-text-muted border-1 border-border-strong "
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-text-muted mb-1.5">Last Name</label>
+            <input
+              value="{{ user.lastName }}"
+              readonly
+              type="text"
+              placeholder="Last name"
+              class="w-full px-3 py-2.5 text-sm rounded-md bg-bg-muted text-text placeholder-text-muted border-1 border-border-strong"
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-xs font-medium text-text-muted mb-1.5">Email Address</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <lucide-icon [img]="MailIcon" [size]="14" class="text-text-muted" />
+            </div>
+            <input
+              value="{{ user.email }}"
+              readonly
+              type="email"
+              placeholder="you@example.com"
+              class="w-full pl-9 pr-3 py-2.5 text-sm rounded-md bg-bg-muted text-text placeholder-text-muted border-1 border-border-strong "
+            />
+          </div>
+
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-text-muted mb-1.5">Timezone</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <lucide-icon [img]="ClockIcon" [size]="14" class="text-text-muted" />
+              </div>
+              <select
+
+                class="w-full pl-9 pr-8 py-2.5 text-sm rounded-md bg-bg-muted border border-border-strong text-text appearance-none cursor-pointer outline-none"
+              >
+                @for (tz of timezones; track tz) {
+                  <option [value]="tz">{{ tz }}</option>
+                }
+              </select>
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <lucide-icon [img]="ChevronDownIcon" [size]="13" class="text-text-muted" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-text-muted mb-1.5">Language</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <lucide-icon [img]="GlobeIcon" [size]="14" class="text-text-muted" />
+              </div>
+              <select
+                class="w-full pl-9 pr-8 py-2.5 text-sm rounded-md bg-bg-muted border border-border-strong text-text appearance-none cursor-pointer outline-none"
+              >
+                @for (lang of languages; track lang.code) {
+                  <option [value]="lang.code">{{ lang.label }}</option>
+                }
+              </select>
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <lucide-icon [img]="ChevronDownIcon" [size]="13" class="text-text-muted" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    }
+    <div class="flex flex-col gap-4">
+
+    <div class="rounded-md border border-border-strong bg-bg shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-md bg-bg-muted flex items-center justify-center shrink-0">
+            <lucide-icon [img]="LockIcon" [size]="16" class="text-text-muted" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-text">Password</p>
+            <p class="text-xs text-text-muted mt-0.5">Update your password.</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="onUpdatePassword()"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text border border-border-strong rounded-md hover:bg-[var(--color-bg-hover)]  shrink-0 ml-4 cursor-pointer"
+        >
+          <lucide-icon [img]="ExternalLinkIcon" [size]="13" />
+          Change Password
+        </button>
+      </div>
+    </div>
+
+    <div class="rounded-md border border-border-strong bg-bg shadow-sm p-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-md bg-bg-muted flex items-center justify-center shrink-0">
+            <lucide-icon [img]="ShieldIcon" [size]="16" class="text-text-muted" />
+          </div>
+          <div>
+            <p class="text-sm font-medium text-text">Two-Factor Authentication</p>
+            <p class="text-xs text-text-muted mt-0.5">Add an extra layer of security.</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="onEnable2FA()"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text border border-border-strong rounded-md hover:bg-[var(--color-bg-hover)]  shrink-0 ml-4 cursor-pointer"
+        >
+          <lucide-icon [img]="ExternalLinkIcon" [size]="13" />
+          Manage 2FA
+        </button>
+      </div>
+    </div>
+    </div>
+
+  </div>
+</div>

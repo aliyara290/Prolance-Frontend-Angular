@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { LayoutStateService } from '../../services/layout-state.service';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
 import { LucideAngularModule, Calendar, Plus, Settings } from 'lucide-angular';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, UserMenuComponent, LucideAngularModule],
+  imports: [CommonModule, UserMenuComponent, LucideAngularModule, RouterLink, RouterLinkActive],
   templateUrl: "header.component.html"
 })
 export class HeaderComponent {

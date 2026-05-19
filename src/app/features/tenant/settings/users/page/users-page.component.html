@@ -1,10 +1,10 @@
-<div [class]="isDark() ? 'dark' : ''"
-     class=" text-text font-sans">
+<div class="text-text font-sans">
 
   <div class="flex overflow-hidden">
     <div class="flex flex-col w-full">
 
-      <div class="flex items-center justify-between px-6 py-4 border border-border-strong bg-bg shrink-0 mb-4  rounded-md">
+      <div
+        class="flex items-center justify-between px-6 py-4 border border-border-strong bg-bg shrink-0 mb-4  rounded-md">
         <div>
           <h1 class="text-xl font-semibold text-text">Users</h1>
           <p class="text-sm text-text-muted mt-1">
@@ -19,7 +19,7 @@
             (click)="openInviteModal()"
             class="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
                    text-white rounded-[var(--radius-md)] text-sm font-medium
-                   transition-colors duration-[var(--transition-fast)] cursor-pointer shadow-[var(--shadow-sm)]"
+                    duration-[var(--transition-fast)] cursor-pointer shadow-[var(--shadow-sm)]"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -33,10 +33,27 @@
         </div>
       </div>
 
+
       <!-- ── Main Split Panel ── -->
       <div class="flex min-h-[calc(100vh-194px)] bg-bg rounded-md border-1 border-border-strong overflow-hidden">
-        <app-user-list class="flex overflow-hidden" />
-        <app-user-detail *ngIf="selectedUser()" class="flex flex-1 overflow-hidden" />
+        <app-user-list class="flex overflow-hidden"/>
+        @if (selectedUser()) {
+          <app-user-detail class="flex flex-1 overflow-hidden"/>
+        } @else {
+          <div class="flex flex-1 overflow-hidden justify-center items-center">
+            <div class="flex flex-col items-center justify-center">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="62" height="62" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   class="lucide lucide-mouse-pointer2-icon lucide-mouse-pointer-2 mb-2 opacity-20 stroke-text-muted">
+
+                <path
+                  d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/>
+              </svg>
+              <p class="text-md text-text-muted opacity-60">Select user to get details!</p>
+            </div>
+          </div>
+        }
       </div>
 
     </div>
@@ -47,6 +64,6 @@
     `position: fixed` backdrop covers the full viewport without clipping.
     display:contents collapses the host element so it doesn't affect flex/block flow.
   -->
-  <app-user-modal style="display:contents" />
+  <app-user-modal style="display:contents"/>
 
 </div>

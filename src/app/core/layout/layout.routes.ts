@@ -20,10 +20,10 @@ export const LAYOUT_ROUTES: Routes = [
         loadChildren: () =>
           import('../../features/crm/leads/leads.routes').then(m => m.LEADS_ROUTES)
       },
-      {
-        path: 'settings',
-        loadChildren: () => import('../../features/tenant/tenant.routes').then(m => m.TENANT_ROUTES)
-      },
+      // {
+      //   path: 'settings',
+      //   loadChildren: () => import('../../features/tenant/tenant.routes').then(m => m.TENANT_ROUTES)
+      // },
       {
         path: '',
         redirectTo: 'dashboard',

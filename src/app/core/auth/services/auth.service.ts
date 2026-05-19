@@ -36,6 +36,28 @@ export class AuthService {
     return this.keycloak.login();
   }
 
+  updatePassword(): Promise<void> {
+    if (!this.keycloak) {
+      return Promise.reject('Keycloak not initialized');
+    }
+
+    return this.keycloak.login({
+      action: 'UPDATE_PASSWORD',
+      redirectUri: window.location.origin + '/app/settings/personal'
+    });
+  }
+
+  add2FA(): Promise<void> {
+    if (!this.keycloak) {
+      return Promise.reject('Keycloak not initialized');
+    }
+
+    return this.keycloak.login({
+      action: 'CONFIGURE_TOTP',
+      redirectUri: window.location.origin + '/app/settings/personal'
+    });
+  }
+
   register(): Promise<void> {
     if (!this.keycloak) {
       return Promise.reject('Keycloak not initialized');

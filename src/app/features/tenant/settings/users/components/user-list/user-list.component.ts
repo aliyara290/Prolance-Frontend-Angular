@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsersStateService } from '../../service/users-state.service';
 import { UserStatus, WorkspaceUser } from '../../models/user.models';
@@ -8,13 +8,15 @@ import { getInitials, getRoleBadgeClass, getRoleLabel, getStatusDotClass } from 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgOptimizedImage],
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-list.component.html',
 })
 export class UserListComponent {
   private state = inject(UsersStateService);
 
   // ── State bindings ──
+  readonly isLoading    = this.state.isLoading;
+  readonly error        = this.state.error;
   readonly activeTab    = this.state.activeTab;
   readonly tabCounts    = this.state.tabCounts;
   readonly filteredUsers = this.state.filteredUsers;
@@ -22,12 +24,12 @@ export class UserListComponent {
   readonly searchQuery  = this.state.searchQuery;
 
   readonly tabs: { key: UserStatus; label: string }[] = [
-    { key: 'active',      label: 'Active Users' },
-    { key: 'invited',     label: 'Invited'       },
-    { key: 'deactivated', label: 'Deactivated'   },
+    { key: 'ACTIVE',      label: 'Active Users' },
+    { key: 'PENDING',     label: 'Invited'       },
+    { key: 'DEACTIVATED', label: 'Deactivated'   },
   ];
 
-  // ── Util passthrough (used in template) ──
+  // ── Util passthrough ──
   getInitials      = getInitials;
   getRoleBadgeClass = getRoleBadgeClass;
   getRoleLabel      = getRoleLabel;
@@ -39,7 +41,7 @@ export class UserListComponent {
   }
 
   getTabCount(key: UserStatus): number {
-    return this.tabCounts()[key];
+    return this.tabCounts()[key] || 0;
   }
 
   // ── Actions ──

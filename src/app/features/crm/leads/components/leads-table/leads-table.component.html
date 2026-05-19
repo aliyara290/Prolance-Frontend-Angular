@@ -1,4 +1,4 @@
-  <p-table
+<p-table
   #dt
   [value]="leads"
   dataKey="id"
@@ -6,7 +6,7 @@
   [rowsPerPageOptions]="[10, 25, 50]"
   [paginator]="true"
   [loading]="false"
-  [globalFilterFields]="['firstName', 'lastName', 'company', 'email', 'phone', 'source', 'owner', 'status']"
+  [globalFilterFields]="['title', 'company', 'email', 'phone', 'source', 'status', 'priority']"
   selectionMode="multiple"
   class="p-datatable-sm p-datatable-gridlines"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} leads"
@@ -15,7 +15,6 @@
 
   <ng-template #caption>
     <div class="flex items-center justify-between gap-3 px-3 py-2.5">
-
       <div class="relative flex items-center">
         <svg class="w-[14px] h-[14px] text-[#a3afc4] absolute left-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -31,14 +30,13 @@
       <button
         type="button"
         (click)="clearFilters()"
-        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text border border-border-strong rounded-md bg-bg-muted hover:bg-bg-active  transition-colors duration-150 cursor-pointer"
+        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text border border-border-strong rounded-md bg-bg-muted hover:bg-bg-active duration-150 cursor-pointer"
       >
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         Clear Filters
       </button>
-
     </div>
   </ng-template>
 
@@ -47,43 +45,43 @@
       <th style="width: 3rem">
         <p-tableHeaderCheckbox />
       </th>
-      <th pSortableColumn="firstName" style="min-width: 10rem">
-        Lead Name <p-sortIcon field="firstName" />
+      <th pSortableColumn="title" style="min-width: 12rem">
+        Lead Title <p-sortIcon field="title" />
       </th>
-      <th pSortableColumn="company" style="min-width: 12rem">
+      <th pSortableColumn="company" style="min-width: 10rem">
         Company <p-sortIcon field="company" />
       </th>
-      <th pSortableColumn="email" style="min-width: 14rem">
+      <th pSortableColumn="email" style="min-width: 12rem">
         Email <p-sortIcon field="email" />
       </th>
-      <th pSortableColumn="phone" style="min-width: 10rem">
+      <th pSortableColumn="phone" style="min-width: 9rem">
         Phone <p-sortIcon field="phone" />
       </th>
-      <th pSortableColumn="source" style="min-width: 10rem">
-        Lead Source <p-sortIcon field="source" />
+      <th pSortableColumn="source" style="min-width: 9rem">
+        Source <p-sortIcon field="source" />
       </th>
       <th pSortableColumn="status" style="min-width: 9rem">
         Status <p-sortIcon field="status" />
       </th>
-      <th pSortableColumn="owner" style="min-width: 10rem">
-        Lead Owner <p-sortIcon field="owner" />
+      <th pSortableColumn="priority" style="min-width: 9rem">
+        Priority <p-sortIcon field="priority" />
+      </th>
+      <th pSortableColumn="createdAt" style="min-width: 9rem">
+        Created At <p-sortIcon field="createdAt" />
       </th>
       <th></th>
     </tr>
 
     <tr>
       <th></th>
-
       <th>
         <p-columnFilter
           type="text"
-          field="firstName"
-          placeholder="Search name"
-          ariaLabel="Filter Name"
+          field="title"
+          placeholder="Search title"
           filterOn="input"
         />
       </th>
-
       <th>
         <p-columnFilter
           type="text"
@@ -92,7 +90,6 @@
           filterOn="input"
         />
       </th>
-
       <th>
         <p-columnFilter
           type="text"
@@ -101,7 +98,6 @@
           filterOn="input"
         />
       </th>
-
       <th>
         <p-columnFilter
           type="text"
@@ -110,7 +106,6 @@
           filterOn="input"
         />
       </th>
-
       <th>
         <p-columnFilter field="source" matchMode="equals" [showMenu]="false">
           <ng-template #filter let-filter="filterCallback">
@@ -127,7 +122,6 @@
           </ng-template>
         </p-columnFilter>
       </th>
-
       <th>
         <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
           <ng-template #filter let-filter="filterCallback">
@@ -151,47 +145,59 @@
           </ng-template>
         </p-columnFilter>
       </th>
-
       <th>
-        <p-columnFilter field="owner" matchMode="in" [showMenu]="false">
+        <p-columnFilter field="priority" matchMode="equals" [showMenu]="false">
           <ng-template #filter let-filter="filterCallback">
-            <p-multiselect
-              [(ngModel)]="filterOwner"
-              [options]="ownerOptions"
-              optionLabel="name"
-              optionValue="name"
-              placeholder="Any owner"
+            <p-select
+              [(ngModel)]="filterPriority"
+              [options]="priorityOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Any priority"
+              [showClear]="true"
               (onChange)="filter($event.value)"
-              style="min-width: 9rem; font-size: 0.8rem"
-            />
+              style="min-width: 8rem; font-size: 0.8rem"
+            >
+              <ng-template let-option #item>
+                <p-tag
+                  [value]="option.label"
+                  [severity]="getPrioritySeverity(option.value)"
+                />
+              </ng-template>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
+      <th></th>
       <th></th>
     </tr>
   </ng-template>
 
   <ng-template #body let-lead>
-    <tr class="hover:bg-[#f8f9fd] transition-colors duration-100">
+    <tr class="hover:bg-[#f8f9fd] duration-100">
       <td>
         <p-tableCheckbox [value]="lead" />
       </td>
 
       <td>
-        <a class="text-primary font-medium hover:underline cursor-pointer text-sm">
-          {{ lead.firstName }} {{ lead.lastName }}
+        <a [routerLink]="['/app/crm/leads', lead.id]" class="text-primary font-medium hover:underline cursor-pointer text-sm">
+          {{ lead.title }}
         </a>
       </td>
 
-      <td class="text-sm text-[#1a2942]">{{ lead.company }}</td>
+      <td class="text-sm text-[#1a2942]">{{ lead.company || '-' }}</td>
 
       <td class="text-sm">
-        <a class="text-[#5e6d82] hover:text-primary hover:underline cursor-pointer truncate block max-w-[200px]">
-          {{ lead.email }}
-        </a>
+        @if (lead.email) {
+          <a class="text-[#5e6d82] hover:text-primary hover:underline cursor-pointer truncate block max-w-[200px]" [href]="'mailto:' + lead.email">
+            {{ lead.email }}
+          </a>
+        } @else {
+          <span class="text-[#8492a6]">-</span>
+        }
       </td>
 
-      <td class="text-sm text-[#5e6d82]">{{ lead.phone }}</td>
+      <td class="text-sm text-[#5e6d82]">{{ lead.phone || '-' }}</td>
 
       <td class="text-sm text-[#5e6d82]">{{ lead.source }}</td>
 
@@ -202,12 +208,20 @@
         />
       </td>
 
-      <td class="text-sm text-[#5e6d82]">{{ lead.owner }}</td>
+      <td>
+        <p-tag
+          [value]="lead.priority | titlecase"
+          [severity]="getPrioritySeverity(lead.priority)"
+        />
+      </td>
+
+      <td class="text-sm text-[#5e6d82]">{{ lead.createdAt | date:'shortDate' }}</td>
+
       <td>
         <app-dropdown-menu
           [items]="moreActions"
           [iconOnly]="true"
-          (itemSelected)="onMoreAction($any($event))"
+          (itemSelected)="onMoreAction($event, lead)"
         />
       </td>
     </tr>
@@ -215,7 +229,7 @@
 
   <ng-template #emptymessage>
     <tr>
-      <td colspan="8">
+      <td colspan="10">
         <div class="flex flex-col items-center gap-3 py-16 text-[#8492a6]">
           <i class="pi pi-inbox text-5xl text-[#d9dde8]"></i>
           <span class="text-sm">No leads found matching your filters.</span>

@@ -1,0 +1,154 @@
+<div class=" min-h-screen text-[var(--color-text)] font-sans">
+
+  <div class="mb-4 bg-bg px-6 py-4 rounded-md border-1 border-border-strong">
+    <h1 class="text-xl font-semibold text-[var(--color-text)]">Workspace Settings</h1>
+    <p class="mt-1 text-sm text-[var(--color-text-muted)]">Manage your organization's profile and preferences.</p>
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="flex gap-4 items-end">
+
+    <!-- ── Left: main form card ── -->
+    <div class="flex-1 bg-bg border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6 space-y-5 shadow-[var(--shadow-sm)]">
+
+      <h2 class="text-sm font-semibold text-[var(--color-text)]">Profile</h2>
+
+      <!-- Logo -->
+      <div class="flex items-center gap-4">
+        <div class="relative w-14 h-14 rounded-[var(--radius-lg)]  flex items-center justify-center text-white font-bold text-lg overflow-hidden shrink-0">
+          <img *ngIf="form.logo" [src]="form.logo" class="w-full h-full object-cover" alt="logo" />
+          <img *ngIf="!form.logo" src="assets/img/prolance-logo-blue.png" class="w-full h-full object-cover" alt="logo" />
+          <label class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 cursor-pointer transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <input type="file" accept="image/*" class="hidden" (change)="onLogoChange($event)" />
+          </label>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-[var(--color-text)]">Workspace Logo</p>
+          <p class="text-xs text-[var(--color-text-muted)]">JPG, PNG or GIF · Max 2 MB</p>
+        </div>
+      </div>
+
+      <!-- Name + Website -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Workspace Name</label>
+          <input type="text" [(ngModel)]="form.name" placeholder="e.g. InovSmart"
+                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Website</label>
+          <input type="url" [(ngModel)]="form.website" placeholder="https://yourcompany.com"
+                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Description</label>
+        <textarea [(ngModel)]="form.description" rows="3" maxlength="500" placeholder="Brief description of your organization..."
+                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg  resize-none"></textarea>
+      </div>
+
+      <!-- Industry + Founded -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Industry</label>
+          <select [(ngModel)]="form.industry"
+                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer">
+            <option *ngFor="let i of industries" [value]="i">{{ i }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Founded Date</label>
+          <input type="date" [(ngModel)]="form.foundedDate"
+                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer" />
+        </div>
+      </div>
+
+      <!-- Timezone + Language -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Timezone</label>
+          <select [(ngModel)]="form.timezone"
+                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer">
+            <option *ngFor="let tz of timezones" [value]="tz">{{ tz }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Language</label>
+          <select [(ngModel)]="form.language"
+                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer">
+            <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div>
+        <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Address</label>
+        <div class="space-y-3">
+          <input type="text" [(ngModel)]="form.address.street" placeholder="Street address"
+                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+          <div class="grid grid-cols-2 gap-3">
+            <input type="text" [(ngModel)]="form.address.city" placeholder="City"
+                   class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+            <input type="text" [(ngModel)]="form.address.state" placeholder="State / Province"
+                   class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <input type="text" [(ngModel)]="form.address.country" placeholder="Country"
+                   class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+            <input type="text" [(ngModel)]="form.address.postalCode" placeholder="Postal code"
+                   class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-bg " />
+          </div>
+        </div>
+      </div>
+
+      <!-- Save button -->
+      <div class="flex justify-end pt-1">
+        <button
+          (click)="saveChanges()"
+          [disabled]="saving()"
+          class="flex items-center gap-2 px-5 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-60 text-white rounded-[var(--radius-md)] text-sm font-medium  cursor-pointer shadow-[var(--shadow-sm)]"
+        >
+          <svg *ngIf="saving()" class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          {{ saving() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+
+      <!-- Success toast -->
+      <div *ngIf="saved()" class="flex items-center gap-2 text-sm text-[var(--color-success)] bg-[var(--color-success-soft)] px-3 py-2 rounded-[var(--radius-md)]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Settings saved successfully.
+      </div>
+
+    </div>
+
+    <!-- ── Right: danger card ── -->
+    <div class="w-[320px] shrink-0 space-y-4">
+
+      <!-- Delete workspace -->
+      <div class="bg-bg border border-[var(--color-border)] rounded-[var(--radius-xl)] p-5 shadow-[var(--shadow-sm)]">
+        <div class="flex items-start gap-3 mb-3">
+
+          <div>
+            <p class="text-sm font-medium text-[var(--color-text)]">Delete Workspace</p>
+            <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Permanently delete all data. Cannot be undone.</p>
+          </div>
+        </div>
+        <button class="w-full px-3 py-2 text-sm font-medium border border-[var(--color-danger)] text-[var(--color-danger)] rounded-[var(--radius-md)] hover:bg-[var(--color-danger)] hover:text-white  cursor-pointer">
+          Delete Workspace
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

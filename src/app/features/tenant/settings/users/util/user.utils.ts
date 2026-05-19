@@ -1,11 +1,13 @@
 import { UserRole, UserStatus, WorkspaceUser } from '../models/user.models';
 
 export function getInitials(user: WorkspaceUser): string {
-  return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+  const f = user.firstName ? user.firstName[0] : '';
+  const l = user.lastName ? user.lastName[0] : '';
+  return `${f}${l}`.toUpperCase() || 'U';
 }
 
 export function getRoleLabel(role: UserRole): string {
-  return role.replace('_', ' ');
+  return role ? role.replace('_', ' ') : '';
 }
 
 export function getRoleBadgeClass(role: UserRole): string {
@@ -17,14 +19,14 @@ export function getRoleBadgeClass(role: UserRole): string {
     ACCOUNTANT:      'bg-[var(--color-success-soft)] text-[var(--color-success)]',
     SALES:           'bg-[var(--color-warning-soft)] text-[var(--color-warning)]',
   };
-  return map[role];
+  return map[role] || 'bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]';
 }
 
 export function getStatusDotClass(status: UserStatus): string {
   const map: Record<UserStatus, string> = {
-    active:      'bg-[var(--color-success)]',
-    invited:     'bg-[var(--color-warning)]',
-    deactivated: 'bg-[var(--color-bar-bg)]',
+    ACTIVE:      'bg-[var(--color-success)]',
+    PENDING:     'bg-[var(--color-warning)]',
+    DEACTIVATED: 'bg-[var(--color-bar-bg)]',
   };
-  return map[status];
+  return map[status] || 'bg-[var(--color-bar-bg)]';
 }

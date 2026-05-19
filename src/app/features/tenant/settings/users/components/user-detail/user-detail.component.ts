@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersStateService } from '../../service/users-state.service';
+import { UserRole, WorkspaceUser, ALL_ROLES } from '../../models/user.models';
 import { getInitials, getRoleBadgeClass, getRoleLabel, getStatusDotClass } from '../../util/user.utils';
 
 @Component({
@@ -13,6 +14,7 @@ export class UserDetailComponent {
   private state = inject(UsersStateService);
 
   readonly user = this.state.selectedUser;
+  readonly allRoles = ALL_ROLES;
 
   // ── Util passthrough ──
   getInitials       = getInitials;
@@ -35,8 +37,22 @@ export class UserDetailComponent {
     if (id) this.state.reactivateUser(id);
   }
 
-  delete(): void {
+  addRole(role: string): void {
     const id = this.user()?.id;
-    if (id) this.state.deleteUser(id);
+    if (id && role) {
+      this.state.addUserRole(id, role as UserRole);
+    }
+  }
+
+  removeRole(role: UserRole): void {
+    const id = this.user()?.id;
+    if (id && role) {
+      this.state.removeUserRole(id, role);
+    }
+  }
+
+  availableRolesToAdd(u: WorkspaceUser): UserRole[] {
+    if (!u || !u.roles) return [];
+    return this.allRoles.filter(r => !u.roles.includes(r));
   }
 }

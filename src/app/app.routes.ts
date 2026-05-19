@@ -11,6 +11,10 @@ export const routes: Routes = [
   },
 
   {
+    path: 'app/settings',
+    loadChildren: () => import('./features/tenant/tenant.routes').then(m => m.TENANT_ROUTES)
+  },
+  {
     path: 'onboarding',
     loadChildren: () => import('./features/onboarding/onboarding.routes').then(m => m.ONBOARDING_ROUTES)
   },

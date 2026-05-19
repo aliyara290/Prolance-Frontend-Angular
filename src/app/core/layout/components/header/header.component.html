@@ -4,32 +4,53 @@
     <!-- Mobile Sidebar Toggle -->
     <button
       (click)="layoutState.toggleMobileDrawer()"
-      class="md:hidden p-2 rounded text-[#5e6d82] hover:text-[#223555] hover:bg-gray-100 transition-colors">
+      class="md:hidden p-2 rounded text-[#5e6d82] hover:text-[#223555] hover:bg-gray-100 ">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
   </div>
 
   <!-- Right Actions -->
-  <div class="flex items-center gap-1 ml-4">
-    <!-- Add / Plus Icon -->
-    <button type="button" class="flex justify-center items-center w-9 h-8 hover:bg-bg-hover text-text-muted hover:text-primary rounded-sm transition-colors cursor-pointer">
+  <div class="flex items-center gap-2 ml-4">
+
+    <button type="button"
+            class="flex justify-center items-center w-7.5 h-7.5 border-1 border-primary hover:bg-primary text-primary hover:text-white rounded-sm  cursor-pointer">
       <lucide-icon [img]="icons.plus" size="20"></lucide-icon>
     </button>
 
-    <button type="button" class="flex justify-center items-center w-9 h-8 hover:bg-bg-hover text-text-muted hover:text-primary rounded-sm transition-colors cursor-pointer">
+    <a
+      #rla="routerLinkActive"
+      [routerLink]="'/app/settings'"
+      routerLinkActive="!bg-bg-active !text-primary"
+      [class.pointer-events-none]="rla.isActive"
+      [class.cursor-default]="rla.isActive"
+      class="flex justify-center items-center w-7.5 h-7.5 rounded-sm
+         text-text-muted hover:bg-bg-hover hover:text-primary
+         cursor-pointer"
+    >
       <lucide-icon [img]="icons.settings" size="20"></lucide-icon>
-    </button>
+    </a>
 
-    <button type="button" class="flex justify-center items-center w-9 h-8 hover:bg-bg-hover text-text-muted hover:text-primary rounded-sm transition-colors cursor-pointer">
+    <a
+      #rla="routerLinkActive"
+      [routerLink]="'/app/calendar'"
+      routerLinkActive="!bg-bg-active !text-primary"
+      [class.pointer-events-none]="rla.isActive"
+      [class.cursor-default]="rla.isActive"
+      class="flex justify-center items-center w-7.5 h-7.5 rounded-sm
+         text-text-muted hover:bg-bg-hover hover:text-primary
+         cursor-pointer"
+    >
+
       <lucide-icon [img]="icons.calendar" size="20"></lucide-icon>
-    </button>
+
+    </a>
 
     <div class="h-5 w-px bg-bar-bg mx-1"></div>
 
     <!-- User Menu -->
-    <app-user-menu />
+    <app-user-menu/>
   </div>
 </header>
 

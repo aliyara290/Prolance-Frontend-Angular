@@ -1,9 +1,22 @@
 export type UserRole = 'ADMIN' | 'MEMBER' | 'VIEWER' | 'PROJECT_MANAGER' | 'ACCOUNTANT' | 'SALES';
-export type UserStatus = 'active' | 'invited' | 'deactivated';
+export type UserStatus = 'ACTIVE' | 'PENDING' | 'DEACTIVATED';
+
+export interface BackendUser {
+  id: string;
+  tenantId: string;
+  keycloakUserId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  jobTitle: string | null;
+  department: string | null;
+  status: UserStatus;
+  lastLoginAt: string | null;
+  keycloakRoleGroupIds: string[];
+}
 
 export interface WorkspaceUser {
   id: string;
-  username: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -12,8 +25,8 @@ export interface WorkspaceUser {
   roles: UserRole[];
   status: UserStatus;
   avatarColor: string;
-  joinedAt: string;
-  lastActive?: string;
+  lastLoginAt: string | null;
+  keycloakRoleGroupIds: string[];
 }
 
 export interface CreateUserPayload {
@@ -21,10 +34,24 @@ export interface CreateUserPayload {
   email: string;
   firstName: string;
   lastName: string;
-  password: string;
+  password?: string;
   roles: UserRole[];
   jobTitle?: string;
   department?: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  meta: {
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+  } | null;
+  timestamp: string;
 }
 
 export const ALL_ROLES: UserRole[] = [

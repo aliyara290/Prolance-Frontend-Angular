@@ -58,7 +58,7 @@
           [routerLink]="item.route"
           routerLinkActive="!bg-bg-active !text-text-inverse !border-l-2 !border-primary"
           [routerLinkActiveOptions]="{ exact: false }"
-          class="flex items-center gap-3 px-4 py-2.5 text-text-muted  hover:text-text-inverse hover:bg-bg-hover transition-colors relative cursor-pointer border-l-4 border-transparent">
+          class="flex items-center gap-3 px-4 py-2.5 text-text-muted  hover:text-text-inverse hover:bg-bg-hover  relative cursor-pointer border-l-4 border-transparent">
 
           <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
             @if (item.icon === 'home') {
@@ -147,7 +147,7 @@
                 [routerLink]="child.route"
                 routerLinkActive="bg-card-muted border-l-4 border-primary text-text-inverse"
                 [routerLinkActiveOptions]="{ exact: true }"
-                class="flex items-center justify-between pl-[53px] pr-4 py-2 text-text-muted hover:text-text-inverse hover:bg-bg-hover transition-colors text-[14px] cursor-pointer border-l-4 border-transparent">
+                class="flex items-center justify-between pl-[53px] pr-4 py-2 text-text-muted hover:text-text-inverse hover:bg-bg-hover  text-[14px] cursor-pointer border-l-4 border-transparent">
                 <span>{{ child.label }}</span>
               </a>
             }

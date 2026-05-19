@@ -1,92 +1,35 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '../../../../../core/config/config.service';
+import { AuthService } from '../../../../../core/auth/services/auth.service';
 import {
-  WorkspaceUser, CreateUserPayload, UserStatus,
-  AVATAR_COLORS
+  WorkspaceUser, BackendUser, CreateUserPayload, UserStatus, UserRole,
+  ApiResponse, AVATAR_COLORS, ALL_ROLES
 } from '../models/user.models';
-
-const MOCK_USERS: WorkspaceUser[] = [
-  {
-    id: '1',
-    username: 'ali.yara',
-    email: 'ali.yara.fr@gmail.com',
-    firstName: 'Ali',
-    lastName: 'Yara',
-    jobTitle: 'CEO',
-    department: 'TECHNOLOGY',
-    roles: ['ADMIN'],
-    status: 'active',
-    avatarColor: '#267af7',
-    joinedAt: 'Jan 5, 2024',
-    lastActive: '2 minutes ago',
-  },
-  {
-    id: '2',
-    username: 'hiba.yara',
-    email: 'contact@aliyara.com',
-    firstName: 'Hiba',
-    lastName: 'Yara',
-    jobTitle: 'Manager',
-    department: 'CONSULTING',
-    roles: ['MEMBER', 'PROJECT_MANAGER'],
-    status: 'active',
-    avatarColor: '#16a34a',
-    joinedAt: 'Feb 12, 2024',
-    lastActive: '1 hour ago',
-  },
-  {
-    id: '3',
-    username: 'sara.chen',
-    email: 'sara.chen@inovsmart.com',
-    firstName: 'Sara',
-    lastName: 'Chen',
-    jobTitle: 'Sales Lead',
-    department: 'RETAIL',
-    roles: ['SALES'],
-    status: 'invited',
-    avatarColor: '#f59e0b',
-    joinedAt: 'May 16, 2025',
-  },
-  {
-    id: '4',
-    username: 'karim.nasri',
-    email: 'k.nasri@inovsmart.com',
-    firstName: 'Karim',
-    lastName: 'Nasri',
-    jobTitle: 'Finance Analyst',
-    department: 'FINANCE',
-    roles: ['ACCOUNTANT', 'VIEWER'],
-    status: 'active',
-    avatarColor: '#8b5cf6',
-    joinedAt: 'Mar 3, 2024',
-    lastActive: 'Yesterday',
-  },
-  {
-    id: '5',
-    username: 'lena.frost',
-    email: 'lena.f@inovsmart.com',
-    firstName: 'Lena',
-    lastName: 'Frost',
-    jobTitle: 'Designer',
-    department: 'MEDIA',
-    roles: ['MEMBER'],
-    status: 'deactivated',
-    avatarColor: '#ec4899',
-    joinedAt: 'Nov 20, 2023',
-  },
-];
 
 @Injectable({ providedIn: 'root' })
 export class UsersStateService {
-  private _users = signal<WorkspaceUser[]>(MOCK_USERS);
-  private _selectedUserId = signal<string | null>("1");
-  private _activeTab = signal<UserStatus>('active');
+  private readonly http = inject(HttpClient);
+  private readonly configService = inject(ConfigService);
+  private readonly authService = inject(AuthService);
+
+  // ── Signals ──
+  private _users = signal<WorkspaceUser[]>([]);
+  private _selectedUserId = signal<string | null>(null);
+  private _activeTab = signal<UserStatus>('ACTIVE');
   private _searchQuery = signal('');
-  private _isDark = signal(false);
+  private _isLoading = signal(false);
+  private _error = signal<string | null>(null);
+
+  // ── Persistent Role Group Map (UUID -> Role) ──
+  private roleGroupMap = new Map<string, UserRole>();
 
   // ── Public read-only signals ──
-  readonly isDark = this._isDark.asReadonly();
+  readonly isLoading = this._isLoading.asReadonly();
+  readonly error = this._error.asReadonly();
   readonly activeTab = this._activeTab.asReadonly();
   readonly searchQuery = this._searchQuery.asReadonly();
+  readonly usersList = this._users.asReadonly();
 
   readonly selectedUser = computed(() =>
     this._users().find(u => u.id === this._selectedUserId()) ?? null
@@ -102,22 +45,47 @@ export class UsersStateService {
         `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
         u.email.toLowerCase().includes(q) ||
         u.jobTitle?.toLowerCase().includes(q) ||
-        u.username.toLowerCase().includes(q);
+        u.department?.toLowerCase().includes(q);
       return matchTab && matchSearch;
     });
   });
 
   readonly tabCounts = computed(() => ({
-    active:      this._users().filter(u => u.status === 'active').length,
-    invited:     this._users().filter(u => u.status === 'invited').length,
-    deactivated: this._users().filter(u => u.status === 'deactivated').length,
+    ACTIVE:      this._users().filter(u => u.status === 'ACTIVE').length,
+    PENDING:     this._users().filter(u => u.status === 'PENDING').length,
+    DEACTIVATED: this._users().filter(u => u.status === 'DEACTIVATED').length,
   }));
 
-  // ── Actions ──
-  toggleDark(): void {
-    this._isDark.update(v => !v);
+  constructor() {
+    this.loadRoleGroupMap();
+    this.loadUsers();
   }
 
+  // ── Loaders & Persisters ──
+  private loadRoleGroupMap(): void {
+    try {
+      const stored = localStorage.getItem('prolance_role_group_map');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        Object.entries(parsed).forEach(([id, role]) => {
+          this.roleGroupMap.set(id, role as UserRole);
+        });
+      }
+    } catch (e) {
+      console.error('Failed to load role group map', e);
+    }
+  }
+
+  private saveRoleGroupMap(): void {
+    try {
+      const obj = Object.fromEntries(this.roleGroupMap.entries());
+      localStorage.setItem('prolance_role_group_map', JSON.stringify(obj));
+    } catch (e) {
+      console.error('Failed to save role group map', e);
+    }
+  }
+
+  // ── Actions ──
   setTab(tab: UserStatus): void {
     this._activeTab.set(tab);
     this._selectedUserId.set(null);
@@ -135,40 +103,215 @@ export class UsersStateService {
     this._selectedUserId.set(null);
   }
 
+  // ── HTTP API Calls ──
+  loadUsers(): void {
+    this._isLoading.set(true);
+    this._error.set(null);
+    const apiUrl = `${this.configService.value.apiGatewayUrl}/tenant/api/v1/tenants/users`;
+
+    this.http.get<ApiResponse<BackendUser[]>>(apiUrl).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          const mapped = res.data.map(u => this.mapBackendUser(u));
+          this._users.set(mapped);
+        }
+        this._isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load users', err);
+        this._error.set(err.error?.message || err.message || 'Failed to fetch users from backend');
+        this._isLoading.set(false);
+      }
+    });
+  }
+
   createUser(payload: CreateUserPayload): void {
-    const color = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
-    const newUser: WorkspaceUser = {
-      id: Date.now().toString(),
-      ...payload,
-      status: 'invited',
-      avatarColor: color,
-      joinedAt: new Date().toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric',
-      }),
-    };
-    this._users.update(u => [...u, newUser]);
-    this._activeTab.set('invited');
-    this._selectedUserId.set(null);
+    this._isLoading.set(true);
+    this._error.set(null);
+    const apiUrl = `${this.configService.value.apiGatewayUrl}/tenant/api/v1/tenants/users`;
+
+    this.http.post<ApiResponse<BackendUser>>(apiUrl, payload).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          // Dynamic Self-Learning Role Group Map Integration
+          if (payload.roles.length > 0 && res.data.keycloakRoleGroupIds?.length > 0) {
+            payload.roles.forEach((r, idx) => {
+              const groupId = res.data.keycloakRoleGroupIds[idx] || res.data.keycloakRoleGroupIds[0];
+              this.roleGroupMap.set(groupId, r);
+            });
+            this.saveRoleGroupMap();
+          }
+          this.loadUsers();
+          this._activeTab.set('PENDING');
+          this._selectedUserId.set(res.data.id);
+        }
+        this._isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to invite user', err);
+        this._error.set(err.error?.message || err.message || 'Failed to invite user');
+        this._isLoading.set(false);
+      }
+    });
   }
 
   deactivateUser(id: string): void {
-    this._users.update(us =>
-      us.map(u => u.id === id ? { ...u, status: 'deactivated' } : u)
-    );
-    this._selectedUserId.set(null);
-    this._activeTab.set('deactivated');
+    this._isLoading.set(true);
+    this._error.set(null);
+    const apiUrl = `${this.configService.value.apiGatewayUrl}/tenant/api/v1/tenants/users/${id}/deactivate`;
+
+    this.http.delete<ApiResponse<void>>(apiUrl).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.loadUsers();
+          this._selectedUserId.set(null);
+          this._activeTab.set('DEACTIVATED');
+        }
+        this._isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to deactivate user', err);
+        this._error.set(err.error?.message || err.message || 'Failed to deactivate user');
+        this._isLoading.set(false);
+      }
+    });
   }
 
   reactivateUser(id: string): void {
-    this._users.update(us =>
-      us.map(u => u.id === id ? { ...u, status: 'active' } : u)
-    );
-    this._selectedUserId.set(null);
-    this._activeTab.set('active');
+    this._isLoading.set(true);
+    this._error.set(null);
+    const apiUrl = `${this.configService.value.apiGatewayUrl}/tenant/api/v1/tenants/users/${id}/activate`;
+
+    this.http.post<ApiResponse<void>>(apiUrl, {}).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.loadUsers();
+          this._selectedUserId.set(null);
+          this._activeTab.set('ACTIVE');
+        }
+        this._isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to activate user', err);
+        this._error.set(err.error?.message || err.message || 'Failed to activate user');
+        this._isLoading.set(false);
+      }
+    });
   }
 
-  deleteUser(id: string): void {
-    this._users.update(us => us.filter(u => u.id !== id));
-    this._selectedUserId.set(null);
+  addUserRole(id: string, role: UserRole): void {
+    this._isLoading.set(true);
+    this._error.set(null);
+    const apiUrl = `${this.configService.value.apiGatewayUrl}/tenant/api/v1/tenants/users/${id}/roles`;
+
+    this.http.post<ApiResponse<BackendUser>>(apiUrl, { role }).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          // Identify the new role group ID added
+          const oldUser = this._users().find(u => u.id === id);
+          const oldGroupIds = oldUser?.keycloakRoleGroupIds || [];
+          const newGroupId = res.data.keycloakRoleGroupIds.find(gid => !oldGroupIds.includes(gid));
+          if (newGroupId) {
+            this.roleGroupMap.set(newGroupId, role);
+            this.saveRoleGroupMap();
+          }
+          this.loadUsers();
+        }
+        this._isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to add role', err);
+        this._error.set(err.error?.message || err.message || 'Failed to add role');
+        this._isLoading.set(false);
+      }
+    });
+  }
+
+  removeUserRole(id: string, role: UserRole): void {
+    this._isLoading.set(true);
+    this._error.set(null);
+    const apiUrl = `${this.configService.value.apiGatewayUrl}/tenant/api/v1/tenants/users/${id}/roles`;
+
+    this.http.delete<ApiResponse<BackendUser>>(apiUrl, { body: { role } }).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          // Identify the role group ID removed
+          const oldUser = this._users().find(u => u.id === id);
+          const oldGroupIds = oldUser?.keycloakRoleGroupIds || [];
+          const removedGroupId = oldGroupIds.find(gid => !res.data.keycloakRoleGroupIds.includes(gid));
+          if (removedGroupId) {
+            this.roleGroupMap.set(removedGroupId, role);
+            this.saveRoleGroupMap();
+          }
+          this.loadUsers();
+        }
+        this._isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to remove role', err);
+        this._error.set(err.error?.message || err.message || 'Failed to remove role');
+        this._isLoading.set(false);
+      }
+    });
+  }
+
+  // ── Mapping Helper ──
+  private mapBackendUser(u: BackendUser): WorkspaceUser {
+    const roles: UserRole[] = [];
+    u.keycloakRoleGroupIds.forEach(id => {
+      const role = this.roleGroupMap.get(id);
+      if (role) {
+        roles.push(role);
+      }
+    });
+
+    // Self-learning mapping from currently logged-in user context
+    if (roles.length === 0) {
+      const currentUserEmail = this.authService.getParsedToken()?.email;
+      if (currentUserEmail && u.email.toLowerCase() === currentUserEmail.toLowerCase()) {
+        const parsedRoles = this.authService.getParsedToken()?.realm_access?.roles || [];
+        parsedRoles.forEach((r: string) => {
+          const matched = ALL_ROLES.find(ar => ar === r.toUpperCase());
+          if (matched) {
+            roles.push(matched);
+            u.keycloakRoleGroupIds.forEach(id => {
+              this.roleGroupMap.set(id, matched);
+            });
+          }
+        });
+        if (roles.length > 0) {
+          this.saveRoleGroupMap();
+        }
+      }
+    }
+
+    // Default fallback to MEMBER if still not resolved
+    if (roles.length === 0) {
+      roles.push('MEMBER');
+    }
+
+    const color = AVATAR_COLORS[Math.abs(this.hashCode(u.id)) % AVATAR_COLORS.length];
+
+    return {
+      id: u.id,
+      email: u.email,
+      firstName: u.firstName,
+      lastName: u.lastName,
+      jobTitle: u.jobTitle || undefined,
+      department: u.department || undefined,
+      status: u.status,
+      avatarColor: color,
+      lastLoginAt: u.lastLoginAt,
+      roles: Array.from(new Set(roles)),
+      keycloakRoleGroupIds: u.keycloakRoleGroupIds
+    };
+  }
+
+  private hashCode(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
   }
 }

@@ -22,12 +22,7 @@ export class UsersPageComponent {
   @ViewChild(UserModalComponent)
   private inviteModal!: UserModalComponent;
 
-  readonly isDark      = this.state.isDark;
   readonly selectedUser = this.state.selectedUser;
-
-  toggleDark(): void {
-    this.state.toggleDark();
-  }
 
   openInviteModal(): void {
     this.inviteModal.open();

@@ -9,7 +9,7 @@
     <button
       type="button"
       (click)="toggle()"
-      class="flex items-center justify-center text-text-muted  transition-colors duration-150 focus:outline-none cursor-pointer"
+      class="flex items-center justify-center text-text-muted   duration-150 focus:outline-none cursor-pointer"
       aria-haspopup="true"
       [attr.aria-expanded]="isOpen()"
     >
@@ -25,7 +25,7 @@
     <button
       type="button"
       (click)="toggle()"
-      class="flex items-center justify-center w-9 h-full bg-primary text-white border-l border-l-bg  hover:bg-primary-hover transition-colors duration-150 focus:outline-none cursor-pointer"
+      class="flex items-center justify-center w-9 h-full bg-primary text-white border-l border-l-bg  hover:bg-primary-hover  duration-150 focus:outline-none cursor-pointer"
       aria-haspopup="true"
       [attr.aria-expanded]="isOpen()"
     >
@@ -44,7 +44,7 @@
     <button
       type="button"
       (click)="toggle()"
-      class="inline-flex items-center overflow-hidden rounded bg-primary text-white shadow-sm transition-colors duration-150 hover:bg-primary-hover focus:outline-none cursor-pointer"
+      class="inline-flex items-center overflow-hidden rounded bg-primary text-white shadow-sm  duration-150 hover:bg-primary-hover focus:outline-none cursor-pointer"
       aria-haspopup="true"
       [attr.aria-expanded]="isOpen()"
     >
@@ -78,7 +78,7 @@
           type="button"
           [disabled]="item.disabled ?? false"
           (click)="selectItem(item)"
-          class="flex w-full items-center text-text-muted gap-2.5 px-4 py-2 text-left text-sm transition-colors duration-100 rounded-sm hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+          class="flex w-full items-center text-text-muted gap-2.5 px-4 py-2 text-left text-sm  duration-100 rounded-sm hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
           [class.text-danger]="item.danger"
           [class.text-[#1a2942]]="!item.danger"
         >

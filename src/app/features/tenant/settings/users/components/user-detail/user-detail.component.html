@@ -1,155 +1,198 @@
-<div *ngIf="user() as u" class="flex flex-col flex-1 overflow-hidden bg-[var(--color-bg)]">
+@if (user(); as u) {
+  <div class="flex flex-col flex-1 overflow-hidden bg-[var(--color-bg)]">
 
-  <!-- ── Header ── -->
-  <div class="flex items-start justify-between p-6 border-b border-border-strong shrink-0">
-    <div class="flex items-center gap-4">
-      <!-- Avatar -->
-      <div
-        class="relative w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-semibold shrink-0"
-        [style.background-color]="u.avatarColor"
-      >
-        {{ getInitials(u) }}
-        <span
-          class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[var(--color-bg)]"
-          [ngClass]="getStatusDotClass(u.status)"
-        ></span>
-      </div>
+    <!-- ── Header ── -->
+    <div class="flex items-start justify-between p-6 border-b border-[var(--color-border)] shrink-0">
+      <div class="flex items-center gap-4">
+        <!-- Avatar with initials -->
+        <div
+          [style.backgroundColor]="u.avatarColor"
+          class="relative w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-semibold shrink-0 shadow-sm border border-[var(--color-border)]"
+        >
+          {{ getInitials(u) }}
+        </div>
 
-      <!-- Name + role badges -->
-      <div>
-        <h2 class="text-base font-semibold text-[var(--color-text)]">
-          {{ u.firstName }} {{ u.lastName }}
-        </h2>
-        <p class="text-sm text-[var(--color-text-muted)]">{{ u.jobTitle || '—' }}</p>
-        <div class="flex gap-1 mt-1.5 flex-wrap">
-          <span
-            *ngFor="let role of u.roles"
-            class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium"
-            [ngClass]="getRoleBadgeClass(role)"
-          >{{ getRoleLabel(role) }}</span>
+        <!-- Name + info -->
+        <div>
+          <h2 class="text-base font-semibold text-[var(--color-text)]">
+            {{ u.firstName }} {{ u.lastName }}
+          </h2>
+          @if(u.jobTitle) {
+          <p class="text-sm text-[var(--color-text-muted)]">{{ u.jobTitle}}</p>
+          }
         </div>
       </div>
+
+      <!-- Close button -->
+      <button
+        (click)="close()"
+        class="w-8 h-8 flex items-center justify-center rounded-[var(--radius-md)]
+               text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]
+                cursor-pointer transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
 
-    <!-- Close button -->
-    <button
-      (click)="close()"
-      class="w-8 h-8 flex items-center justify-center rounded-[var(--radius-md)]
-             text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]
-             transition-colors cursor-pointer"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 6 6 18M6 6l12 12"/>
-      </svg>
-    </button>
+    <!-- ── Scrollable Body ── -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-7">
+
+      <!-- Contact Section -->
+      <section>
+        <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
+          Contact Details
+        </h3>
+        <div class="space-y-2.5">
+          <div class="flex items-center gap-2">
+            <span class="text-[var(--color-text-muted)] shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </span>
+            <span class="text-sm text-[var(--color-text)]">{{ u.email }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roles & Permissions Management -->
+      <section>
+        <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
+          Roles & Permissions
+        </h3>
+
+        <!-- List of current roles -->
+        <div class="flex flex-wrap gap-2 mb-4">
+          @for (role of u.roles; track role) {
+            <span
+              class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[var(--radius-sm)] text-xs font-medium border border-[var(--color-border)] bg-[var(--color-bg-muted)] text-[var(--color-text)]"
+            >
+              {{ getRoleLabel(role) }}
+
+              @if (u.roles.length > 1) {
+                <button
+                  (click)="removeRole(role)"
+                  class="text-[var(--color-text-muted)] hover:text-[var(--color-danger)] cursor-pointer focus:outline-none transition-colors"
+                  title="Remove role"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              }
+            </span>
+          } @empty {
+            <span class="text-xs text-[var(--color-text-muted)]">No roles assigned</span>
+          }
+        </div>
+
+        <!-- Add role selector -->
+        @if (availableRolesToAdd(u).length > 0) {
+          <div class="flex items-center gap-2">
+            <select
+              #roleSelect
+              class="px-3 py-1.5 text-xs bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                     rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)]
+                     focus:bg-[var(--color-bg)] cursor-pointer"
+            >
+              @for (role of availableRolesToAdd(u); track role) {
+                <option [value]="role">{{ getRoleLabel(role) }}</option>
+              }
+            </select>
+            <button
+              (click)="addRole(roleSelect.value)"
+              class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-[var(--color-primary)]
+                     hover:bg-[var(--color-primary-hover)] text-white rounded-[var(--radius-md)]
+                     duration-[var(--transition-fast)] cursor-pointer shadow-[var(--shadow-sm)]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5v14"/>
+              </svg>
+              Add Role
+            </button>
+          </div>
+        }
+      </section>
+
+      <!-- Work Info Section -->
+      @if(u.department || u.jobTitle) {
+      <section>
+        <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
+          Workspace Info
+        </h3>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+          @if(u.department) {
+          <div>
+            <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Department</p>
+            <p class="text-sm text-[var(--color-text)]">{{ u.department || '—' }}</p>
+          </div>
+
+          }
+          @if(u.jobTitle) {
+          <div>
+            <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Job Title</p>
+            <p class="text-sm text-[var(--color-text)]">{{ u.jobTitle || '—' }}</p>
+          </div>
+          }
+          @if(u.lastLoginAt) {
+          <div>
+            <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Last Login</p>
+            <p class="text-sm text-[var(--color-text)]">
+              {{ u.lastLoginAt ? (u.lastLoginAt | date:'medium') : 'Never logged in' }}
+            </p>
+          </div>
+          }
+        </div>
+      </section>
+      }
+      <!-- Status Section -->
+      <section>
+        <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
+          Account Status
+        </h3>
+        <span
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+          [class.bg-[var(--color-success-soft)]]="u.status === 'ACTIVE'"
+          [class.text-[var(--color-success)]]="u.status === 'ACTIVE'"
+          [class.bg-[var(--color-warning-soft)]]="u.status === 'PENDING'"
+          [class.text-[var(--color-warning)]]="u.status === 'PENDING'"
+          [class.bg-[var(--color-bg-muted)]]="u.status === 'DEACTIVATED'"
+          [class.text-[var(--color-text-muted)]]="u.status === 'DEACTIVATED'"
+        >
+          <span class="w-1.5 h-1.5 rounded-full" [class]="getStatusDotClass(u.status)"></span>
+          {{ u.status | titlecase }}
+        </span>
+      </section>
+
+    </div>
+
+    <!-- ── Action Footer ── -->
+    <div class="px-6 py-4 border-t border-[var(--color-border)] flex gap-2 flex-wrap justify-end shrink-0 bg-[var(--color-bg)]">
+      @if (u.status === 'ACTIVE') {
+        <button
+          (click)="deactivate()"
+          class="px-4 py-2 text-sm font-medium border border-[var(--color-border)] rounded-[var(--radius-md)]
+                 text-[var(--color-text-secondary)] hover:border-[var(--color-danger)] hover:text-[var(--color-danger)]
+                 hover:bg-[var(--color-danger-soft)] duration-[var(--transition-fast)] cursor-pointer"
+        >
+          Deactivate Member
+        </button>
+      }
+      @if (u.status === 'DEACTIVATED') {
+        <button
+          (click)="reactivate()"
+          class="px-4 py-2 text-sm font-medium border border-[var(--color-border)] rounded-[var(--radius-md)]
+                 text-[var(--color-text-secondary)] hover:border-[var(--color-success)] hover:text-[var(--color-success)]
+                 hover:bg-[var(--color-success-soft)] duration-[var(--transition-fast)] cursor-pointer"
+        >
+          Reactivate Member
+        </button>
+      }
+    </div>
+
   </div>
-
-  <!-- ── Scrollable Body ── -->
-  <div class="flex-1 overflow-y-auto p-6 space-y-7">
-
-    <!-- Contact Section -->
-    <section>
-      <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
-        Contact
-      </h3>
-      <div class="space-y-2.5">
-        <div class="flex items-center gap-3">
-          <span class="w-5 shrink-0 text-[var(--color-text-muted)]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="20" height="16" x="2" y="4" rx="2"/>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </svg>
-          </span>
-          <span class="text-sm text-[var(--color-text)]">{{ u.email }}</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="w-5 shrink-0 text-[var(--color-text-muted)]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </span>
-          <span class="text-sm text-[var(--color-text)]">@{{ u.username }}</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Work Section -->
-    <section>
-      <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
-        Work
-      </h3>
-      <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-        <div>
-          <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Department</p>
-          <p class="text-sm text-[var(--color-text)]">{{ u.department || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Job Title</p>
-          <p class="text-sm text-[var(--color-text)]">{{ u.jobTitle || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Joined</p>
-          <p class="text-sm text-[var(--color-text)]">{{ u.joinedAt }}</p>
-        </div>
-        <div *ngIf="u.lastActive">
-          <p class="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Last Active</p>
-          <p class="text-sm text-[var(--color-text)]">{{ u.lastActive }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Status Section -->
-    <section>
-      <h3 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)] mb-3">
-        Account Status
-      </h3>
-      <span
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
-        [ngClass]="{
-          'bg-[var(--color-success-soft)] text-[var(--color-success)]': u.status === 'active',
-          'bg-[var(--color-warning-soft)] text-[var(--color-warning)]': u.status === 'invited',
-          'bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]': u.status === 'deactivated'
-        }"
-      >
-        <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStatusDotClass(u.status)"></span>
-        {{ u.status | titlecase }}
-      </span>
-    </section>
-
-  </div>
-
-  <!-- ── Action Footer ── -->
-  <div class="px-6 py-4 border-t border-border-strong flex gap-2 flex-wrap justify-end shrink-0">
-    <button
-      *ngIf="u.status === 'active'"
-      (click)="deactivate()"
-      class="px-4 py-2 text-sm font-medium border border-[var(--color-border)] rounded-[var(--radius-md)]
-             text-[var(--color-text-secondary)] hover:border-[var(--color-danger)] hover:text-[var(--color-danger)]
-             hover:bg-[var(--color-danger-soft)] transition-colors duration-[var(--transition-fast)] cursor-pointer"
-    >
-      Deactivate
-    </button>
-    <button
-      *ngIf="u.status === 'deactivated'"
-      (click)="reactivate()"
-      class="px-4 py-2 text-sm font-medium border border-[var(--color-border)] rounded-[var(--radius-md)]
-             text-[var(--color-text-secondary)] hover:border-[var(--color-success)] hover:text-[var(--color-success)]
-             hover:bg-[var(--color-success-soft)] transition-colors duration-[var(--transition-fast)] cursor-pointer"
-    >
-      Reactivate
-    </button>
-    <button
-      (click)="delete()"
-      class="px-4 py-2 text-sm font-medium bg-danger text-white
-             rounded-[var(--radius-md)] hover:bg-red-800 hover:text-white
-             transition-colors duration-[var(--transition-fast)] cursor-pointer"
-    >
-      Delete User
-    </button>
-  </div>
-
-</div>
+}
