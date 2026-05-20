@@ -5,13 +5,13 @@ import { LeadsService } from '../../services/leads.service';
 import { Lead, LeadStatus, Priority } from '../../types/lead.model';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import { LeadModalComponent } from '../../components/lead-modal/lead-modal.component';
+
 import {ArrowLeft, LucideAngularModule} from 'lucide-angular';
 
 @Component({
   selector: 'app-lead-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LeadModalComponent, LucideAngularModule],
+  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule],
   templateUrl: './lead-details-page.component.html',
 })
 export class LeadDetailsPageComponent implements OnInit {
@@ -19,7 +19,7 @@ export class LeadDetailsPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly leadsService = inject(LeadsService);
 
-  @ViewChild('leadModal') leadModal!: LeadModalComponent;
+
 
   readonly lead = signal<any | null>(null);
   readonly loading = signal<boolean>(true);
@@ -57,12 +57,8 @@ export class LeadDetailsPageComponent implements OnInit {
   onEdit(): void {
     const currentLead = this.lead();
     if (currentLead) {
-      this.leadModal.openEdit(currentLead);
+      this.router.navigate(['/app/crm/leads', currentLead.id, 'edit']);
     }
-  }
-
-  onModalSaved(): void {
-    this.loadLead();
   }
 
   onDelete(): void {

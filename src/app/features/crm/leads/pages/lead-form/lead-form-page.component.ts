@@ -1,28 +1,30 @@
-import { Component, inject, signal, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { LeadsService } from '../../services/leads.service';
 import { ClientsService } from '../../../clients/services/clients.service';
 import { ContactsService } from '../../../contacts/services/contacts.service';
-import { Lead, LeadStatus, Priority, Source } from '../../types/lead.model';
+import { LeadStatus, Priority, Source } from '../../types/lead.model';
 import { Client } from '../../../clients/types/client.model';
 import { Contact } from '../../../contacts/types/contact.model';
+import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 
 @Component({
-  selector: 'app-lead-modal',
+  selector: 'app-lead-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './lead-modal.component.html',
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  templateUrl: './lead-form-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeadModalComponent implements OnInit {
+export class LeadFormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly leadsService = inject(LeadsService);
   private readonly clientsService = inject(ClientsService);
   private readonly contactsService = inject(ContactsService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  @Output() saved = new EventEmitter<void>();
-
-  readonly isOpen = signal(false);
   readonly isEditMode = signal(false);
   readonly currentLeadId = signal<string | null>(null);
 
@@ -36,11 +38,14 @@ export class LeadModalComponent implements OnInit {
   readonly statusOptions: LeadStatus[] = ['NEW', 'CONTACTED', 'QUALIFIED', 'UNQUALIFIED'];
   readonly sourceOptions: Source[] = ['WEBSITE', 'REFERRAL', 'SOCIAL_MEDIA', 'COLD_CALL', 'EVENT', 'OTHER'];
 
+  readonly ArrowLeft = ArrowLeft;
+
   leadForm!: FormGroup;
 
   ngOnInit(): void {
     this.initForm();
     this.loadDropdownData();
+    this.checkEditMode();
   }
 
   private initForm(): void {
@@ -67,7 +72,6 @@ export class LeadModalComponent implements OnInit {
       }),
       clientId: [''],
       contactId: [''],
-      // Inline Client Creation
       client: this.fb.group({
         name: [''],
         industry: [''],
@@ -86,7 +90,6 @@ export class LeadModalComponent implements OnInit {
           zipCode: [''],
         }),
       }),
-      // Inline Contact Creation
       contact: this.fb.group({
         firstName: [''],
         lastName: [''],
@@ -109,12 +112,49 @@ export class LeadModalComponent implements OnInit {
       }),
     });
 
-    // Handle conditional validation based on selected mode
     this.leadForm.get('clientId')?.valueChanges.subscribe(val => {
       if (val) this.clientMode.set('select');
     });
     this.leadForm.get('contactId')?.valueChanges.subscribe(val => {
       if (val) this.contactMode.set('select');
+    });
+  }
+
+  private checkEditMode(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode.set(true);
+      this.currentLeadId.set(id);
+      this.loadLeadDetails(id);
+    }
+  }
+
+  private loadLeadDetails(id: string): void {
+    this.leadsService.getLead(id).subscribe({
+      next: (res) => {
+        const lead = res.data;
+        if (lead) {
+          this.leadForm.patchValue({
+            title: lead.title,
+            description: lead.description,
+            source: lead.source,
+            priority: lead.priority,
+            status: lead.status,
+            assignedTo: lead.assignedTo,
+            phone: lead.phone,
+            industry: lead.industry,
+            annualRevenue: lead.annualRevenue,
+            company: lead.company,
+            email: lead.email,
+            website: lead.website,
+            numberOfEmployees: lead.numberOfEmployees,
+            address: lead.address || { street: '', city: '', state: '', country: '', zipCode: '' },
+            clientId: lead.clientId || '',
+            contactId: lead.contactId || ''
+          });
+        }
+      },
+      error: (err) => console.error('Failed to load lead', err)
     });
   }
 
@@ -128,52 +168,6 @@ export class LeadModalComponent implements OnInit {
       next: (res) => this.contacts.set(res.data || []),
       error: (err) => console.error('Failed to load contacts', err)
     });
-  }
-
-  openCreate(): void {
-    this.isEditMode.set(false);
-    this.currentLeadId.set(null);
-    this.clientMode.set('select');
-    this.contactMode.set('select');
-    this.leadForm.reset({
-      source: 'COLD_CALL',
-      priority: 'MEDIUM',
-      status: 'NEW',
-      assignedTo: 'b68243e7-5651-472c-bcf3-47cdd24533af',
-      client: { type: 'ENTERPRISE', source: 'COLD_CALL', ownership: 'PRIVATE' },
-      contact: { role: 'CEO', influenceLevel: 'MEDIUM', primary: true }
-    });
-    this.loadDropdownData();
-    this.isOpen.set(true);
-  }
-
-  openEdit(lead: Lead): void {
-    this.isEditMode.set(true);
-    this.currentLeadId.set(lead.id);
-    this.isOpen.set(true);
-    
-    this.leadForm.patchValue({
-      title: lead.title,
-      description: lead.description,
-      source: lead.source,
-      priority: lead.priority,
-      status: lead.status,
-      assignedTo: lead.assignedTo,
-      phone: lead.phone,
-      industry: lead.industry,
-      annualRevenue: lead.annualRevenue,
-      company: lead.company,
-      email: lead.email,
-      website: lead.website,
-      numberOfEmployees: lead.numberOfEmployees,
-      address: lead.address || { street: '', city: '', state: '', country: '', zipCode: '' },
-      clientId: lead.clientId || '',
-      contactId: lead.contactId || ''
-    });
-  }
-
-  close(): void {
-    this.isOpen.set(false);
   }
 
   setClientMode(mode: 'select' | 'new'): void {
@@ -213,6 +207,10 @@ export class LeadModalComponent implements OnInit {
     contactPhoneControl?.updateValueAndValidity();
   }
 
+  cancel(): void {
+    this.router.navigate(['/app/crm/leads']);
+  }
+
   submit(): void {
     if (this.leadForm.invalid) {
       this.leadForm.markAllAsTouched();
@@ -238,14 +236,12 @@ export class LeadModalComponent implements OnInit {
     };
 
     if (!this.isEditMode()) {
-      // Create Mode Client selection or creation
       if (this.clientMode() === 'select' && rawValue.clientId) {
         payload.clientId = rawValue.clientId;
       } else if (this.clientMode() === 'new' && rawValue.client?.name) {
         payload.client = rawValue.client;
       }
 
-      // Create Mode Contact selection or creation
       if (this.contactMode() === 'select' && rawValue.contactId) {
         payload.contactId = rawValue.contactId;
       } else if (this.contactMode() === 'new' && rawValue.contact?.firstName) {
@@ -254,19 +250,16 @@ export class LeadModalComponent implements OnInit {
 
       this.leadsService.createLead(payload).subscribe({
         next: () => {
-          this.close();
-          this.saved.emit();
+          this.router.navigate(['/app/crm/leads']);
         },
         error: (err) => console.error('Failed to create lead', err)
       });
     } else {
-      // Edit Mode (client/contact cannot be edited as per backend schema rules)
       const leadId = this.currentLeadId();
       if (leadId) {
         this.leadsService.updateLead(leadId, payload).subscribe({
           next: () => {
-            this.close();
-            this.saved.emit();
+            this.router.navigate(['/app/crm/leads', leadId]);
           },
           error: (err) => console.error('Failed to update lead', err)
         });

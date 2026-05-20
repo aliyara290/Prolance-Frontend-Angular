@@ -1,0 +1,511 @@
+<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
+  
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-[var(--color-bg)] rounded-lg p-5 border border-[var(--color-border-strong)]">
+    <div class="flex items-center gap-4">
+      <button type="button" (click)="cancel()" class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-[var(--color-bg-muted)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border-strong)] cursor-pointer">
+        <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+      </button>
+
+      <div>
+        <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
+          {{ isEditMode() ? 'Edit Lead' : 'Create New Lead' }}
+        </h1>
+        <p class="text-sm font-normal text-[var(--color-text-muted)]">
+          {{ isEditMode() ? 'Update existing lead information' : 'Add a new sales opportunity' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center flex-wrap gap-2.5">
+      <button type="button" (click)="cancel()" class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] border border-[var(--color-border-strong)] text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" (click)="submit()" [disabled]="leadForm.invalid" class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+        {{ isEditMode() ? 'Save Changes' : 'Create Lead' }}
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="leadForm" (ngSubmit)="submit()" class="space-y-4">
+
+    <!-- Basic Info Section -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Basic Information</h2>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="col-span-1 md:col-span-2">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Lead Title <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="title"
+              placeholder="e.g. Cegedim Project"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors"
+            />
+            @if (leadForm.get('title')?.touched && leadForm.get('title')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Lead title is required.</span>
+            }
+          </div>
+
+          <div class="col-span-1 md:col-span-2">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Description</label>
+            <textarea
+              formControlName="description"
+              placeholder="Describe the lead or opportunity..."
+              rows="3"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors resize-y"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Source <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              formControlName="source"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (src of sourceOptions; track src) {
+                <option [value]="src">{{ src }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Priority <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              formControlName="priority"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (prio of priorityOptions; track prio) {
+                <option [value]="prio">{{ prio }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Status <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              formControlName="status"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (stat of statusOptions; track stat) {
+                <option [value]="stat">{{ stat }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company / Financial Details -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Company &amp; Industry Information</h2>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Company Name</label>
+            <input
+              type="text"
+              formControlName="company"
+              placeholder="e.g. Cegedim"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Industry</label>
+            <input
+              type="text"
+              formControlName="industry"
+              placeholder="e.g. Technology"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Email Address</label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="contact@cegedim.com"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Website</label>
+            <input
+              type="text"
+              formControlName="website"
+              placeholder="www.cegedim.com"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Annual Revenue ($)</label>
+            <input
+              type="number"
+              formControlName="annualRevenue"
+              placeholder="1297389"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Number of Employees</label>
+            <input
+              type="number"
+              formControlName="numberOfEmployees"
+              placeholder="30300"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address Fields -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Address Information</h2>
+      </div>
+
+      <div class="p-5" formGroupName="address">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="col-span-1 md:col-span-2 lg:col-span-4">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Street Address</label>
+            <input
+              type="text"
+              formControlName="street"
+              placeholder="123 Sales Blvd"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">City</label>
+            <input
+              type="text"
+              formControlName="city"
+              placeholder="Rabat"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">State</label>
+            <input
+              type="text"
+              formControlName="state"
+              placeholder="Rabat"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Country</label>
+            <input
+              type="text"
+              formControlName="country"
+              placeholder="Morocco"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Zip Code</label>
+            <input
+              type="text"
+              formControlName="zipCode"
+              placeholder="10000"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENT ASSOCIATION (Only in Create Mode!) -->
+    @if (!isEditMode()) {
+      <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+        <div class="border-b border-[var(--color-border-strong)] py-4 px-5 flex items-center justify-between">
+          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Client Association</h2>
+          
+          <!-- Toggle Mode Button -->
+          <div class="flex border border-[var(--color-border)] rounded-[var(--radius-md)] overflow-hidden text-xs">
+            <button
+              type="button"
+              (click)="setClientMode('select')"
+              class="px-3 py-1 cursor-pointer transition-colors"
+              [class.bg-[var(--color-primary)]]="clientMode() === 'select'"
+              [class.text-white]="clientMode() === 'select'"
+              [class.bg-[var(--color-bg-muted)]]="clientMode() !== 'select'"
+              [class.text-[var(--color-text-muted)]]="clientMode() !== 'select'"
+            >
+              Select Existing
+            </button>
+            <button
+              type="button"
+              (click)="setClientMode('new')"
+              class="px-3 py-1 cursor-pointer transition-colors"
+              [class.bg-[var(--color-primary)]]="clientMode() === 'new'"
+              [class.text-white]="clientMode() === 'new'"
+              [class.bg-[var(--color-bg-muted)]]="clientMode() !== 'new'"
+              [class.text-[var(--color-text-muted)]]="clientMode() !== 'new'"
+            >
+              Create New
+            </button>
+          </div>
+        </div>
+
+        <div class="p-5">
+          <!-- Option A: Select Existing Client -->
+          @if (clientMode() === 'select') {
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Select Client</label>
+              <select
+                formControlName="clientId"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+              >
+                <option value="">-- No Client Associated --</option>
+                @for (cli of clients(); track cli.id) {
+                  <option [value]="cli.id">{{ cli.name }} ({{ cli.industry || 'No Industry' }})</option>
+                }
+              </select>
+            </div>
+          }
+
+          <!-- Option B: Create New Client Inline -->
+          @if (clientMode() === 'new') {
+            <div formGroupName="client" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+                    Client Company Name <span class="text-[var(--color-danger)]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="name"
+                    placeholder="e.g. Capgemini"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+                  />
+                  @if (leadForm.get('client.name')?.touched && leadForm.get('client.name')?.invalid) {
+                    <span class="text-xs text-[var(--color-danger)] mt-1 block">Client company name is required.</span>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Industry</label>
+                  <input
+                    type="text"
+                    formControlName="industry"
+                    placeholder="e.g. Technology"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Website</label>
+                  <input
+                    type="text"
+                    formControlName="website"
+                    placeholder="https://www.capgemini.com"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Phone</label>
+                  <input
+                    type="text"
+                    formControlName="phone"
+                    placeholder="+212533467923"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Type</label>
+                  <select
+                    formControlName="type"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none cursor-pointer focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  >
+                    <option value="ENTERPRISE">ENTERPRISE</option>
+                    <option value="STARTUP">STARTUP</option>
+                    <option value="B2B">B2B</option>
+                    <option value="B2C">B2C</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Source</label>
+                  <select
+                    formControlName="source"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none cursor-pointer focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  >
+                    @for (src of sourceOptions; track src) {
+                      <option [value]="src">{{ src }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- CONTACT ASSOCIATION (Only in Create Mode!) -->
+      <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+        <div class="border-b border-[var(--color-border-strong)] py-4 px-5 flex items-center justify-between">
+          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Contact Association</h2>
+          
+          <!-- Toggle Mode Button -->
+          <div class="flex border border-[var(--color-border)] rounded-[var(--radius-md)] overflow-hidden text-xs">
+            <button
+              type="button"
+              (click)="setContactMode('select')"
+              class="px-3 py-1 cursor-pointer transition-colors"
+              [class.bg-[var(--color-primary)]]="contactMode() === 'select'"
+              [class.text-white]="contactMode() === 'select'"
+              [class.bg-[var(--color-bg-muted)]]="contactMode() !== 'select'"
+              [class.text-[var(--color-text-muted)]]="contactMode() !== 'select'"
+            >
+              Select Existing
+            </button>
+            <button
+              type="button"
+              (click)="setContactMode('new')"
+              class="px-3 py-1 cursor-pointer transition-colors"
+              [class.bg-[var(--color-primary)]]="contactMode() === 'new'"
+              [class.text-white]="contactMode() === 'new'"
+              [class.bg-[var(--color-bg-muted)]]="contactMode() !== 'new'"
+              [class.text-[var(--color-text-muted)]]="contactMode() !== 'new'"
+            >
+              Create New
+            </button>
+          </div>
+        </div>
+
+        <div class="p-5">
+          <!-- Option A: Select Existing Contact -->
+          @if (contactMode() === 'select') {
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Select Contact</label>
+              <select
+                formControlName="contactId"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+              >
+                <option value="">-- No Contact Associated --</option>
+                @for (con of contacts(); track con.id) {
+                  <option [value]="con.id">{{ con.firstName }} {{ con.lastName }} ({{ con.role }})</option>
+                }
+              </select>
+            </div>
+          }
+
+          <!-- Option B: Create New Contact Inline -->
+          @if (contactMode() === 'new') {
+            <div formGroupName="contact" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+                    First Name <span class="text-[var(--color-danger)]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="firstName"
+                    placeholder="e.g. Yassin"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                  @if (leadForm.get('contact.firstName')?.touched && leadForm.get('contact.firstName')?.invalid) {
+                    <span class="text-xs text-[var(--color-danger)] mt-1 block">First name is required.</span>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+                    Last Name <span class="text-[var(--color-danger)]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="lastName"
+                    placeholder="e.g. Aghla"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                  @if (leadForm.get('contact.lastName')?.touched && leadForm.get('contact.lastName')?.invalid) {
+                    <span class="text-xs text-[var(--color-danger)] mt-1 block">Last name is required.</span>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+                    Email <span class="text-[var(--color-danger)]">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    formControlName="email"
+                    placeholder="yassin.aghla@capgemini.com"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                  @if (leadForm.get('contact.email')?.touched && leadForm.get('contact.email')?.invalid) {
+                    <span class="text-xs text-[var(--color-danger)] mt-1 block">Valid email is required.</span>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+                    Phone <span class="text-[var(--color-danger)]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    formControlName="phone"
+                    placeholder="+212646924623"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  />
+                  @if (leadForm.get('contact.phone')?.touched && leadForm.get('contact.phone')?.invalid) {
+                    <span class="text-xs text-[var(--color-danger)] mt-1 block">Phone is required.</span>
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Role</label>
+                  <select
+                    formControlName="role"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] cursor-pointer outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  >
+                    <option value="CEO">CEO</option>
+                    <option value="DIRECTOR">DIRECTOR</option>
+                    <option value="INFLUENCER">INFLUENCER</option>
+                    <option value="BUYER">BUYER</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Influence Level</label>
+                  <select
+                    formControlName="influenceLevel"
+                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] cursor-pointer outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+                  >
+                    <option value="HIGH">HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="LOW">LOW</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+  </form>
+</div>

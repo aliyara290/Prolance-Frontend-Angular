@@ -1,7 +1,7 @@
 import { Component, inject, signal, ViewChild, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { LeadsService } from '../services/leads.service';
 import { LeadsTableComponent } from '../components/leads-table/leads-table.component';
-import { LeadModalComponent } from '../components/lead-modal/lead-modal.component';
+import { Router } from '@angular/router';
 import { ModuleHeaderComponent } from '../../../../shared/ui/module-header/module-header.component';
 import { ModuleTab, ModuleHeaderAction } from '../../../../shared/ui/module-header/module-header.types';
 import { DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
@@ -11,13 +11,13 @@ import { Lead } from '../types/lead.model';
   selector: 'app-leads-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, LeadsTableComponent, LeadModalComponent],
+  imports: [ModuleHeaderComponent, LeadsTableComponent],
   templateUrl: './leads-page.component.html',
 })
 export class LeadsPageComponent implements OnInit {
   private readonly leadsService = inject(LeadsService);
 
-  @ViewChild('leadModal') leadModal!: LeadModalComponent;
+  private readonly router = inject(Router);
 
   readonly leads = this.leadsService.leads;
   readonly totalCount = this.leadsService.totalCount;
@@ -58,11 +58,11 @@ export class LeadsPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.leadModal.openCreate();
+    this.router.navigate(['/app/crm/leads/create']);
   }
 
   onEditLead(lead: Lead): void {
-    this.leadModal.openEdit(lead);
+    this.router.navigate(['/app/crm/leads', lead.id, 'edit']);
   }
 
   onPrimaryActionSelected(item: DropdownMenuItem): void {
