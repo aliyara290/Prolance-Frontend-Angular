@@ -1,52 +1,81 @@
-import { NavItem } from '../models/nav-item.model';
+import { LucideIconData } from 'lucide-angular';
+import {
+  LayoutDashboard,
+  Goal,
+  Handshake,
+  Building2,
+  ContactRound,
+  Files,
+} from 'lucide-angular';
 
-export const NAVIGATION_CONFIG: NavItem[] = [
-  {
-    id: 'dashboard',
-    label: 'Dashboard',
-    icon: 'home',
-    route: '/app/dashboard',
-  },
-  {
-    id: 'leads',
-    label: 'Leads',
-    icon: 'goal',
-    route: '/app/crm/leads'
-  },
-  {
-    id: 'deals',
-    label: 'Deals',
-    icon: 'deals',
-    route: '/app/crm/deals',
-    // roles: ['ADMIN', 'SALES'],
-  },
-  {
-    id: 'clients',
-    label: 'Clients',
-    icon: 'clients',
-    route: '/app/crm/clients',
-    // roles: ['ADMIN', 'SALES'],
-  },
-  {
-    id: 'contacts',
-    label: 'Contacts',
-    icon: 'contacts',
-    route: '/app/crm/contacts',
-    // roles: ['ADMIN', 'SALES'],
-  },
+export interface CrmNavSection {
+  title: string;
+  items: CrmNavItem[];
+}
 
+export interface CrmNavItem {
+  id: string;
+  label: string;
+  icon: LucideIconData;
+  route: string;
+  badge?: string;
+  roles?: string[];
+  hidden?: boolean;
+}
 
+export const CRM_NAV_SECTIONS: CrmNavSection[] = [
   {
-    id: 'projects',
-    label: 'Projects',
-    icon: 'projects',
-    route: '/app/projects',
+    title: 'OVERVIEW',
+    items: [
+      {
+        id: 'dashboard',
+        label: 'Dashboard',
+        icon: LayoutDashboard,
+        route: '/app/dashboard',
+      },
+    ],
   },
-
   {
-    id: 'documents',
-    label: 'Documents',
-    icon: 'documents',
-    route: '/app/documents',
-  }
+    title: 'CRM',
+    items: [
+      {
+        id: 'leads',
+        label: 'Leads',
+        icon: Goal,
+        route: '/app/crm/leads',
+      },
+      {
+        id: 'deals',
+        label: 'Deals',
+        icon: Handshake,
+        route: '/app/crm/deals',
+        // roles: ['ADMIN', 'SALES'],
+      },
+      {
+        id: 'clients',
+        label: 'Clients',
+        icon: Building2,
+        route: '/app/crm/clients',
+        // roles: ['ADMIN', 'SALES'],
+      },
+      {
+        id: 'contacts',
+        label: 'Contacts',
+        icon: ContactRound,
+        route: '/app/crm/contacts',
+        // roles: ['ADMIN', 'SALES'],
+      },
+    ],
+  },
+  {
+    title: 'RESOURCES',
+    items: [
+      {
+        id: 'documents',
+        label: 'Documents',
+        icon: Files,
+        route: '/app/documents',
+      },
+    ],
+  },
 ];

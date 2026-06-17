@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import {NgFor, NgIf} from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import {
   LucideAngularModule,
   User,
@@ -22,9 +22,9 @@ export class SettingsSidebarComponent {
   readonly ArrowLeft = ArrowLeft;
 
   navItems: { label: string; icon: LucideIconData; route: string }[] = [
-    { label: 'Personal Settings',  icon: User,     route: '/app/settings/personal'      },
-    { label: 'Users',              icon: Users,    route: '/app/settings/users'         },
-    { label: 'Workspace Settings', icon: Settings, route: '/app/settings/workspace'     },
-    { label: 'Notifications',      icon: Bell,     route: '/app/settings/notifications' },
+    { label: 'Personal Settings', icon: User, route: '/app/settings/personal' },
+    { label: 'Users', icon: Users, route: '/app/settings/users' },
+    { label: 'Workspace Settings', icon: Settings, route: '/app/settings/workspace' },
+    { label: 'Notifications', icon: Bell, route: '/app/settings/notifications' },
   ];
 }

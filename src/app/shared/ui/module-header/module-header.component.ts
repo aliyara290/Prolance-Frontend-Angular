@@ -9,14 +9,14 @@ import {
 import { CommonModule } from '@angular/common';
 import { ModuleTab, ModuleHeaderAction } from './module-header.types';
 import { DropdownMenuComponent, DropdownMenuItem } from '../dropdown-menu/dropdown-menu.component';
-import {IconWrapperComponent} from '../icon-wrapper/icon-wrapper';
-import {Kanban, List} from 'lucide-angular';
+import { IconWrapperComponent } from '../icon-wrapper/icon-wrapper';
+import { Kanban, List, LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-module-header',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DropdownMenuComponent, IconWrapperComponent],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './module-header.component.html',
 })
 export class ModuleHeaderComponent {
@@ -58,8 +58,18 @@ export class ModuleHeaderComponent {
   /** Emitted when a more-action item is selected */
   @Output() moreActionSelected = new EventEmitter<ModuleHeaderAction>();
 
+  /** Emitted when the view mode changes (list/kanban) */
+  @Output() viewChange = new EventEmitter<'list' | 'kanban'>();
+
   /** Emitted when a tab-more item is selected */
   @Output() tabMoreSelected = new EventEmitter<ModuleHeaderAction>();
+
+  /** Set the active view from parent */
+  @Input() set view(v: 'list' | 'kanban') {
+    if (v) {
+      this.activeView.set(v);
+    }
+  }
 
   // View toggle: 'list' | 'grid'
   readonly activeView = signal<'list' | 'kanban'>('list');
@@ -73,6 +83,7 @@ export class ModuleHeaderComponent {
 
   setView(view: 'list' | 'kanban'): void {
     this.activeView.set(view);
+    this.viewChange.emit(view);
   }
 
   toggleFilterPanel(): void {

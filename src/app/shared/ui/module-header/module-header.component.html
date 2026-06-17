@@ -5,56 +5,12 @@
     <h1 class="text-xl font-semibold text-text-muted tracking-tight shrink-0 mr-6">
       {{ title }}
     </h1>
-
-
-    <!--  <div class="shrink-0 pb-2">-->
-    <!--    @if (tabMoreItems.length > 0) {-->
-    <!--      <app-dropdown-menu-->
-    <!--        [items]="toDropdownItems(tabMoreItems)"-->
-    <!--        [iconOnly]="true"-->
-    <!--        (itemSelected)="onTabMoreSelected($any($event))"-->
-    <!--      />-->
-    <!--    }-->
-    <!--  </div>-->
   </div>
 
 
   <div class="flex items-center justify-between pr-5 bg-bg  rounded-bl-sm rounded-br-sm">
 
     <div class="flex items-center gap-2">
-
-      <!--    <button-->
-      <!--      type="button"-->
-      <!--      (click)="toggleFilterPanel()"-->
-      <!--      class="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium text-text-muted border border-[#d9dde8] hover:bg-[#f4f5f8] hover:text-[#1a2942]  duration-150 focus:outline-none cursor-pointer"-->
-      <!--      [class.text-primary]="filterPanelOpen()"-->
-      <!--      [class.border-primary]="filterPanelOpen()"-->
-      <!--      [class.bg-primary]="filterPanelOpen()"-->
-      <!--    >-->
-      <!--      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"-->
-      <!--           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"-->
-      <!--           class="lucide lucide-funnel-icon lucide-funnel">-->
-      <!--        <path-->
-      <!--          d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/>-->
-      <!--      </svg>-->
-      <!--      Filter-->
-      <!--    </button>-->
-
-      <!--    <button-->
-      <!--      type="button"-->
-      <!--      class="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium text-text-muted border border-[#d9dde8] bg-bg hover:bg-[#f4f5f8] hover:text-[#1a2942]  duration-150 focus:outline-none cursor-pointer"-->
-      <!--    >-->
-      <!--      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"-->
-      <!--           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"-->
-      <!--           class="lucide lucide-arrow-down-wide-narrow-icon lucide-arrow-down-wide-narrow">-->
-      <!--        <path d="m3 16 4 4 4-4"/>-->
-      <!--        <path d="M7 20V4"/>-->
-      <!--        <path d="M11 4h10"/>-->
-      <!--        <path d="M11 8h7"/>-->
-      <!--        <path d="M11 12h4"/>-->
-      <!--      </svg>-->
-      <!--      Sort-->
-      <!--    </button>-->
 
       <div class="flex items-center gap-0 flex-1 overflow-x-auto no-scrollbar">
         @for (tab of tabs; track tab.id) {
@@ -80,19 +36,36 @@
         }
       </div>
 
-      <!-- Separator -->
-      <!--    <div class="h-5 w-px bg-[#d9dde8] mx-1"></div>-->
+      <div class="flex items-center gap-0.5 ml-2 p-1 rounded-md bg-[var(--color-bg-muted)] border border-[var(--color-border)]">
+        <button
+          type="button"
+          (click)="setView('list')"
+          class="p-1.5 rounded cursor-pointer transition-all duration-150"
+          [class]="activeView() === 'list'
+            ? 'bg-[var(--color-bg)] text-[var(--color-primary)] shadow-sm border border-[var(--color-border-strong)]'
+            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-transparent'"
+          title="List view"
+        >
+          <lucide-icon
+            [img]="icons.list"
+            [size]="16">
+          </lucide-icon>
+        </button>
+        <button
+          type="button"
+          (click)="setView('kanban')"
+          class="p-1.5 rounded cursor-pointer transition-all duration-150"
+          [class]="activeView() === 'kanban'
+            ? 'bg-[var(--color-bg)] text-[var(--color-primary)] shadow-sm border border-[var(--color-border-strong)]'
+            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-transparent'"
+          title="Kanban view"
+        >
+          <lucide-icon
+            [img]="icons.kanban"
+            [size]="16">
 
-
-      <!--    [class]="activeView() === 'list'-->
-      <!--    ? 'p-1.5 rounded bg-[#e8f0fe] text-primary'-->
-      <!--    : 'p-1.5 rounded text-[#a0aec0] hover:text-text-muted hover:bg-[#f4f5f8]'"-->
-      <div
-        (click)="setView('list')"
-
-        title="List view"
-      >
-        <app-icon-wrapper [icon]="icons.list"></app-icon-wrapper>
+          </lucide-icon>
+        </button>
       </div>
 
     </div>
@@ -108,22 +81,22 @@
           {{ primaryActionLabel }}
         </button>
 
-        @if (primaryActionItems.length > 0) {
-          <app-dropdown-menu
-            [items]="primaryActionItems"
-            [splitChevron]="true"
-            (itemSelected)="onPrimaryActionSelected($event)"
-          />
-        }
+<!--        @if (primaryActionItems.length > 0) {-->
+<!--          <app-dropdown-menu-->
+<!--            [items]="primaryActionItems"-->
+<!--            [splitChevron]="true"-->
+<!--            (itemSelected)="onPrimaryActionSelected($event)"-->
+<!--          />-->
+<!--        }-->
       </div>
 
-      @if (moreActionItems.length > 0) {
-        <app-dropdown-menu
-          [items]="toDropdownItems(moreActionItems)"
-          [iconOnly]="true"
-          (itemSelected)="onMoreActionSelected($any($event))"
-        />
-      }
+<!--      @if (moreActionItems.length > 0) {-->
+<!--        <app-dropdown-menu-->
+<!--          [items]="toDropdownItems(moreActionItems)"-->
+<!--          [iconOnly]="true"-->
+<!--          (itemSelected)="onMoreActionSelected($any($event))"-->
+<!--        />-->
+<!--      }-->
 
     </div>
   </div>

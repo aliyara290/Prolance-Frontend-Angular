@@ -6,11 +6,12 @@ import { Client, ClientStatus } from '../../types/client.model';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import {DetailsSkeletonComponent} from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
 
 @Component({
   selector: 'app-client-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent],
   templateUrl: './client-details-page.component.html',
 })
 export class ClientDetailsPageComponent implements OnInit {

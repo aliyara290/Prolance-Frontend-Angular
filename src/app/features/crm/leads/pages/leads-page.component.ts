@@ -6,12 +6,15 @@ import { ModuleHeaderComponent } from '../../../../shared/ui/module-header/modul
 import { ModuleTab, ModuleHeaderAction } from '../../../../shared/ui/module-header/module-header.types';
 import { DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { Lead } from '../types/lead.model';
+import {
+  EntityListSkeletonComponent
+} from '../../../../shared/ui/skeletons/entity-list-skeleton/entity-list-skeleton.component';
 
 @Component({
   selector: 'app-leads-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, LeadsTableComponent],
+  imports: [ModuleHeaderComponent, LeadsTableComponent, EntityListSkeletonComponent],
   templateUrl: './leads-page.component.html',
 })
 export class LeadsPageComponent implements OnInit {

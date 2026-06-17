@@ -1,0 +1,242 @@
+<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-[var(--color-bg)] rounded-lg p-5 border border-[var(--color-border-strong)]">
+    <div class="flex items-center gap-4">
+      <button type="button" (click)="cancel()" class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-[var(--color-bg-muted)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border-strong)] cursor-pointer">
+        <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+      </button>
+
+      <div>
+        <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
+          {{ isEditMode() ? 'Edit Project' : 'Create New Project' }}
+        </h1>
+        <p class="text-sm font-normal text-[var(--color-text-muted)]">
+          {{ isEditMode() ? 'Update existing project details' : 'Set up a new project for your workspace' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center flex-wrap gap-2.5">
+      <button type="button" (click)="cancel()" class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] border border-[var(--color-border-strong)] text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" (click)="submit()" [disabled]="projectForm.invalid || submitting()" class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+        {{ isEditMode() ? 'Save Changes' : 'Create Project' }}
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="projectForm" (ngSubmit)="submit()" class="space-y-4">
+
+    <!-- Project Information -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Project Information</h2>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="col-span-1 md:col-span-2">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Project Name <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Maroc Telecom Project"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors"
+            />
+            @if (projectForm.get('name')?.touched && projectForm.get('name')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Project name is required.</span>
+            }
+          </div>
+
+          @if (isEditMode()) {
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Prefix</label>
+              <input
+                type="text"
+                formControlName="prefix"
+                placeholder="e.g. MTP"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none font-mono"
+              />
+            </div>
+          }
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Priority <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              formControlName="priority"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (p of priorityOptions; track p) {
+                <option [value]="p">{{ p }}</option>
+              }
+            </select>
+          </div>
+
+          @if (isEditMode()) {
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Status</label>
+              <select
+                formControlName="status"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+              >
+                @for (s of statusOptions; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule & Planning -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Schedule & Planning</h2>
+      </div>
+
+      <div class="p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Planned Start Date <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <input
+              type="datetime-local"
+              formControlName="plannedStartDate"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+            @if (projectForm.get('plannedStartDate')?.touched && projectForm.get('plannedStartDate')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Planned start date is required.</span>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Planned End Date <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <input
+              type="datetime-local"
+              formControlName="plannedEndDate"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+            @if (projectForm.get('plannedEndDate')?.touched && projectForm.get('plannedEndDate')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Planned end date is required.</span>
+            }
+          </div>
+
+          @if (isEditMode()) {
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Actual Start Date</label>
+              <input
+                type="datetime-local"
+                formControlName="actualStartDate"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Actual End Date</label>
+              <input
+                type="datetime-local"
+                formControlName="actualEndDate"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+              />
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Budget & Cost -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Budget & Cost</h2>
+      </div>
+
+      <div class="p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Estimated Budget ($)</label>
+            <input
+              type="number"
+              formControlName="estimatedBudget"
+              placeholder="50000"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          @if (isEditMode()) {
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Actual Cost ($)</label>
+              <input
+                type="number"
+                formControlName="actualCost"
+                placeholder="0"
+                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+              />
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Associations -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Associations</h2>
+      </div>
+
+      <div class="p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client</label>
+            <select
+              formControlName="clientId"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              <option value="">Select a client (optional)</option>
+              @for (client of clients(); track client.id) {
+                <option [value]="client.id">{{ client.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Project Manager ID</label>
+            <input
+              type="text"
+              formControlName="projectManagerId"
+              placeholder="Enter project manager ID"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Description</h2>
+      </div>
+
+      <div class="p-5">
+        <textarea
+          formControlName="description"
+          placeholder="Describe the project scope, goals, and any relevant notes..."
+          rows="4"
+          class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors resize-y"
+        ></textarea>
+      </div>
+    </div>
+
+  </form>
+
+</div>

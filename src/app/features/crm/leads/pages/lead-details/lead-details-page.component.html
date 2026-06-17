@@ -1,17 +1,6 @@
 <div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
-
-  <!-- Loading & Error States -->
   @if (loading()) {
-    <div class="flex items-center justify-center py-20 bg-bg border border-border-strong rounded-lg">
-      <div class="flex flex-col items-center gap-3">
-        <svg class="animate-spin h-8 w-8 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span class="text-sm text-text-muted">Loading lead details...</span>
-      </div>
-    </div>
+    <app-details-skeleton></app-details-skeleton>
   } @else if (error()) {
     <div class="flex flex-col items-center gap-4 py-16 bg-bg border border-border-strong rounded-lg">
       <div class="w-12 h-12 rounded-full bg-[var(--color-danger-soft)] flex items-center justify-center">
@@ -50,9 +39,9 @@
             <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
               <span>{{ lead().contact ? (lead().contact.firstName + ' ' + lead().contact.lastName) : lead().title }}</span>
               @if (lead().company || lead().client?.name) {
-                <span class="text-sm font-normal text-text-muted border-l border-border-strong pl-2">
+                <a [routerLink]="'/app/crm/clients/' + lead().clientId" class="text-sm font-normal text-text-muted underline border-l border-border-strong pl-2">
                   {{ lead().company || lead().client?.name }}
-                </span>
+                </a>
               }
             </h1>
           </div>
@@ -250,8 +239,8 @@
               @if (lead().company || lead().client?.name) {
                 <div class="flex justify-between items-center py-1">
                   <span class="text-[var(--color-text-muted)] font-medium">Company</span>
-                  <span
-                    class="font-semibold text-[var(--color-text)]">{{ lead().company || lead().client?.name }}</span>
+                  <a [routerLink]="'/app/crm/clients/' + lead().clientId"
+                    class="font-semibold underline text-[var(--color-text)]">{{ lead().company || lead().client?.name }}</a>
                 </div>
               }
 

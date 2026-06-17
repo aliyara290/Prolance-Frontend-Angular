@@ -12,13 +12,14 @@ import {
   User,
   Settings
 } from 'lucide-angular';
+import {RouterLink} from '@angular/router';
 
 export type AppMode = 'light' | 'dark' | 'system';
 
 @Component({
   selector: 'app-user-menu',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, RouterLink],
   templateUrl: './user-menu.component.html',
   styleUrl: './user-menu.component.css'
 })

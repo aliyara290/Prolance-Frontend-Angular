@@ -7,11 +7,12 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 
 import {ArrowLeft, LucideAngularModule} from 'lucide-angular';
+import {DetailsSkeletonComponent} from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
 
 @Component({
   selector: 'app-lead-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent],
   templateUrl: './lead-details-page.component.html',
 })
 export class LeadDetailsPageComponent implements OnInit {

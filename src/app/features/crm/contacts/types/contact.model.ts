@@ -2,6 +2,10 @@ import { Address } from '../../clients/types/client.model';
 
 export type InfluenceLevel = 'HIGH' | 'MEDIUM' | 'LOW';
 export type Role = 'CEO' | 'INFLUENCER' | 'DIRECTOR' | 'BUYER';
+export type Department =
+  | 'TECHNOLOGY' | 'FINANCE' | 'HEALTHCARE' | 'EDUCATION'
+  | 'MANUFACTURING' | 'CONSULTING' | 'MEDIA' | 'REAL_ESTATE'
+  | 'TRANSPORTATION' | 'ENERGY' | 'AGRICULTURE' | 'RETAIL' | 'OTHER';
 
 export interface Contact {
   id: string;
@@ -15,11 +19,11 @@ export interface Contact {
   notes?: string | null;
   clientId?: string;
   lastContactedAt?: string | null;
-  department?: string;
-  dateOfBirth?: string;
-  secondaryEmail?: string;
+  department?: string | null;
+  dateOfBirth?: string | null;
+  secondaryEmail?: string | null;
   address?: Address;
-  description?: string;
+  description?: string | null;
   createdBy?: string | null;
   updatedBy?: string | null;
   createdAt?: string;
@@ -41,4 +45,15 @@ export interface CreateContactRequest {
   secondaryEmail?: string;
   address?: Address;
   description?: string;
+}
+
+export type UpdateContactRequest = CreateContactRequest;
+
+export interface ContactsListMeta {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }

@@ -1,0 +1,81 @@
+<div class="h-full flex flex-col  overflow-y-auto">
+  <div class="max-w-full w-full mx-auto space-y-6">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Active Projects -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">Active Projects</span>
+          <lucide-icon [img]="icons.target" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">8</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.up" size="12" class="text-success mr-1"></lucide-icon>
+            <span class="text-success mr-1">+2</span> this week
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed Tasks -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">Completed Tasks</span>
+          <lucide-icon [img]="icons.check" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">142</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.up" size="12" class="text-success mr-1"></lucide-icon>
+            <span class="text-success mr-1">+18%</span> velocity
+          </div>
+        </div>
+      </div>
+
+      <!-- In Progress -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">In Progress</span>
+          <lucide-icon [img]="icons.clock" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">24</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.target" size="12" class="text-text-muted mr-1"></lucide-icon>
+            across 5 projects
+          </div>
+        </div>
+      </div>
+
+      <!-- Open Issues -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">Open Issues</span>
+          <lucide-icon [img]="icons.alert" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">5</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.alert" size="12" class="text-danger mr-1"></lucide-icon>
+            <span class="text-danger mr-1">2</span> high priority
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Table Area -->
+    <div class="border border-border-strong rounded-md overflow-hidden bg-bg">
+      <div class="border-b border-border-strong px-5 py-4 flex justify-between items-center">
+        <h3 class="text-sm font-semibold text-text-inverse">Recent Activity</h3>
+      </div>
+      <div class="min-h-[250px] flex flex-col items-center justify-center text-center p-8">
+        <div class="w-12 h-12 rounded-full border border-border-strong flex items-center justify-center text-text-muted mb-3">
+          <lucide-icon [img]="icons.target" size="20"></lucide-icon>
+        </div>
+        <p class="text-sm text-text-inverse font-medium mb-1">No recent activity</p>
+        <p class="text-xs text-text-muted">Your project activity will appear here once you start creating tasks.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
