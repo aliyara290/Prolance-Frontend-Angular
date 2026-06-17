@@ -1,0 +1,243 @@
+<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-[var(--color-bg)] rounded-lg p-5 border border-[var(--color-border-strong)]">
+    <div class="flex items-center gap-4">
+      <button type="button" (click)="cancel()" class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-[var(--color-bg-muted)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border-strong)] cursor-pointer">
+        <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+      </button>
+
+      <div>
+        <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
+          {{ isEditMode() ? 'Edit Client' : 'Create New Client' }}
+        </h1>
+        <p class="text-sm font-normal text-[var(--color-text-muted)]">
+          {{ isEditMode() ? 'Update existing client information' : 'Add a new client to your CRM' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center flex-wrap gap-2.5">
+      <button type="button" (click)="cancel()" class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] border border-[var(--color-border-strong)] text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" (click)="submit()" [disabled]="clientForm.invalid || submitting()" class="px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+        {{ isEditMode() ? 'Save Changes' : 'Create Client' }}
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="clientForm" (ngSubmit)="submit()" class="space-y-4">
+
+    <!-- Company Information -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Company Information</h2>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="col-span-1 md:col-span-2">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Company Name <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Capgemini"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors"
+            />
+            @if (clientForm.get('name')?.touched && clientForm.get('name')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Company name is required.</span>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Industry</label>
+            <input
+              type="text"
+              formControlName="industry"
+              placeholder="e.g. Technology"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Website</label>
+            <input
+              type="text"
+              formControlName="website"
+              placeholder="https://www.capgemini.com"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Phone</label>
+            <input
+              type="text"
+              formControlName="phone"
+              placeholder="+212533467923"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Fax</label>
+            <input
+              type="text"
+              formControlName="fax"
+              placeholder="+212530965847"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Type <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              formControlName="type"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (t of typeOptions; track t) {
+                <option [value]="t">{{ t }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Source <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              formControlName="source"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (src of sourceOptions; track src) {
+                <option [value]="src">{{ src }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Ownership</label>
+            <select
+              formControlName="ownership"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
+            >
+              @for (own of ownershipOptions; track own) {
+                <option [value]="own">{{ own }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial Information -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Financial Information</h2>
+      </div>
+
+      <div class="p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Annual Revenue ($)</label>
+            <input
+              type="number"
+              formControlName="annualRevenue"
+              placeholder="67723861"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">SIC Code</label>
+            <input
+              type="text"
+              formControlName="sicCode"
+              placeholder="2483HS"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address Information -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Address Information</h2>
+      </div>
+
+      <div class="p-5" formGroupName="address">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="col-span-1 md:col-span-2 lg:col-span-4">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Street Address</label>
+            <input
+              type="text"
+              formControlName="street"
+              placeholder="123 Business Blvd"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">City</label>
+            <input
+              type="text"
+              formControlName="city"
+              placeholder="Rabat"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">State</label>
+            <input
+              type="text"
+              formControlName="state"
+              placeholder="Rabat-Salé-Kénitra"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Country</label>
+            <input
+              type="text"
+              formControlName="country"
+              placeholder="Morocco"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Zip Code</label>
+            <input
+              type="text"
+              formControlName="zipCode"
+              placeholder="10000"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+      <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Description</h2>
+      </div>
+
+      <div class="p-5">
+        <textarea
+          formControlName="description"
+          placeholder="Describe the client or add any relevant notes..."
+          rows="4"
+          class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors resize-y"
+        ></textarea>
+      </div>
+    </div>
+
+  </form>
+</div>

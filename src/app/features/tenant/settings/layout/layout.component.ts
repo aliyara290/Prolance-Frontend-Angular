@@ -9,7 +9,6 @@ import {SettingsSidebarComponent} from './component/settings-sidebar/settings-si
   imports: [
     HeaderComponent,
     RouterOutlet,
-    SidebarComponent,
     SettingsSidebarComponent
   ],
   templateUrl: './layout.component.html',

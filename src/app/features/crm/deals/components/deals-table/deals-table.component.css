@@ -1,0 +1,366 @@
+
+.p-datatable-header {
+  background: var(--color-bg) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  /*padding: 10px 16px !important;*/
+}
+.p-datatable-thead > tr:first-child > th {
+  background: var(--color-bg-muted) !important;
+  color: var(--color-text-secondary) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-right: none !important;
+  white-space: nowrap;
+}
+.p-datatable-thead > tr:last-child > th {
+  background: var(--color-bg) !important;
+  padding: 5px 8px !important;
+  border-bottom: 2px solid var(--color-border-strong) !important;
+  border-right: none !important;
+}
+.p-sortable-column-icon {
+  color: var(--color-text-muted) !important;
+}
+.p-sortable-column:hover {
+  background: var(--color-bg-hover) !important;
+  color: var(--color-text) !important;
+}
+.p-datatable-thead th.p-highlight {
+  background: var(--color-bg-active) !important;
+  color: var(--color-primary) !important;
+}
+.p-datatable-thead th.p-highlight .p-sortable-column-icon {
+  color: var(--color-primary) !important;
+}
+.p-columnfilter-input .p-inputtext,
+.p-columnfilter .p-inputtext {
+  height: 28px !important;
+  font-size: 12px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 5px !important;
+  padding: 3px 8px !important;
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  padding-left: 10px !important;
+}
+.p-columnfilter-input .p-inputtext:focus,
+.p-columnfilter .p-inputtext:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-soft) !important;
+  outline: none !important;
+}
+.p-component.p-inputtext {
+  font-size: 14px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 5px !important;
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  padding-left: 8px !important;
+}
+.p-datatable .p-select {
+  height: 28px !important;
+  min-height: 28px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 5px !important;
+  background: var(--color-card) !important;
+  box-shadow: none !important;
+}
+.p-datatable .p-select:hover {
+  border-color: var(--color-border-strong) !important;
+}
+.p-datatable .p-select.p-focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-soft) !important;
+}
+.p-datatable .p-select-label {
+  font-size: 12px !important;
+  color: var(--color-text-muted) !important;
+  padding: 3px 8px !important;
+  line-height: 22px !important;
+}
+.p-datatable .p-multiselect {
+  height: 28px !important;
+  min-height: 28px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 5px !important;
+  background: var(--color-card) !important;
+  box-shadow: none !important;
+}
+.p-datatable .p-multiselect:hover {
+  border-color: var(--color-border-strong) !important;
+}
+.p-datatable .p-multiselect-label {
+  font-size: 12px !important;
+  color: var(--color-text-muted) !important;
+  padding: 3px 8px !important;
+  line-height: 22px !important;
+}
+
+.p-datatable-tbody > tr {
+  background-color: var(--color-bg) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  transition: background 0.1s !important;
+}
+.p-datatable-tbody > tr:hover {
+  background: var(--color-bg-hover) !important;
+}
+.p-datatable-tbody > tr.p-highlight {
+  background: var(--color-primary-soft) !important;
+}
+.p-datatable-tbody > tr > td {
+  padding: 9px 14px !important;
+  color: var(--color-text) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  font-size: 13.5px !important;
+}
+.p-datatable-filter-constraint-selected {
+  background-color: var(--color-bg-active) !important;
+  color: var(--color-primary) !important;
+}
+.p-checkbox .p-checkbox-box {
+  border-color: var(--color-border-strong) !important;
+  border-radius: 4px !important;
+  width: 15px !important;
+  height: 15px !important;
+  border: 1px solid var(--color-border-strong) !important;
+  background: var(--color-card) !important;
+}
+.p-checkbox-checked .p-checkbox-box {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+.p-checkbox-icon {
+  color: var(--color-text-inverse) !important;
+}
+.p-tag {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  padding: 2px 9px !important;
+  border-radius: 20px !important;
+  background-color: transparent !important;
+  color: var(--color-text) !important;
+}
+/*.p-tag.p-tag-info {*/
+/*  background: transparent !important;*/
+/*  color: var(--color-info) !important;*/
+/*}*/
+/*.p-tag.p-tag-success {*/
+/*  background: transparent) !important;*/
+/*  color: var(--color-success) !important;*/
+/*}*/
+/*.p-tag.p-tag-warn {*/
+/*  background: transparent !important;*/
+/*  color: var(--color-warning) !important;*/
+/*}*/
+/*.p-tag.p-tag-danger {*/
+/*  background: transparent !important;*/
+/*  color: var(--color-danger) !important;*/
+/*}*/
+
+/*.p-component .p-tag .p-tag-success {*/
+/*  background: transparent !important;*/
+/*  color: var(--color-success) !important;*/
+/*}*/
+.p-paginator {
+  background: var(--color-bg) !important;
+  border-top: 1px solid var(--color-border) !important;
+  padding: 8px 14px !important;
+  font-size: 12.5px !important;
+  color: var(--color-text-secondary) !important;
+  justify-content: space-between !important;
+}
+.p-paginator-current {
+  color: var(--color-text-muted) !important;
+  font-size: 12px !important;
+}
+.p-paginator-page,
+.p-paginator-prev,
+.p-paginator-next,
+.p-paginator-first,
+.p-paginator-last {
+  border-radius: 5px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  font-size: 12.5px !important;
+  color: var(--color-text-secondary) !important;
+}
+.p-paginator-page:not(.p-disabled):hover,
+.p-paginator-prev:not(.p-disabled):hover,
+.p-paginator-next:not(.p-disabled):hover {
+  background: var(--color-bg-hover) !important;
+  color: var(--color-text) !important;
+}
+.p-paginator-page.p-highlight {
+  background: var(--color-primary) !important;
+  color: var(--color-text-inverse) !important;
+}
+.p-multiselect-header {
+  display: flex;
+  gap: 8px;
+}
+.p-inputicon {
+  top: 20% !important;
+}
+.p-select-overlay,
+.p-multiselect-overlay,
+.p-dropdown-panel,
+.p-column-filter-overlay,
+.p-listbox,
+.p-menu {
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-md) !important;
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  font-size: 13px !important;
+}
+.p-select-option,
+.p-multiselect-option,
+.p-dropdown-item,
+.p-listbox-item,
+.p-column-filter-row-item,
+.p-menuitem-link,
+.p-menuitem-text {
+  padding: 7px 12px !important;
+  color: var(--color-text) !important;
+}
+.p-select-option:hover,
+.p-multiselect-option:hover,
+.p-dropdown-item:hover,
+.p-listbox-item:hover,
+.p-column-filter-row-item:hover,
+.p-menuitem-link:hover {
+  background: var(--color-bg-hover) !important;
+  color: var(--color-primary) !important;
+}
+.p-select-option.p-highlight,
+.p-multiselect-option.p-highlight,
+.p-dropdown-item.p-highlight,
+.p-listbox-item.p-highlight,
+.p-column-filter-row-item.p-highlight {
+  background: var(--color-primary-soft) !important;
+  color: var(--color-primary) !important;
+}
+
+
+.search-input {
+  outline: none !important;
+  width: 340px !important;
+  padding: 6px 16px 6px 32px !important;
+  font-size: 15px !important;
+  height: 40px !important;
+  min-height: 30px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 5px !important;
+  background: var(--color-bg-muted) !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+}
+
+.search-input:focus {
+  border-color: var(--color-primary) !important;
+}
+.p-datatable-filter-constraint-list {
+  background-color: var(--color-bg) !important;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: 5px !important;
+}
+.p-datatable-filter-constraint {
+  padding: 5px 12px !important;
+  color: var(--color-text) !important;
+}
+
+.p-datatable-filter-constraint:hover {
+  background-color: var(--color-bg-hover) !important;
+}
+.p-select-list {
+  background-color: var(--color-bg) !important;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: 5px !important;
+  overflow: hidden !important;
+}
+
+.p-component .p-component-overlay .p-multiselect-overlay {
+  background-color: var(--color-bg) !important;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: 5px !important;
+  overflow: hidden !important;
+}
+
+.p-multiselect-option-selected {
+  background-color: var(--color-bg-active) !important;
+  color: var(--color-text) !important;
+}
+.p-focus {
+  background-color: transparent !important;
+}
+
+.p-select-option-selected {
+  background-color: var(--color-bg-active) !important;
+  color: var(--color-text) !important;
+}
+/* Custom Paginator Icons Override using CSS Masks */
+.p-paginator-first .p-paginator-first-icon,
+.p-paginator-prev .p-paginator-prev-icon,
+.p-paginator-next .p-paginator-next-icon,
+.p-paginator-last .p-paginator-last-icon {
+  display: none !important;
+}
+
+.p-paginator-first, .p-paginator-prev, .p-paginator-next, .p-paginator-last {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.p-paginator-first::after {
+  content: '';
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5' /%3E%3C/svg%3E") no-repeat center;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5' /%3E%3C/svg%3E") no-repeat center;
+}
+
+.p-paginator-prev::after {
+  content: '';
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' /%3E%3C/svg%3E") no-repeat center;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M15.75 19.5L8.25 12l7.5-7.5' /%3E%3C/svg%3E") no-repeat center;
+}
+
+.p-paginator-next::after {
+  content: '';
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' /%3E%3C/svg%3E") no-repeat center;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 4.5l7.5 7.5-7.5 7.5' /%3E%3C/svg%3E") no-repeat center;
+}
+
+.p-paginator-last::after {
+  content: '';
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5' /%3E%3C/svg%3E") no-repeat center;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5' /%3E%3C/svg%3E") no-repeat center;
+}
+.p-checkbox-input {
+  color: white;
+}

@@ -1,6 +1,7 @@
 export type ClientStatus = 'ACTIVE' | 'INACTIVE' | 'ARCHIVED';
 export type ClientType = 'B2B' | 'B2C' | 'ENTERPRISE' | 'STARTUP';
 export type Ownership = 'PRIVATE' | 'PUBLIC' | 'GOVERNMENT' | 'PARTNERSHIP' | 'OTHER';
+export type ClientSource = 'WEBSITE' | 'REFERRAL' | 'SOCIAL_MEDIA' | 'COLD_CALL' | 'EVENT' | 'OTHER';
 
 export interface Address {
   street: string;
@@ -17,14 +18,15 @@ export interface Client {
   website?: string;
   phone?: string;
   address?: Address;
+  country?: string;
   status: ClientStatus;
   type: ClientType;
-  source: string;
+  source: ClientSource;
   annualRevenue?: number;
   fax?: string;
   ownership?: Ownership;
-  sicCode?: string;
-  description?: string;
+  sicCode?: string | null;
+  description?: string | null;
   createdBy?: string | null;
   updatedBy?: string | null;
   createdAt?: string;
@@ -38,10 +40,21 @@ export interface CreateClientRequest {
   phone?: string;
   address?: Address;
   type: ClientType;
-  source: string;
+  source: ClientSource;
   annualRevenue?: number;
   fax?: string;
   ownership?: Ownership;
   sicCode?: string;
   description?: string;
+}
+
+export type UpdateClientRequest = CreateClientRequest;
+
+export interface ClientsListMeta {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }

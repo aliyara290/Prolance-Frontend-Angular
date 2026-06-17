@@ -1,0 +1,100 @@
+<div class="kanban-board">
+  @for (col of columns(); track col.status) {
+    <div class="kanban-column"
+         pDroppable="milestone"
+         (onDrop)="drop(col.status)">
+
+      <!-- Column Header -->
+      <div class="kanban-column-header">
+        <div class="flex items-center gap-2">
+          <span class="kanban-status-dot"></span>
+          <span class="kanban-column-title">{{ col.label }}</span>
+          <span class="kanban-column-count">{{ col.milestones.length }}</span>
+        </div>
+      </div>
+
+      <!-- Column Body -->
+      <div class="kanban-column-body custom-scrollbar">
+
+        @if (loading && col.milestones.length === 0) {
+          <div class="space-y-3">
+            @for (i of [1,2]; track i) {
+              <div class="h-[120px] bg-bg rounded-lg border border-border-strong animate-pulse"></div>
+            }
+          </div>
+        }
+
+        @for (milestone of col.milestones; track milestone.id) {
+          <div
+            class="kanban-card cursor-grab active:cursor-grabbing"
+            pDraggable="milestone"
+            (onDragStart)="dragStart(milestone)"
+            (onDragEnd)="dragEnd()"
+            (click)="onView(milestone, $event)"
+          >
+            <!-- Card Header -->
+            <div class="flex items-center justify-between mb-2">
+              <span class="kanban-card-prefix">#{{ milestone.sequenceOrder }}</span>
+            </div>
+
+            <!-- Card Title -->
+            <a class="kanban-card-title" (click)="$event.stopPropagation(); onView(milestone, $event)">
+              {{ milestone.title }}
+            </a>
+
+            <!-- Description Preview -->
+            @if (milestone.description) {
+              <p class="kanban-card-description">
+                {{ milestone.description }}
+              </p>
+            }
+
+            <!-- Progress Bar -->
+            <div class="kanban-card-progress">
+              <div class="kanban-progress-track">
+                <div
+                  class="kanban-progress-fill"
+                  [style.width.%]="milestone.progressPercentage"
+                  [style.backgroundColor]="milestone.progressPercentage >= 100 ? 'var(--color-success)' : milestone.progressPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-primary)'"
+                ></div>
+              </div>
+              <span class="kanban-progress-label">{{ milestone.progressPercentage | number:'1.0-1' }}%</span>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="kanban-card-footer">
+              <div class="kanban-card-meta">
+                @if (milestone.startDate || milestone.dueDate) {
+                  <span class="kanban-card-date">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {{ milestone.startDate ? (milestone.startDate | date:'MMM d') : '' }}
+                    @if (milestone.startDate && milestone.dueDate) { - }
+                    {{ milestone.dueDate ? (milestone.dueDate | date:'MMM d') : '' }}
+                  </span>
+                }
+              </div>
+              @if (milestone.completedAt) {
+                 <span class="kanban-card-budget">
+                   Done: {{ milestone.completedAt | date:'MMM d' }}
+                 </span>
+              }
+            </div>
+
+          </div>
+        }
+
+        <!-- Drop Placeholder Area -->
+        @if (!loading && col.milestones.length === 0) {
+          <div class="kanban-empty-state">
+            <svg class="w-8 h-8 text-[var(--color-border)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+            <span>No milestones</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

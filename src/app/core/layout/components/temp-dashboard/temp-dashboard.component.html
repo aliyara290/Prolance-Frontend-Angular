@@ -1,42 +1,83 @@
-<div class="flex flex-col gap-lg">
-  <div class="flex items-center justify-between">
-    <h1 class="text-3xl font-bold text-text">Dashboard</h1>
-    <button class="bg-card text-text px-4 py-2 rounded-md shadow-sm border border-border hover:bg-card-muted transition-normal font-medium">
-      Customize
-    </button>
-  </div>
+<div class="h-full flex flex-col  overflow-y-auto">
+  <div class="max-w-full w-full mx-auto space-y-6">
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
-    <!-- Metric Cards -->
-    <div class="bg-card p-lg rounded-xl shadow-sm border border-border">
-      <h3 class="text-text-muted text-sm font-medium uppercase tracking-wider mb-sm">Active Projects</h3>
-      <div class="text-4xl font-bold text-text">12</div>
-      <div class="mt-sm text-success text-sm font-medium flex items-center gap-xs">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
-        +2 this week
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Active Deals -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">Active Deals</span>
+          <lucide-icon [img]="icons.deals" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">42</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.up" size="12" class="text-success mr-1"></lucide-icon>
+            <span class="text-success mr-1">+12%</span> vs last month
+          </div>
+        </div>
+      </div>
+
+      <!-- New Leads -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">New Leads</span>
+          <lucide-icon [img]="icons.leads" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">128</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.up" size="12" class="text-success mr-1"></lucide-icon>
+            <span class="text-success mr-1">+5%</span> vs last month
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Clients -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">Total Clients</span>
+          <lucide-icon [img]="icons.users" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">316</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.down" size="12" class="text-text-muted mr-1"></lucide-icon>
+            Stable across regions
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion Rate -->
+      <div class="bg-bg border border-border-strong rounded-md p-5 flex flex-col justify-between h-32">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-text-muted">Conversion Rate</span>
+          <lucide-icon [img]="icons.trending" size="16" class="text-text-muted"></lucide-icon>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-text-inverse">24.8%</div>
+          <div class="text-xs text-text-muted mt-1 flex items-center">
+            <lucide-icon [img]="icons.up" size="12" class="text-success mr-1"></lucide-icon>
+            <span class="text-success mr-1">+2.4%</span> vs last month
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="bg-card p-lg rounded-xl shadow-sm border border-border">
-      <h3 class="text-text-muted text-sm font-medium uppercase tracking-wider mb-sm">Open Tasks</h3>
-      <div class="text-4xl font-bold text-text">48</div>
-      <div class="mt-sm text-text-muted text-sm font-medium flex items-center gap-xs">
-        15 overdue
+    <!-- Empty Table Area -->
+    <div class="border border-border-strong rounded-md overflow-hidden bg-bg">
+      <div class="border-b border-border-strong px-5 py-4">
+        <h3 class="text-sm font-semibold text-text-inverse">Recent Activity</h3>
+      </div>
+      <div class="min-h-[250px] flex flex-col items-center justify-center text-center p-8">
+        <div class="w-12 h-12 rounded-full border border-border-strong flex items-center justify-center text-text-muted mb-3">
+          <lucide-icon [img]="icons.activity" size="20"></lucide-icon>
+        </div>
+        <p class="text-sm text-text-inverse font-medium mb-1">No recent activity</p>
+        <p class="text-xs text-text-muted">Your CRM activity will appear here once you start processing leads.</p>
       </div>
     </div>
 
-    <div class="bg-card p-lg rounded-xl shadow-sm border border-border">
-      <h3 class="text-text-muted text-sm font-medium uppercase tracking-wider mb-sm">New Leads</h3>
-      <div class="text-4xl font-bold text-text">24</div>
-      <div class="mt-sm text-success text-sm font-medium flex items-center gap-xs">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
-        +18% from last month
-      </div>
-    </div>
-  </div>
-
-  <!-- Large Chart Area Placeholder -->
-  <div class="bg-card p-lg rounded-xl shadow-sm border border-border h-96 flex items-center justify-center text-text-muted">
-    Chart placeholder
   </div>
 </div>

@@ -1,0 +1,364 @@
+<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
+
+  <!-- Loading & Error States -->
+  @if (loading()) {
+   <app-details-skeleton></app-details-skeleton>
+  } @else if (error()) {
+    <div class="flex flex-col items-center gap-4 py-16 bg-bg border border-border-strong rounded-lg">
+      <div class="w-12 h-12 rounded-full bg-[var(--color-danger-soft)] flex items-center justify-center">
+        <svg class="w-6 h-6 text-[var(--color-danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+             stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+      </div>
+      <span class="text-sm font-medium text-[var(--color-text)]">{{ error() }}</span>
+      <a routerLink="/app/crm/clients">
+        <div
+          class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
+          <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+        </div>
+        <span>Go back to clients</span>
+      </a>
+    </div>
+  } @else if (client()) {
+
+    <div class="space-y-4">
+
+      <div
+        class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
+
+        <div class="flex items-center gap-4">
+          <!-- Back arrow -->
+          <a routerLink="/app/crm/clients">
+            <div
+              class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
+              <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+            </div>
+          </a>
+
+          <div>
+            <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
+              <span>{{ client()!.name }}</span>
+              @if (client()!.industry) {
+                <span class="text-sm font-normal text-text-muted border-l border-border-strong pl-2">
+                  {{ client()!.industry }}
+                </span>
+              }
+            </h1>
+          </div>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-2.5">
+          @if (client()!.website) {
+            <a
+              [href]="client()!.website"
+              target="_blank"
+              class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <path d="M2 12h20"/>
+              </svg>
+            </a>
+          }
+
+          <button
+            (click)="onEdit()"
+            class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+            </svg>
+          </button>
+
+          <button
+            (click)="onDelete()"
+            class="px-4 py-2 bg-bg hover:bg-danger text-text-muted border hover:text-white border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+              <path d="M3 6h18"/>
+              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="">
+
+        <div class="flex pb-4 items-center justify-between flex-wrap gap-3 pr-4">
+          <div class="flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
+            <button
+              (click)="activeTab.set('overview')"
+              [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
+              [class.bg-bg-active]="activeTab() === 'overview'"
+              [class.!text-text]="activeTab() === 'overview'"
+              [class.!border-border-strong]="activeTab() === 'overview'"
+              class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none"
+            >
+              Overview
+            </button>
+            <button
+              (click)="activeTab.set('timeline')"
+              [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
+              [class.bg-bg-active]="activeTab() === 'timeline'"
+              [class.!border-border-strong]="activeTab() === 'timeline'"
+              class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none"
+            >
+              Timeline
+            </button>
+          </div>
+
+          <div class="text-sm text-[var(--color-text-muted)] font-medium">
+            <span>Last Update : </span>
+            <span
+              class="text-text-muted font-mono">{{ client()!.updatedAt || client()!.createdAt | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-5 bg-bg rounded-lg border border-border-strong">
+
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Company Name</label>
+            <span class="text-sm font-semibold text-[var(--color-text)]">{{ client()!.name }}</span>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Industry</label>
+            <span class="text-sm font-semibold text-[var(--color-text)]">{{ client()!.industry || '-' }}</span>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Phone</label>
+            @if (client()!.phone) {
+              <a [href]="'tel:' + client()!.phone"
+                 class="text-sm font-semibold text-[var(--color-text)] hover:underline flex items-center gap-1">
+                {{ client()!.phone }}
+              </a>
+            } @else {
+              <span class="text-sm text-[var(--color-text-muted)]">-</span>
+            }
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Status</label>
+            <div class="flex items-center mt-0.5">
+              <span
+                class="px-2 py-0.5 text-[10px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)] rounded border border-[var(--color-primary-border)] uppercase tracking-wide">
+                {{ client()!.status }}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    @if (activeTab() === 'overview') {
+      <div class="space-y-4">
+
+        <!-- SECTION 1: CLIENT INFORMATION -->
+        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+          <div class="border-b border-border-strong py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Client Information</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
+
+            <!-- Column 1 -->
+            <div class="space-y-4">
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Company Name</span>
+                <span class="font-semibold text-[var(--color-text)]">{{ client()!.name }}</span>
+              </div>
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Industry</span>
+                <span class="font-medium text-[var(--color-text)]">{{ client()!.industry || '-' }}</span>
+              </div>
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Type</span>
+                <span class="font-medium text-[var(--color-text)]">{{ client()!.type }}</span>
+              </div>
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Source</span>
+                <span class="font-medium text-[var(--color-text)]">{{ client()!.source }}</span>
+              </div>
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Ownership</span>
+                <span class="font-medium text-[var(--color-text)]">{{ client()!.ownership || '-' }}</span>
+              </div>
+
+              @if (client()!.sicCode) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">SIC Code</span>
+                  <span class="font-medium text-[var(--color-text)] font-mono">{{ client()!.sicCode }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Column 2 -->
+            <div class="space-y-4">
+              @if (client()!.phone) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Phone</span>
+                  <span class="font-medium text-[var(--color-text)]">{{ client()!.phone }}</span>
+                </div>
+              }
+
+              @if (client()!.fax) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Fax</span>
+                  <span class="font-medium text-[var(--color-text)]">{{ client()!.fax }}</span>
+                </div>
+              }
+
+              @if (client()!.website) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Website</span>
+                  <a [href]="client()!.website" target="_blank"
+                     class="font-semibold text-[var(--color-primary)] hover:underline truncate max-w-[180px]">
+                    {{ client()!.website }}
+                  </a>
+                </div>
+              }
+
+              @if (client()!.annualRevenue) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Annual Revenue</span>
+                  <span class="font-bold text-[var(--color-text)]">${{ client()!.annualRevenue | number }}</span>
+                </div>
+              }
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Status</span>
+                <span class="font-semibold text-[var(--color-text)]">{{ client()!.status }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 2: ADDRESS INFORMATION -->
+        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+          <div class="border-b border-border-strong py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Address Information</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
+
+            <div class="space-y-4">
+              @if (client()!.address?.street) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Street</span>
+                  <span class="font-medium text-[var(--color-text)]">{{ client()!.address?.street }}</span>
+                </div>
+              }
+
+              @if (client()!.address?.city) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">City</span>
+                  <span class="font-medium text-[var(--color-text)]">{{ client()!.address?.city }}</span>
+                </div>
+              }
+
+              @if (client()!.address?.state) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">State</span>
+                  <span class="font-medium text-[var(--color-text)]">{{ client()!.address?.state }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="space-y-4">
+              @if (client()!.address?.country || client()!.country) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Country</span>
+                  <span class="font-medium text-[var(--color-text)]">{{ client()!.address?.country || client()!.country }}</span>
+                </div>
+              }
+
+              @if (client()!.address?.zipCode) {
+                <div class="flex justify-between items-center py-1">
+                  <span class="text-[var(--color-text-muted)] font-medium">Zip Code</span>
+                  <span class="font-medium text-[var(--color-text)] font-mono">{{ client()!.address?.zipCode }}</span>
+                </div>
+              }
+            </div>
+
+          </div>
+
+          @if (!client()!.address?.street && !client()!.address?.city) {
+            <div class="text-sm text-[var(--color-text-muted)] italic py-2 px-5">
+              No geographical address details have been populated.
+            </div>
+          }
+        </div>
+
+        <!-- SECTION 3: DESCRIPTION INFORMATION -->
+        @if (client()!.description) {
+          <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+            <div class="border-b border-border-strong py-4 px-5">
+              <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Description Information</h2>
+            </div>
+            <div class="p-5">
+              <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">
+                {{ client()!.description }}
+              </p>
+            </div>
+          </div>
+        }
+
+      </div>
+    }
+
+    @if (activeTab() === 'timeline') {
+      <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+        <div class="border-b border-border-strong py-4 px-5">
+          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">System Audit &amp; Timeline Logs</h2>
+        </div>
+
+        <div class="space-y-6 relative py-5 px-6">
+          <!-- Create Log -->
+          <div class="relative pl-6 border-l border-border-strong">
+            <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-success)] border-4 border-bg shadow"></div>
+            <div class="text-sm space-y-1">
+              <h3 class="font-bold text-[var(--color-text)]">Client Created successfully</h3>
+              <p class="text-[var(--color-text-muted)] text-[10px]">{{ client()!.createdAt | date:'medium' }}</p>
+              <p class="text-text-muted">Client record created via REST request. Record initialized.</p>
+              <div class="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wide">
+                Operator: {{ client()!.createdBy || 'system' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Update Log -->
+          @if (client()!.updatedAt && client()!.updatedAt !== client()!.createdAt) {
+            <div class="relative pl-6 border-l border-border-strong">
+              <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-primary)] border-4 border-bg shadow"></div>
+              <div class="text-sm space-y-1">
+                <h3 class="font-bold text-[var(--color-text)]">Client Details updated</h3>
+                <p class="text-[var(--color-text-muted)] text-[10px]">{{ client()!.updatedAt | date:'medium' }}</p>
+                <p class="text-text-muted">Client fields successfully synchronized with backend aggregates database.</p>
+                <div class="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wide">
+                  Operator: {{ client()!.updatedBy || 'system' }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+  }
+
+</div>
