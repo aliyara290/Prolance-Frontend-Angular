@@ -10,6 +10,8 @@
     <span class="text-sm font-medium text-[var(--color-text)]">{{ error() }}</span>
   </div>
 } @else {
+  <div class="m-md">
+
   <app-module-header
     title="Clients"
     [tabs]="tabs"
@@ -24,8 +26,9 @@
     (moreActionSelected)="onMoreAction($event)"
     (tabMoreSelected)="onTabMore($event)"
   />
+  </div>
 
-  <div class="mt-md border border-border-strong rounded-md overflow-hidden bg-[var(--color-bg)]">
+  <div class="m-md border border-border-strong rounded-md overflow-hidden bg-[var(--color-bg)]">
     <app-clients-table
       [clients]="clients()"
       [totalCount]="totalCount()"

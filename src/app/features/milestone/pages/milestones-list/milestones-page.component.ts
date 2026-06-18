@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MilestoneService } from '../../services/milestone.service';
 import { MilestoneTableComponent } from '../../components/milestone-table/milestone-table.component';
@@ -25,6 +25,7 @@ export class MilestonesPageComponent implements OnInit {
   private readonly milestoneService = inject(MilestoneService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly milestones = this.milestoneService.milestones;
   readonly totalCount = this.milestoneService.totalCount;
@@ -100,6 +101,7 @@ export class MilestonesPageComponent implements OnInit {
 
   onStatusChange(event: { milestone: Milestone; newStatus: MilestoneStatus }): void {
     const { milestone, newStatus } = event;
+    const previousStatus = milestone.status;
     const payload = {
       title: milestone.title,
       description: milestone.description,
@@ -109,7 +111,17 @@ export class MilestonesPageComponent implements OnInit {
       progressPercentage: milestone.progressPercentage,
       status: newStatus
     };
-    this.milestoneService.updateMilestone(milestone.projectId, milestone.id, payload).subscribe();
+    this.milestoneService.updateMilestone(milestone.projectId, milestone.id, payload).subscribe({
+      next: () => {
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to update milestone status', err);
+        // Revert the optimistic update
+        this.milestoneService.revertMilestoneStatus(milestone.id, previousStatus);
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   onPrimaryActionSelected(item: DropdownMenuItem): void {

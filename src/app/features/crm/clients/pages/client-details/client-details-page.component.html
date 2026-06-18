@@ -25,78 +25,81 @@
 
     <div class="space-y-4">
 
-      <div
-        class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
+      <div class="p-md mb-0 sticky top-0 bg-bg-muted">
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
 
-        <div class="flex items-center gap-4">
-          <!-- Back arrow -->
-          <a routerLink="/app/crm/clients">
-            <div
-              class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
-              <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
-            </div>
-          </a>
+          <div class="flex items-center gap-4">
+            <!-- Back arrow -->
+            <a routerLink="/app/crm/clients">
+              <div
+                class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
+                <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+              </div>
+            </a>
 
-          <div>
-            <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
-              <span>{{ client()!.name }}</span>
-              @if (client()!.industry) {
-                <span class="text-sm font-normal text-text-muted border-l border-border-strong pl-2">
+            <div>
+              <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
+                <span>{{ client()!.name }}</span>
+                @if (client()!.industry) {
+                  <span class="text-sm font-normal text-text-muted border-l border-border-strong pl-2">
                   {{ client()!.industry }}
                 </span>
-              }
-            </h1>
+                }
+              </h1>
+            </div>
           </div>
-        </div>
 
-        <div class="flex items-center flex-wrap gap-2.5">
-          @if (client()!.website) {
-            <a
-              [href]="client()!.website"
-              target="_blank"
+          <div class="flex items-center flex-wrap gap-2.5">
+            @if (client()!.website) {
+              <a
+                [href]="client()!.website"
+                target="_blank"
+                class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                  <path d="M2 12h20"/>
+                </svg>
+              </a>
+            }
+
+            <button
+              (click)="onEdit()"
               class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-                <path d="M2 12h20"/>
+                <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
               </svg>
-            </a>
-          }
+            </button>
 
-          <button
-            (click)="onEdit()"
-            class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
-            </svg>
-          </button>
-
-          <button
-            (click)="onDelete()"
-            class="px-4 py-2 bg-bg hover:bg-danger text-text-muted border hover:text-white border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-              <path d="M3 6h18"/>
-              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-          </button>
+            <button
+              (click)="onDelete()"
+              class="px-4 py-2 bg-bg hover:bg-danger text-text-muted border hover:text-white border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                <path d="M3 6h18"/>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="">
+
+      <div class="mb-0 px-md">
 
         <div class="flex pb-4 items-center justify-between flex-wrap gap-3 pr-4">
           <div class="flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
             <button
               (click)="activeTab.set('overview')"
               [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
-              [class.bg-bg-active]="activeTab() === 'overview'"
-              [class.!text-text]="activeTab() === 'overview'"
+              [class.bg-primary]="activeTab() === 'overview'"
+              [class.!text-white]="activeTab() === 'overview'"
               [class.!border-border-strong]="activeTab() === 'overview'"
               class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none"
             >
@@ -105,7 +108,8 @@
             <button
               (click)="activeTab.set('timeline')"
               [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
-              [class.bg-bg-active]="activeTab() === 'timeline'"
+              [class.bg-primary]="activeTab() === 'timeline'"
+              [class.!text-white]="activeTab() === 'timeline'"
               [class.!border-border-strong]="activeTab() === 'timeline'"
               class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none"
             >
@@ -161,7 +165,7 @@
     </div>
 
     @if (activeTab() === 'overview') {
-      <div class="space-y-4">
+      <div class="space-y-4 mx-md mb-md">
 
         <!-- SECTION 1: CLIENT INFORMATION -->
         <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
@@ -322,7 +326,7 @@
     }
 
     @if (activeTab() === 'timeline') {
-      <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+      <div class="bg-bg border border-border-strong rounded-lg shadow-sm mx-md mb-md">
         <div class="border-b border-border-strong py-4 px-5">
           <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">System Audit &amp; Timeline Logs</h2>
         </div>
@@ -360,5 +364,6 @@
     }
 
   }
+
 
 </div>

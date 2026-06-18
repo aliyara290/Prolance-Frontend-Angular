@@ -1,0 +1,302 @@
+@if (detailService.project(); as project) {
+  <div class="members-container">
+
+    <!-- Header -->
+    <div class="members-header">
+      <div class="members-header-left">
+        <h2 class="members-title">Team Members</h2>
+        <span class="members-count">{{ membersService.members().length }} members</span>
+      </div>
+      <div class="members-header-right">
+        <div class="members-search-wrapper">
+          <svg class="members-search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search members..."
+            class="members-search-input"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+          />
+        </div>
+        <button class="members-add-btn" (click)="openAddModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Add Member
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (membersService.loading()) {
+      <div class="members-loading">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="members-skeleton-row"></div>
+        }
+      </div>
+    }
+
+    <!-- Error -->
+    @if (membersService.error()) {
+      <div class="members-error">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+        </svg>
+        <span>{{ membersService.error() }}</span>
+      </div>
+    }
+
+    <!-- Members Table -->
+    @if (!membersService.loading() && !membersService.error()) {
+      @if (filteredMembers().length > 0) {
+        <div class="members-table-wrapper">
+          <table class="members-table">
+            <thead>
+            <tr>
+              <th class="th-member">Member</th>
+              <th class="th-role">Role</th>
+              <th class="th-allocation">Allocation</th>
+              <th class="th-status">Status</th>
+              <th class="th-joined">Joined</th>
+              <th class="th-actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (member of filteredMembers(); track member.id) {
+              <tr class="members-row">
+
+                <!-- Member Info -->
+                <td class="td-member">
+                  @if (getUserForMember(member); as user) {
+                    <div class="member-info">
+                      <div class="member-avatar" [style.backgroundColor]="user.avatarColor">
+                        {{ getInitials(user) }}
+                      </div>
+                      <div class="member-details">
+                        <span class="member-name">{{ user.firstName }} {{ user.lastName }}</span>
+                        <span class="member-email">{{ user.email }}</span>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="member-info">
+                      <div class="member-avatar member-avatar--unknown">?</div>
+                      <div class="member-details">
+                        <span class="member-name font-mono text-xs">{{ member.userId }}</span>
+                        <span class="member-email">Unknown user</span>
+                      </div>
+                    </div>
+                  }
+                </td>
+
+                <!-- Role -->
+                <td class="td-role">
+                  @if (editingMemberId() === member.userId) {
+                    <select class="members-select" [ngModel]="editRole()" (ngModelChange)="editRole.set($event)">
+                      @for (role of allRoles; track role) {
+                        <option [value]="role">{{ roleLabels[role] }}</option>
+                      }
+                    </select>
+                  } @else {
+                    <span class="role-badge" [style.color]="roleColors[member.role]"
+                          [style.borderColor]="roleColors[member.role]">
+                      {{ roleLabels[member.role] }}
+                    </span>
+                  }
+                </td>
+
+                <!-- Allocation -->
+                <td class="td-allocation">
+                  @if (editingMemberId() === member.userId) {
+                    <div class="allocation-edit">
+                      <input
+                        type="number"
+                        class="members-input-number"
+                        [ngModel]="editAllocation()"
+                        (ngModelChange)="editAllocation.set($event)"
+                        min="0"
+                        max="100"
+                      />
+                      <span class="allocation-suffix">%</span>
+                    </div>
+                  } @else {
+                    <div class="allocation-display">
+                      <div class="allocation-bar-track">
+                        <div
+                          class="allocation-bar-fill"
+                          [style.width.%]="member.allocationPercentage"
+                          [style.backgroundColor]="member.allocationPercentage >= 80 ? 'var(--color-success)' : member.allocationPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-primary)'"
+                        ></div>
+                      </div>
+                      <span class="allocation-label">{{ member.allocationPercentage }}%</span>
+                    </div>
+                  }
+                </td>
+
+                <!-- Status -->
+                <td class="td-status">
+                  <span class="status-badge" [style.color]="statusColors[member.status]">
+                    <span class="status-dot" [style.backgroundColor]="statusColors[member.status]"></span>
+                    {{ member.status }}
+                  </span>
+                </td>
+
+                <!-- Joined -->
+                <td class="td-joined">
+                  <span class="joined-date">{{ member.joinedAt | date:'MMM d, yyyy' }}</span>
+                </td>
+
+                <!-- Actions -->
+                <td class="td-actions">
+                  @if (editingMemberId() === member.userId) {
+                    <div class="action-btns">
+                      <button class="action-btn action-btn--save" (click)="saveEdit(member)" aria-label="Save">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </button>
+                      <button class="action-btn action-btn--cancel" (click)="cancelEdit()" aria-label="Cancel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"/>
+                          <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="action-btns">
+                      <button class="action-btn" (click)="startEdit(member)" aria-label="Edit member">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path
+                            d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+                        </svg>
+                      </button>
+                      @if (member.role !== 'OWNER') {
+                        <button class="action-btn action-btn--danger" (click)="onRemove(member)"
+                                aria-label="Remove member">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                            <path d="M3 6h18"/>
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                          </svg>
+                        </button>
+                      }
+                    </div>
+                  }
+                </td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <!-- Empty State -->
+        <div class="members-empty">
+          <div class="members-empty-icon">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
+            </svg>
+          </div>
+          <h3 class="members-empty-title">No members yet</h3>
+          <p class="members-empty-desc">Add team members to start collaborating on this project.</p>
+          <button class="members-add-btn" (click)="openAddModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Add First Member
+          </button>
+        </div>
+      }
+    }
+
+  </div>
+
+  <!-- ═══════ Add Member Modal ═══════ -->
+  @if (showAddModal()) {
+    <div class="modal-backdrop" (click)="closeAddModal()"></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Member</h3>
+        <button class="modal-close-btn" (click)="closeAddModal()" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- User Select -->
+        <div class="form-group">
+          <label class="form-label">Select User</label>
+          <select
+            class="form-select"
+            [ngModel]="selectedUserId()"
+            (ngModelChange)="selectedUserId.set($event)"
+          >
+            <option value="" disabled>Choose a team member...</option>
+            @for (user of availableUsers(); track user.id) {
+              <option [value]="user.id">{{ user.firstName }} {{ user.lastName }} — {{ user.email }}</option>
+            }
+          </select>
+          @if (availableUsers().length === 0) {
+            <p class="form-hint">All tenant users are already members of this project.</p>
+          }
+        </div>
+
+        <!-- Role Select -->
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select
+            class="form-select"
+            [ngModel]="selectedRole()"
+            (ngModelChange)="selectedRole.set($event)"
+          >
+            @for (role of allRoles; track role) {
+              <option [value]="role">{{ roleLabels[role] }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Allocation -->
+        <div class="form-group">
+          <label class="form-label">Allocation (%)</label>
+          <input
+            type="number"
+            class="form-input"
+            [ngModel]="selectedAllocation()"
+            (ngModelChange)="selectedAllocation.set($event)"
+            min="0"
+            max="100"
+            placeholder="100"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn--secondary" (click)="closeAddModal()">Cancel</button>
+        <button
+          class="modal-btn modal-btn--primary"
+          [disabled]="!selectedUserId() || addingMember()"
+          (click)="onAddMember()"
+        >
+          @if (addingMember()) {
+            Adding...
+          } @else {
+            Add Member
+          }
+        </button>
+      </div>
+    </div>
+  }
+}

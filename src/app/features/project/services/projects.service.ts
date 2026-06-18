@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { ConfigService } from '../../../core/config/config.service';
 import {
   Project,
+  ProjectStatus,
   CreateProjectRequest,
   UpdateProjectRequest,
   ProjectsListMeta, ProjectsNamesResponse, ProjectsNames
@@ -91,12 +92,19 @@ export class ProjectsService {
   updateProject(id: string, payload: UpdateProjectRequest): Observable<SingleProjectResponse> {
     // Optimistic update
     this.projects.update(projects => projects.map(p => p.id === id ? { ...p, ...payload } as Project : p));
-    
+
     return this.http.put<SingleProjectResponse>(`${this.apiUrl}/${id}`, payload).pipe(
       tap((res) => {
         this.projects.update(projects => projects.map(p => p.id === id ? res.data : p));
         this.loadProjectNames();
       })
+    );
+  }
+
+  /** Reverts a project's status in local state — used to roll back optimistic updates on API failure. */
+  revertProjectStatus(id: string, previousStatus: ProjectStatus): void {
+    this.projects.update(projects =>
+      projects.map(p => p.id === id ? { ...p, status: previousStatus } : p)
     );
   }
 

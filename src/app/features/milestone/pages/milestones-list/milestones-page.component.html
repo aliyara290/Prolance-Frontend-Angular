@@ -13,26 +13,29 @@
     </div>
   </div>
 } @else {
-  <app-module-header
-    title="Milestones"
-    [tabs]="tabs"
-    [activeTabId]="activeTabId()"
-    [view]="activeView()"
-    primaryActionLabel="Create Milestone"
-    [primaryActionItems]="primaryActionItems"
-    [moreActionItems]="moreActions"
-    [tabMoreItems]="tabMoreItems"
-    (tabChange)="onTabChange($event)"
-    (primaryAction)="onCreate()"
-    (primaryActionSelected)="onPrimaryActionSelected($event)"
-    (moreActionSelected)="onMoreAction($event)"
-    (tabMoreSelected)="onTabMore($event)"
-    (viewChange)="onViewChange($event)"
-  />
+  <div class="p-md mb-0">
+    <app-module-header
+      title="Milestones"
+      [tabs]="tabs"
+      [activeTabId]="activeTabId()"
+      [view]="activeView()"
+      primaryActionLabel="Create Milestone"
+      [primaryActionItems]="primaryActionItems"
+      [moreActionItems]="moreActions"
+      [tabMoreItems]="tabMoreItems"
+      (tabChange)="onTabChange($event)"
+      (primaryAction)="onCreate()"
+      (primaryActionSelected)="onPrimaryActionSelected($event)"
+      (moreActionSelected)="onMoreAction($event)"
+      (tabMoreSelected)="onTabMore($event)"
+      (viewChange)="onViewChange($event)"
+    />
+  </div>
+
 
   <!-- List View -->
   @if (activeView() === 'list') {
-    <div class="mt-md border border-border-strong rounded-md overflow-hidden bg-[var(--color-bg)]">
+    <div class="m-md mt-0 border border-border-strong rounded-md overflow-hidden bg-[var(--color-bg)]">
       @if (loading() && milestones().length === 0) {
         <app-entity-list-skeleton />
       } @else {
@@ -50,7 +53,7 @@
 
   <!-- Kanban View -->
   @if (activeView() === 'kanban') {
-    <div class="mt-md overflow-hidden">
+    <div class="m-md mt-0 overflow-hidden">
       <app-milestone-kanban
         [milestones]="milestones()"
         [loading]="loading()"

@@ -23,71 +23,75 @@
 
     <div class="space-y-4">
 
-      <div
-        class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
 
-        <div class="flex items-center gap-4">
-          <!-- Back arrow key -->
-          <a routerLink="/app/crm/leads">
-            <div
-              class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
-              <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+      <div class="p-md mb-0 sticky top-0 bg-bg-muted">
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
+
+          <div class="flex items-center gap-4">
+            <!-- Back arrow key -->
+            <a routerLink="/app/crm/leads">
+              <div
+                class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
+                <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+              </div>
+            </a>
+
+            <div>
+              <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
+                <span>{{ lead().contact ? (lead().contact.firstName + ' ' + lead().contact.lastName) : lead().title }}</span>
+                @if (lead().company || lead().client?.name) {
+                  <a [routerLink]="'/app/crm/clients/' + lead().clientId" class="text-sm font-normal text-text-muted underline border-l border-border-strong pl-2">
+                    {{ lead().company || lead().client?.name }}
+                  </a>
+                }
+              </h1>
             </div>
-          </a>
-
-          <div>
-            <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
-              <span>{{ lead().contact ? (lead().contact.firstName + ' ' + lead().contact.lastName) : lead().title }}</span>
-              @if (lead().company || lead().client?.name) {
-                <a [routerLink]="'/app/crm/clients/' + lead().clientId" class="text-sm font-normal text-text-muted underline border-l border-border-strong pl-2">
-                  {{ lead().company || lead().client?.name }}
-                </a>
-              }
-            </h1>
           </div>
-        </div>
 
-        <div class="flex items-center flex-wrap gap-2.5">
-          <button
-            (click)="onConvert()"
-            class="px-4 py-2 bg-bg hover:bg-primary hover:text-white text-text-muted border border-border-strong text-xs font-semibold rounded-[var(--radius-md)] cursor-pointer "
-          >
-            Convert to deal
-          </button>
+          <div class="flex items-center flex-wrap gap-2.5">
+            <button
+              (click)="onConvert()"
+              class="px-4 py-2 bg-bg hover:bg-primary hover:text-white text-text-muted border border-border-strong text-xs font-semibold rounded-[var(--radius-md)] cursor-pointer "
+            >
+              Convert to deal
+            </button>
 
-          @if (lead().email || lead().contact?.email) {
-            <a
-              [href]="'mailto:' + (lead().email || lead().contact?.email)"
+            @if (lead().email || lead().contact?.email) {
+              <a
+                [href]="'mailto:' + (lead().email || lead().contact?.email)"
+                class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+              </a>
+            }
+
+
+            <button
+              (click)="onEdit()"
               class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
-            </a>
-          }
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+            </button>
 
-
-          <button
-            (click)="onEdit()"
-            class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
-          </button>
-
-          <button
-            (click)="onDelete()"
-            class="px-4 py-2 bg-bg hover:bg-danger text-text-muted border hover:text-white border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 class="lucide lucide-trash-icon lucide-trash">
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-              <path d="M3 6h18"/>
-              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-          </button>
+            <button
+              (click)="onDelete()"
+              class="px-4 py-2 bg-bg hover:bg-danger text-text-muted border hover:text-white border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   class="lucide lucide-trash-icon lucide-trash">
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                <path d="M3 6h18"/>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="">
+
+      <div class="px-md">
 
         <div class="flex pb-4 items-center justify-between flex-wrap gap-3 pr-4">
           <div class="flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
@@ -176,7 +180,7 @@
     </div>
 
     @if (activeTab() === 'overview') {
-      <div class="space-y-4">
+      <div class="space-y-4 px-md pb-md">
 
         <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
           <div class="border-b border-border-strong py-4 px-5">
@@ -367,7 +371,7 @@
     }
 
     @if (activeTab() === 'timeline') {
-      <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+      <div class="bg-bg border border-border-strong rounded-lg shadow-sm mx-md mb-md">
         <div class="border-b border-border-strong py-4 px-5">
           <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">System Audit &amp; Timeline Logs</h2>
         </div>

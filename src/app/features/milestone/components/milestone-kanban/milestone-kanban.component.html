@@ -1,27 +1,62 @@
 <div class="kanban-board">
   @for (col of columns(); track col.status) {
-    <div class="kanban-column"
-         pDroppable="milestone"
-         (onDrop)="drop(col.status)">
+    <div class="kanban-column">
 
       <!-- Column Header -->
       <div class="kanban-column-header">
-        <div class="flex items-center gap-2">
-          <span class="kanban-status-dot"></span>
+        <div class="kanban-header-left">
+          <!-- Column Status Icon -->
+          @switch (col.status) {
+            @case ('ACTIVE') {
+              <svg class="kanban-column-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v4l2 2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            }
+            @case ('IN_PROGRESS') {
+              <svg class="kanban-column-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v4l2 2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            }
+            @case ('ON_HOLD') {
+              <svg class="kanban-column-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M10 9v6m4-6v6" stroke-linecap="round" />
+              </svg>
+            }
+            @case ('COMPLETED') {
+              <svg class="kanban-column-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            }
+            @case ('CANCELLED') {
+              <svg class="kanban-column-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M15 9l-6 6m0-6l6 6" stroke-linecap="round" />
+              </svg>
+            }
+            @case ('ARCHIVED') {
+              <svg class="kanban-column-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            }
+          }
           <span class="kanban-column-title">{{ col.label }}</span>
-          <span class="kanban-column-count">{{ col.milestones.length }}</span>
         </div>
+        <span class="kanban-column-count">{{ col.milestones.length }}</span>
       </div>
 
       <!-- Column Body -->
-      <div class="kanban-column-body custom-scrollbar">
+      <div class="kanban-column-body"
+           pDroppable="milestone"
+           (onDrop)="drop(col.status)">
 
         @if (loading && col.milestones.length === 0) {
-          <div class="space-y-3">
-            @for (i of [1,2]; track i) {
-              <div class="h-[120px] bg-bg rounded-lg border border-border-strong animate-pulse"></div>
-            }
-          </div>
+          @for (i of [1,2]; track i) {
+            <div class="kanban-skeleton"></div>
+          }
         }
 
         @for (milestone of col.milestones; track milestone.id) {
@@ -32,15 +67,34 @@
             (onDragEnd)="dragEnd()"
             (click)="onView(milestone, $event)"
           >
-            <!-- Card Header -->
-            <div class="flex items-center justify-between mb-2">
-              <span class="kanban-card-prefix">#{{ milestone.sequenceOrder }}</span>
+            <!-- Card Header: Title + Status Badge -->
+            <div class="kanban-card-header">
+              <span class="kanban-card-title" (click)="$event.stopPropagation(); onView(milestone, $event)">
+                {{ milestone.title }}
+              </span>
+              <span class="kanban-card-badge"
+                [class.badge-active]="milestone.status === 'ACTIVE'"
+                [class.badge-in-progress]="milestone.status === 'IN_PROGRESS'"
+                [class.badge-on-hold]="milestone.status === 'ON_HOLD'"
+                [class.badge-completed]="milestone.status === 'COMPLETED'"
+                [class.badge-cancelled]="milestone.status === 'CANCELLED'"
+                [class.badge-archived]="milestone.status === 'ARCHIVED'"
+              >
+                <span class="kanban-badge-dot"></span>
+                {{ getStatusLabel(milestone.status) }}
+              </span>
             </div>
 
-            <!-- Card Title -->
-            <a class="kanban-card-title" (click)="$event.stopPropagation(); onView(milestone, $event)">
-              {{ milestone.title }}
-            </a>
+            <!-- Date Subtitle -->
+            <div class="kanban-card-date-subtitle">
+              @if (milestone.completedAt) {
+                Completed: {{ milestone.completedAt | date:'d MMM yyyy' }}
+              } @else if (milestone.dueDate) {
+                {{ getRemainingDays(milestone.dueDate) }}
+              } @else if (milestone.startDate) {
+                Started: {{ milestone.startDate | date:'d MMM yyyy' }}
+              }
+            </div>
 
             <!-- Description Preview -->
             @if (milestone.description) {
@@ -49,46 +103,53 @@
               </p>
             }
 
-            <!-- Progress Bar -->
-            <div class="kanban-card-progress">
-              <div class="kanban-progress-track">
-                <div
-                  class="kanban-progress-fill"
-                  [style.width.%]="milestone.progressPercentage"
-                  [style.backgroundColor]="milestone.progressPercentage >= 100 ? 'var(--color-success)' : milestone.progressPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-primary)'"
-                ></div>
-              </div>
-              <span class="kanban-progress-label">{{ milestone.progressPercentage | number:'1.0-1' }}%</span>
-            </div>
-
             <!-- Card Footer -->
             <div class="kanban-card-footer">
-              <div class="kanban-card-meta">
-                @if (milestone.startDate || milestone.dueDate) {
-                  <span class="kanban-card-date">
-                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    {{ milestone.startDate ? (milestone.startDate | date:'MMM d') : '' }}
-                    @if (milestone.startDate && milestone.dueDate) { - }
-                    {{ milestone.dueDate ? (milestone.dueDate | date:'MMM d') : '' }}
-                  </span>
-                }
-              </div>
-              @if (milestone.completedAt) {
-                 <span class="kanban-card-budget">
-                   Done: {{ milestone.completedAt | date:'MMM d' }}
-                 </span>
-              }
-            </div>
+              <div class="kanban-footer-left">
+                <!-- Avatar Stack -->
+                <div class="kanban-avatar-stack">
+                  @for (avatar of getAvatarInitials(milestone); track $index) {
+                    <div class="kanban-avatar" [style.background]="avatar.bg" [style.color]="avatar.color">
+                      {{ avatar.initials }}
+                    </div>
+                  }
+                </div>
 
+                <!-- Meta Items -->
+                <div class="kanban-meta-items">
+                  <!-- Attachments -->
+                  <div class="kanban-meta-item">
+                    <svg class="kanban-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ getAttachmentCount(milestone) }}</span>
+                  </div>
+                  <!-- Comments -->
+                  <div class="kanban-meta-item">
+                    <svg class="kanban-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ getCommentCount(milestone) }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Three-dot menu -->
+              <button class="kanban-card-menu" (click)="$event.stopPropagation()">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+            </div>
           </div>
         }
 
-        <!-- Drop Placeholder Area -->
+        <!-- Empty State -->
         @if (!loading && col.milestones.length === 0) {
           <div class="kanban-empty-state">
-            <svg class="w-8 h-8 text-[var(--color-border)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1" style="color: var(--color-border-strong)">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
             </svg>
             <span>No milestones</span>

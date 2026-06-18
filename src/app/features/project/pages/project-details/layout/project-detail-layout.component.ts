@@ -1,0 +1,82 @@
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule, RouterLinkActive } from '@angular/router';
+import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { ProjectDetailService } from '../../../services/project-detail.service';
+import { ProjectsService } from '../../../services/projects.service';
+import { DetailsSkeletonComponent } from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
+
+interface DetailTab {
+  id: string;
+  label: string;
+  route: string;
+}
+
+@Component({
+  selector: 'app-project-detail-layout',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    RouterLinkActive,
+    LucideAngularModule,
+    DetailsSkeletonComponent,
+  ],
+  templateUrl: './project-detail-layout.component.html',
+  styleUrls: ['./project-detail-layout.component.css'],
+})
+export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  readonly detailService = inject(ProjectDetailService);
+  private readonly projectsService = inject(ProjectsService);
+
+  readonly ArrowLeft = ArrowLeft;
+
+  readonly tabs: DetailTab[] = [
+    { id: 'dashboard', label: 'Dashboard', route: 'dashboard' },
+    { id: 'overview', label: 'Overview', route: 'overview' },
+    { id: 'tasks', label: 'Tasks', route: 'tasks' },
+    { id: 'members', label: 'Members', route: 'members' },
+    { id: 'issues', label: 'Issues', route: 'issues' },
+    { id: 'milestones', label: 'Milestones', route: 'milestones' },
+    { id: 'documents', label: 'Documents', route: 'documents' },
+    { id: 'activity', label: 'Activity', route: 'activity' },
+  ];
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.detailService.loadProject(id);
+    } else {
+      this.detailService.error.set('No Project ID provided in route.');
+      this.detailService.loading.set(false);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.detailService.clear();
+  }
+
+  onEdit(): void {
+    const project = this.detailService.project();
+    if (project) {
+      this.router.navigate(['/app/projects/all', project.id, 'edit']);
+    }
+  }
+
+  onDelete(): void {
+    const project = this.detailService.project();
+    if (project && confirm(`Are you sure you want to delete project "${project.name}"?`)) {
+      this.projectsService.deleteProject(project.id).subscribe({
+        next: () => {
+          this.router.navigate(['/app/projects/all']);
+        },
+        error: (err) => {
+          console.error('Failed to delete project', err);
+          alert('Failed to delete project.');
+        },
+      });
+    }
+  }
+}

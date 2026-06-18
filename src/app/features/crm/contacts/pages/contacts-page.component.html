@@ -13,21 +13,24 @@
     <span class="text-sm font-medium text-[var(--color-text)]">{{ error() }}</span>
   </div>
 } @else {
-  <app-module-header
-    title="Contacts"
-    [tabs]="tabs"
-    [activeTabId]="activeTabId()"
-    primaryActionLabel="Create Contact"
-    [primaryActionItems]="primaryActionItems"
-    [moreActionItems]="moreActions"
-    [tabMoreItems]="tabMoreItems"
-    (tabChange)="onTabChange($event)"
-    (primaryAction)="onCreate()"
-    (primaryActionSelected)="onPrimaryActionSelected($event)"
-    (moreActionSelected)="onMoreAction($event)"
-    (tabMoreSelected)="onTabMore($event)"
-  />
-  <div class="mt-md border border-[var(--color-border)] rounded-md overflow-hidden bg-[var(--color-bg)]">
+  <div class="p-md mb-0">
+    <app-module-header
+      title="Contacts"
+      [tabs]="tabs"
+      [activeTabId]="activeTabId()"
+      primaryActionLabel="Create Contact"
+      [primaryActionItems]="primaryActionItems"
+      [moreActionItems]="moreActions"
+      [tabMoreItems]="tabMoreItems"
+      (tabChange)="onTabChange($event)"
+      (primaryAction)="onCreate()"
+      (primaryActionSelected)="onPrimaryActionSelected($event)"
+      (moreActionSelected)="onMoreAction($event)"
+      (tabMoreSelected)="onTabMore($event)"
+    />
+  </div>
+
+  <div class="m-md mt-0 border border-[var(--color-border)] rounded-md overflow-hidden bg-[var(--color-bg)]">
     <app-contacts-table
       [contacts]="contacts()"
       [totalCount]="totalCount()"

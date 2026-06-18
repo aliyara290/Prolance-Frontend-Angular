@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectsService } from '../../services/projects.service';
 import { ProjectsTableComponent } from '../../components/projects-table/projects-table.component';
@@ -26,6 +26,7 @@ import {
 export class ProjectsPageComponent implements OnInit {
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly projects = this.projectsService.projects;
   readonly totalCount = this.projectsService.totalCount;
@@ -84,6 +85,7 @@ export class ProjectsPageComponent implements OnInit {
   }
 
   onStatusChange(event: { project: Project; newStatus: ProjectStatus }): void {
+    const previousStatus = event.project.status;
     const payload = {
       name: event.project.name,
       description: event.project.description,
@@ -98,7 +100,17 @@ export class ProjectsPageComponent implements OnInit {
       actualCost: event.project.actualCost,
       projectManagerId: event.project.projectManagerId,
     };
-    this.projectsService.updateProject(event.project.id, payload).subscribe();
+    this.projectsService.updateProject(event.project.id, payload).subscribe({
+      next: () => {
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to update project status', err);
+        // Revert the optimistic update
+        this.projectsService.revertProjectStatus(event.project.id, previousStatus);
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   onPrimaryActionSelected(item: DropdownMenuItem): void {

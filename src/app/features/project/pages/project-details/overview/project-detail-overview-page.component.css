@@ -1,0 +1,53 @@
+
+
+/* ── Quick Stats Bar ── */
+.detail-quick-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  padding: 20px;
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-strong);
+}
+
+.detail-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ── Content Area ── */
+.detail-content {
+  padding-top: 16px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .detail-quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detail-tabs {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .detail-tabs-row {
+    padding-right: 0;
+  }
+}

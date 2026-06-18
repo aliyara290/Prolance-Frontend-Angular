@@ -12,22 +12,25 @@
     <span class="text-sm font-medium text-[var(--color-text)]">{{ error() }}</span>
   </div>
 } @else {
-  <app-module-header
-    title="Deals"
-    [tabs]="tabs"
-    [activeTabId]="activeTabId()"
-    primaryActionLabel="Create Deal"
-    [primaryActionItems]="primaryActionItems"
-    [moreActionItems]="moreActions"
-    [tabMoreItems]="tabMoreItems"
-    (tabChange)="onTabChange($event)"
-    (primaryAction)="onCreate()"
-    (primaryActionSelected)="onPrimaryActionSelected($event)"
-    (moreActionSelected)="onMoreAction($event)"
-    (tabMoreSelected)="onTabMore($event)"
-  />
+  <div class="m-md">
+    <app-module-header
+      title="Deals"
+      [tabs]="tabs"
+      [activeTabId]="activeTabId()"
+      primaryActionLabel="Create Deal"
+      [primaryActionItems]="primaryActionItems"
+      [moreActionItems]="moreActions"
+      [tabMoreItems]="tabMoreItems"
+      (tabChange)="onTabChange($event)"
+      (primaryAction)="onCreate()"
+      (primaryActionSelected)="onPrimaryActionSelected($event)"
+      (moreActionSelected)="onMoreAction($event)"
+      (tabMoreSelected)="onTabMore($event)"
+    />
 
-  <div class="mt-md border border-[var(--color-border)] rounded-md overflow-hidden bg-[var(--color-bg)]">
+  </div>
+
+  <div class="m-md border border-[var(--color-border-strong)] rounded-md overflow-hidden bg-[var(--color-bg)]">
     <app-deals-table
       [deals]="deals()"
       [totalCount]="totalCount()"

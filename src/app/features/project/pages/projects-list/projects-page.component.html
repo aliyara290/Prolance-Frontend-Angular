@@ -13,18 +13,21 @@
   <span class="text-sm font-medium text-[var(--color-text)]">{{ error() }}</span>
 </div>
 } @else {
-<app-module-header title="Projects" [tabs]="tabs" [activeTabId]="activeTabId()" primaryActionLabel="Create Project"
-  [primaryActionItems]="primaryActionItems" [moreActionItems]="moreActions" [tabMoreItems]="tabMoreItems"
-  (tabChange)="onTabChange($event)" (primaryAction)="onCreate()"
-  (primaryActionSelected)="onPrimaryActionSelected($event)" (moreActionSelected)="onMoreAction($event)"
-  (tabMoreSelected)="onTabMore($event)" (viewChange)="onViewChange($event)" />
+  <div class="p-md mb-0">
+    <app-module-header title="Projects" [tabs]="tabs" [activeTabId]="activeTabId()" primaryActionLabel="Create Project"
+                       [primaryActionItems]="primaryActionItems" [moreActionItems]="moreActions" [tabMoreItems]="tabMoreItems"
+                       (tabChange)="onTabChange($event)" (primaryAction)="onCreate()"
+                       (primaryActionSelected)="onPrimaryActionSelected($event)" (moreActionSelected)="onMoreAction($event)"
+                       (tabMoreSelected)="onTabMore($event)" (viewChange)="onViewChange($event)" />
+  </div>
+
 
 @if (activeView() === 'list') {
-<div class="mt-md border border-border-strong rounded-md overflow-hidden bg-[var(--color-bg)]">
+<div class="m-md mt-0 border border-border-strong rounded-md overflow-hidden bg-[var(--color-bg)]">
   <app-projects-table [projects]="projects()" [totalCount]="totalCount()" (editProject)="onEditProject($event)" />
 </div>
 } @else {
-<div class="mt-md">
+<div class="m-md mt-0">
   <app-projects-kanban [projects]="projects()" (viewProject)="onViewProject($event)"
     (editProject)="onEditProject($event)" (statusChange)="onStatusChange($event)" />
 </div>

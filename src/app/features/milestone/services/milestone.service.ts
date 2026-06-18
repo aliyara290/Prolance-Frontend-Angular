@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { ConfigService } from '../../../core/config/config.service';
 import {
   Milestone,
+  MilestoneStatus,
   CreateMilestoneRequest,
   UpdateMilestoneRequest,
   MilestoneStatistics,
@@ -94,8 +95,25 @@ export class MilestoneService {
   }
 
   updateMilestone(projectId: string, milestoneId: string, payload: UpdateMilestoneRequest): Observable<ApiResponse<Milestone>> {
+    // Optimistic update — apply change immediately in local state without a full reload
+    this.milestones.update(list =>
+      list.map(m => m.id === milestoneId ? { ...m, ...payload } as Milestone : m)
+    );
+
     return this.http.put<ApiResponse<Milestone>>(`${this.baseProjectUrl}/${projectId}/milestones/${milestoneId}`, payload).pipe(
-      tap(() => this.loadAllMilestones())
+      tap((res) => {
+        // Sync with the confirmed server response
+        this.milestones.update(list =>
+          list.map(m => m.id === milestoneId ? res.data : m)
+        );
+      })
+    );
+  }
+
+  /** Reverts a milestone's status in local state — used to roll back optimistic updates on API failure. */
+  revertMilestoneStatus(milestoneId: string, previousStatus: MilestoneStatus): void {
+    this.milestones.update(list =>
+      list.map(m => m.id === milestoneId ? { ...m, status: previousStatus } : m)
     );
   }
 
