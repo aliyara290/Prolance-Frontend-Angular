@@ -1,6 +1,7 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MilestoneService } from '../../services/milestone.service';
+import { ProjectsService } from '../../../project/services/projects.service';
 import { MilestoneTableComponent } from '../../components/milestone-table/milestone-table.component';
 import { MilestoneKanbanComponent } from '../../components/milestone-kanban/milestone-kanban.component';
 import { ModuleHeaderComponent } from '../../../../shared/ui/module-header/module-header.component';
@@ -8,21 +9,32 @@ import { ModuleTab, ModuleHeaderAction } from '../../../../shared/ui/module-head
 import { DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { Milestone, MilestoneStatus } from '../../types/milestone.model';
 import { EntityListSkeletonComponent } from '../../../../shared/ui/skeletons/entity-list-skeleton/entity-list-skeleton.component';
+import { MilestoneFiltersComponent, MilestoneFilters } from '../../components/milestone-filters/milestone-filters.component';
+import { MilestoneFormModalComponent } from '../../components/milestone-form-modal/milestone-form-modal.component';
+import { MilestoneDetailPanelComponent } from '../../components/milestone-detail-panel/milestone-detail-panel.component';
+import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-milestones-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CommonModule,
+    LucideAngularModule,
     ModuleHeaderComponent,
     MilestoneTableComponent,
     MilestoneKanbanComponent,
     EntityListSkeletonComponent,
+    MilestoneFiltersComponent,
+    MilestoneFormModalComponent,
+    MilestoneDetailPanelComponent,
   ],
   templateUrl: './milestones-page.component.html',
 })
 export class MilestonesPageComponent implements OnInit {
   private readonly milestoneService = inject(MilestoneService);
+  private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -33,6 +45,56 @@ export class MilestonesPageComponent implements OnInit {
   readonly error = this.milestoneService.error;
 
   readonly activeView = signal<'list' | 'kanban'>('list');
+
+  // Sidebar & Filters
+  readonly sidebarVisible = signal<boolean>(true);
+  readonly projects = this.projectsService.projectNames;
+  readonly scopedProjectId = signal<string | null>(null);
+
+  readonly activeFilters = signal<MilestoneFilters>({
+    statuses: [],
+    dueDateFilter: 'all',
+    projectId: null,
+  });
+
+  readonly icons = {
+    panelClose: PanelLeftClose,
+    panelOpen: PanelLeftOpen,
+  };
+
+  readonly filteredMilestones = computed<Milestone[]>(() => {
+    const filters = this.activeFilters();
+    const scopeId = this.scopedProjectId();
+    let result = this.milestones();
+
+    if (scopeId) {
+      result = result.filter(m => m.projectId === scopeId);
+    }
+
+    if (filters.statuses.length > 0) {
+      result = result.filter(m => filters.statuses.includes(m.status));
+    }
+
+    if (filters.dueDateFilter !== 'all') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const endOfToday = new Date(today);
+      endOfToday.setHours(23, 59, 59, 999);
+      const endOfWeek = new Date(today);
+      endOfWeek.setDate(today.getDate() + 7);
+
+      result = result.filter(m => {
+        if (!m.dueDate) return false;
+        const due = new Date(m.dueDate);
+        if (filters.dueDateFilter === 'overdue') return due < today;
+        if (filters.dueDateFilter === 'today') return due >= today && due <= endOfToday;
+        if (filters.dueDateFilter === 'week') return due >= today && due <= endOfWeek;
+        return true;
+      });
+    }
+
+    return result;
+  });
 
   readonly tabs: ModuleTab[] = [
     { id: 'all', label: 'All Milestones', count: this.milestoneService.totalCount() },
@@ -52,8 +114,18 @@ export class MilestonesPageComponent implements OnInit {
     { label: 'Manage Views', value: 'manage-views' },
   ];
 
+  // ── Detail Panel ──
+  readonly selectedMilestone = signal<Milestone | null>(null);
+  readonly panelOpen = signal(false);
+
+  // ── Form Modal ──
+  readonly createPanelOpen = signal(false);
+  readonly editMilestoneId = signal<string | null>(null);
+
   ngOnInit(): void {
     this.milestoneService.loadAllMilestones();
+    this.projectsService.loadProjectNames();
+    
     this.route.queryParams.subscribe(params => {
       const view = params['view'];
       if (view === 'kanban') {
@@ -62,6 +134,24 @@ export class MilestonesPageComponent implements OnInit {
         this.activeView.set('list');
       }
     });
+  }
+
+  toggleSidebar(): void {
+    this.sidebarVisible.update(v => !v);
+  }
+
+  onFiltersChanged(filters: MilestoneFilters): void {
+    this.activeFilters.set(filters);
+  }
+
+  onProjectSelected(projectId: string | null): void {
+    this.scopedProjectId.set(projectId);
+    if (projectId) {
+      // Reload milestones for the selected project
+      this.milestoneService.loadMilestonesByProject(projectId);
+    } else {
+      this.milestoneService.loadAllMilestones();
+    }
   }
 
   onTabChange(tab: ModuleTab): void {
@@ -78,15 +168,41 @@ export class MilestonesPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/app/projects/milestones/create']);
+    this.createPanelOpen.set(true);
+  }
+
+  onCloseCreatePanel(): void {
+    this.createPanelOpen.set(false);
+    this.editMilestoneId.set(null);
   }
 
   onEditMilestone(milestone: Milestone): void {
-    this.router.navigate(['/app/projects/milestones', milestone.id, 'edit']);
+    this.panelOpen.set(false);
+    this.editMilestoneId.set(milestone.id);
+    this.createPanelOpen.set(true);
   }
 
   onViewMilestone(milestone: Milestone): void {
-    this.router.navigate(['/app/projects/milestones', milestone.id]);
+    this.selectedMilestone.set(milestone);
+    this.panelOpen.set(true);
+  }
+
+  onClosePanel(): void {
+    this.panelOpen.set(false);
+    this.selectedMilestone.set(null);
+  }
+
+  onMilestoneUpdated(): void {
+    const currentMilestone = this.selectedMilestone();
+    if (currentMilestone) {
+      this.milestoneService.getMilestone(currentMilestone.projectId, currentMilestone.id).subscribe({
+        next: (res) => {
+          this.selectedMilestone.set(res.data);
+          // The update in MilestoneService's load methods handles lists, 
+          // but we might need to manually trigger change detection if needed.
+        },
+      });
+    }
   }
 
   onCompleteMilestone(milestone: Milestone): void {
@@ -136,3 +252,4 @@ export class MilestonesPageComponent implements OnInit {
     console.log('Tab more:', action.value);
   }
 }
+

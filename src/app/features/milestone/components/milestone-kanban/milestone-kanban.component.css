@@ -1,6 +1,4 @@
-/* =========================================
-   KANBAN BOARD LAYOUT
-========================================= */
+
 .kanban-board {
   display: flex;
   gap: var(--spacing-md);
@@ -10,26 +8,22 @@
   align-items: flex-start;
 }
 
-/* =========================================
-   KANBAN COLUMN
-========================================= */
+
 .kanban-column {
   flex: 0 0 320px;
   min-width: 320px;
   max-width: 196px;
+  min-height: 533px;
+  max-height: 533px;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 260px);
-  min-height: 198px;
   background-color: var(--color-bg);
   padding: 10px;
   border-radius: var(--radius-md);
-  border: 1px dashed var(--color-border-strong);
+  border: 2px dashed var(--color-border-strong);
 }
 
-/* =========================================
-   COLUMN HEADER
-========================================= */
+
 .kanban-column-header {
   padding: var(--spacing-sm) 0;
   display: flex;
@@ -47,14 +41,14 @@
 .kanban-column-icon {
   width: 20px;
   height: 20px;
-  color: var(--color-text);
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
 .kanban-column-title {
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  color: var(--color-text);
+  color: var(--color-text-muted);
   letter-spacing: -0.01em;
 }
 
@@ -69,28 +63,23 @@
   background: var(--color-bg);
 }
 
-/* =========================================
-   COLUMN BODY
-========================================= */
+
 .kanban-column-body {
   overflow-y: auto;
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 100%;
 }
 
-/* Hide scrollbar for the kanban column but allow scrolling */
 .kanban-column-body {
   scrollbar-width: none; /* Firefox */
 }
 .kanban-column-body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none;
 }
 
-/* =========================================
-   KANBAN CARD
-========================================= */
 .kanban-card {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -106,9 +95,7 @@
   box-shadow: var(--shadow-md);
 }
 
-/* =========================================
-   CARD HEADER — Title + Status Badge
-========================================= */
+
 .kanban-card-header {
   display: flex;
   align-items: flex-start;
@@ -137,9 +124,7 @@
   color: var(--color-primary);
 }
 
-/* =========================================
-   STATUS BADGE
-========================================= */
+
 .kanban-card-badge {
   display: flex;
   align-items: center;
@@ -198,9 +183,6 @@
   background: currentColor;
 }
 
-/* =========================================
-   CARD DATE SUBTITLE
-========================================= */
 .kanban-card-date-subtitle {
   font-size: 12px;
   color: var(--color-text-muted);
@@ -208,9 +190,7 @@
   line-height: 1.4;
 }
 
-/* =========================================
-   CARD DESCRIPTION
-========================================= */
+
 .kanban-card-description {
   font-size: 13px;
   color: var(--color-text-secondary);
@@ -223,9 +203,7 @@
   -webkit-box-orient: vertical;
 }
 
-/* =========================================
-   CARD FOOTER — Avatars + Meta + Menu
-========================================= */
+
 .kanban-card-footer {
   display: flex;
   align-items: center;
@@ -270,7 +248,6 @@
   object-fit: cover;
 }
 
-/* Meta counters (attachments, comments) */
 .kanban-meta-items {
   display: flex;
   align-items: center;
@@ -319,9 +296,6 @@
   height: 18px;
 }
 
-/* =========================================
-   SKELETON LOADING
-========================================= */
 .kanban-skeleton {
   height: 160px;
   background: var(--color-bg-muted);
@@ -335,9 +309,7 @@
   50% { opacity: 0.5; }
 }
 
-/* =========================================
-   EMPTY STATE
-========================================= */
+
 .kanban-empty-state {
   display: flex;
   flex-direction: column;
@@ -350,11 +322,9 @@
   text-align: center;
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-lg);
+  height: 470px;
 }
 
-/* =========================================
-   BOARD SCROLLBAR
-========================================= */
 .kanban-board {
   scrollbar-width: none; /* Firefox */
 }

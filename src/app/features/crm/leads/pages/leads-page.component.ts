@@ -1,4 +1,6 @@
 import { Component, inject, signal, ViewChild, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { ErrorMessageComponent } from '../../../../shared/ui/error-message/error-message.component';
+
 import { LeadsService } from '../services/leads.service';
 import { LeadsTableComponent } from '../components/leads-table/leads-table.component';
 import { Router } from '@angular/router';
@@ -14,7 +16,7 @@ import {
   selector: 'app-leads-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, LeadsTableComponent, EntityListSkeletonComponent],
+  imports: [ModuleHeaderComponent, LeadsTableComponent, EntityListSkeletonComponent, ErrorMessageComponent],
   templateUrl: './leads-page.component.html',
 })
 export class LeadsPageComponent implements OnInit {

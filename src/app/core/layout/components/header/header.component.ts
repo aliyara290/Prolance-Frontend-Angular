@@ -13,7 +13,7 @@ import {
   Goal,
   ContactRound,
   Bell,
-  Building2
+  Building2, MessageCircleMore
 } from 'lucide-angular';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {WorkspaceSwitcherComponent} from '../workspace-switcher/workspace-switcher.component';
@@ -36,7 +36,7 @@ export class HeaderComponent {
   icons = {
     plus: Plus,
     settings: Settings,
-    calendar: Calendar,
+    message: MessageCircleMore,
     project: Target,
     deal: Handshake,
     opportunity: Goal,

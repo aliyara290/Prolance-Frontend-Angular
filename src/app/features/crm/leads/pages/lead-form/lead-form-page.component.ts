@@ -55,7 +55,7 @@ export class LeadFormPageComponent implements OnInit {
       source: ['COLD_CALL', [Validators.required]],
       priority: ['MEDIUM', [Validators.required]],
       status: ['NEW', [Validators.required]],
-      assignedTo: ['b68243e7-5651-472c-bcf3-47cdd24533af'],
+      assignedTo: ['cdde6e08-1e87-41e2-8df0-b4ff1b93b737'],
       phone: [''],
       industry: [''],
       annualRevenue: [null],
@@ -82,13 +82,6 @@ export class LeadFormPageComponent implements OnInit {
         annualRevenue: [null],
         ownership: ['PRIVATE'],
         description: [''],
-        address: this.fb.group({
-          street: [''],
-          city: [''],
-          state: [''],
-          country: [''],
-          zipCode: [''],
-        }),
       }),
       contact: this.fb.group({
         firstName: [''],
@@ -102,13 +95,6 @@ export class LeadFormPageComponent implements OnInit {
         dateOfBirth: [''],
         secondaryEmail: ['', [Validators.email]],
         description: [''],
-        address: this.fb.group({
-          street: [''],
-          city: [''],
-          state: [''],
-          country: [''],
-          zipCode: [''],
-        }),
       }),
     });
 

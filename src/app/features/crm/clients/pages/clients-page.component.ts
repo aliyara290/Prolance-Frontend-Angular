@@ -1,4 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { ErrorMessageComponent } from '../../../../shared/ui/error-message/error-message.component';
+
 import { Router } from '@angular/router';
 import { ClientsService } from '../services/clients.service';
 import { ClientsTableComponent } from '../components/clients-table/clients-table.component';
@@ -14,7 +16,7 @@ import {
   selector: 'app-clients-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, ClientsTableComponent, EntityListSkeletonComponent],
+  imports: [ModuleHeaderComponent, ClientsTableComponent, EntityListSkeletonComponent, ErrorMessageComponent],
   templateUrl: './clients-page.component.html',
 })
 export class ClientsPageComponent implements OnInit {

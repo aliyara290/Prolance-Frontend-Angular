@@ -1,45 +1,50 @@
-<nav class="sticky top-0 w-full bg-[var(--color-card)] border-b border-[var(--color-border)] z-[var(--z-fixed)]">
-  <div
-    class="max-w-[var(--container-width)] mx-auto px-[var(--spacing-lg)] flex items-center justify-between h-[var(--header-height)]">
-    <!-- Logo -->
-    <div class="flex items-center gap-[var(--spacing-sm)]">
-      <div
-        class="w-8 h-8 rounded-[var(--radius-md)] bg-primary flex items-center justify-center shadow-[var(--shadow-sm)]">
-        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
+<nav class="sticky top-0 w-full bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border)]/50 z-[var(--z-fixed)] transition-all duration-[var(--transition-normal)]">
+  <div class="max-w-[var(--container-width)] mx-auto px-[var(--spacing-lg)] flex items-center justify-between h-[var(--header-height)]">
+    
+    <div class="flex items-center gap-[var(--spacing-sm)] group cursor-pointer">
+      <div class="w-24 h-24 flex items-center justify-center transition-transform duration-[var(--transition-fast)] group-hover:scale-105">
+        <img src="assets/img/logo.svg.webp" alt="DXC Logo" class="w-full h-full object-contain">
       </div>
-      <span
-        class="font-[var(--font-bold)] text-[var(--text-xl)] text-[var(--color-text)] tracking-tight">Prolance</span>
+      <span class="font-[var(--font-bold)] text-[var(--text-xl)] text-[var(--color-text)] tracking-tight">Prolance</span>
     </div>
 
     <!-- Links -->
     <div class="hidden md:flex items-center gap-[var(--spacing-xl)]">
-      <a href="#features"
-         class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Features</a>
-      <a href="#solutions"
-         class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Solutions</a>
-      <a href="#pricing"
-         class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Pricing</a>
-      <a href="#resources"
-         class="font-[var(--font-medium)] text-text-sm text-[var(--color-text-secondary)] hover:text-primary transition-[var(--transition-fast)]">Resources</a>
+      <a href="#features" class="font-[var(--font-medium)] text-[var(--text-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)] relative group">
+        Features
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all duration-[var(--transition-fast)] group-hover:w-full rounded-full"></span>
+      </a>
+      <a href="#solutions" class="font-[var(--font-medium)] text-[var(--text-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)] relative group">
+        Solutions
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all duration-[var(--transition-fast)] group-hover:w-full rounded-full"></span>
+      </a>
+      <a href="#pricing" class="font-[var(--font-medium)] text-[var(--text-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)] relative group">
+        Pricing
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all duration-[var(--transition-fast)] group-hover:w-full rounded-full"></span>
+      </a>
+      <a href="#resources" class="font-[var(--font-medium)] text-[var(--text-sm)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)] relative group">
+        Resources
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all duration-[var(--transition-fast)] group-hover:w-full rounded-full"></span>
+      </a>
     </div>
 
     <!-- Actions -->
     @if (!(isAuthenticated$ | async)) {
       <div class="flex items-center gap-[var(--spacing-md)]">
-        <a (click)="login()"
-           class="cursor-pointer font-[var(--font-medium)] text-text-sm text-[var(--color-text)] hover:text-primary transition-[var(--transition-fast)]">Log
-          in</a>
-        <a (click)="register()"
-           class="cursor-pointer bg-primary hover:bg-primary-hover text-text-inverse font-[var(--font-medium)]  px-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-[var(--radius-md)] transition-[var(--transition-fast)] shadow-[var(--shadow-sm)]">Start
-          Free Trial</a>
+        <a (click)="login()" class="cursor-pointer font-[var(--font-medium)] text-[var(--text-sm)] text-[var(--color-text)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)]">
+          Log in
+        </a>
+        <a (click)="register()" class="cursor-pointer bg-primary text-white hover:bg-primary-hover text-[var(--color-bg)] font-[var(--font-medium)] text-[var(--text-sm)] px-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-[var(--radius-full)] transition-[var(--transition-fast)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]">
+          Start Free Trial
+        </a>
       </div>
     } @else {
       <div class="flex items-center gap-[var(--spacing-md)]">
-        <button class="flex items-center gap-sm rounded-full  transition-normal border border-transparent">
-          <div
-            class="w-9 h-9 rounded-full bg-primary-soft text-primary hover:bg-primary hover:text-white flex items-center justify-center font-semibold text-sm cursor-pointer">
+        <a routerLink="/app/projects/dashboard" class="hidden sm:flex text-[var(--text-sm)] font-[var(--font-medium)] text-[var(--color-text)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)] mr-2">
+          Go to Dashboard
+        </a>
+        <button class="flex items-center gap-[var(--spacing-sm)] rounded-full transition-all duration-[var(--transition-fast)] border border-transparent hover:ring-2 hover:ring-[var(--color-primary-soft)] focus:outline-none">
+          <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs cursor-pointer shadow-sm transition-all duration-[var(--transition-fast)]">
             AY
           </div>
         </button>

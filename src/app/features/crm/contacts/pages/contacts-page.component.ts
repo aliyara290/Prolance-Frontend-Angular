@@ -1,4 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { ErrorMessageComponent } from '../../../../shared/ui/error-message/error-message.component';
+
 import { Router } from '@angular/router';
 import { ContactsService } from '../services/contacts.service';
 import { ContactsTableComponent } from '../components/contacts-table/contacts-table.component';
@@ -12,7 +14,7 @@ import { Contact } from '../types/contact.model';
   selector: 'app-contacts-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, ContactsTableComponent, EntityListSkeletonComponent],
+  imports: [ModuleHeaderComponent, ContactsTableComponent, EntityListSkeletonComponent, ErrorMessageComponent],
   templateUrl: './contacts-page.component.html',
 })
 export class ContactsPageComponent implements OnInit {

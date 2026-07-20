@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../../../core/config/config.service';
 import { Project, ProjectStatus, ProjectPriority } from '../types/project.model';
+import { ProjectTaskDashboardData, ProjectTaskDashboardApiResponse } from '../types/dashboard.model';
 
 interface SingleProjectResponse {
   success: boolean;
@@ -21,6 +22,10 @@ export class ProjectDetailService {
   readonly loading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
 
+  readonly dashboardData = signal<ProjectTaskDashboardData | null>(null);
+  readonly loadingDashboard = signal<boolean>(false);
+  readonly dashboardError = signal<string | null>(null);
+
   loadProject(id: string): void {
     this.loading.set(true);
     this.error.set(null);
@@ -38,10 +43,52 @@ export class ProjectDetailService {
     });
   }
 
+  loadDashboardKpis(projectId: string): void {
+    this.loadingDashboard.set(true);
+    this.dashboardError.set(null);
+    const url = `${this.config.value.apiGatewayUrl}/tasks/api/v1/tasks/project/${projectId}/kpis`;
+
+    this.http.get<ProjectTaskDashboardApiResponse>(url).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.dashboardData.set(res.data);
+        }
+        this.loadingDashboard.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load project dashboard KPIs', err);
+        this.dashboardError.set('Failed to load dashboard data.');
+        this.loadingDashboard.set(false);
+      }
+    });
+  }
+
+  readonly activities = signal<import('../types/project.model').ProjectActivity[]>([]);
+  readonly loadingActivities = signal<boolean>(false);
+
+  loadActivities(projectId: string): void {
+    this.loadingActivities.set(true);
+    this.http.get<import('../types/project.model').ProjectActivityResponse>(`${this.apiUrl}/${projectId}/activities`).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.activities.set(res.data);
+        }
+        this.loadingActivities.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load project activities', err);
+        this.loadingActivities.set(false);
+      }
+    });
+  }
+
   clear(): void {
     this.project.set(null);
     this.loading.set(true);
     this.error.set(null);
+    this.dashboardData.set(null);
+    this.loadingDashboard.set(false);
+    this.dashboardError.set(null);
   }
 
   // ── Shared UI helpers (reused by layout + child pages) ──

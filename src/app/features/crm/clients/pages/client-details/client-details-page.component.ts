@@ -1,4 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { ErrorMessageComponent } from '../../../../../shared/ui/error-message/error-message.component';
+
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClientsService } from '../../services/clients.service';
@@ -7,11 +9,12 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 import {DetailsSkeletonComponent} from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
+import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 
 @Component({
   selector: 'app-client-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent],
+  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent, DropdownMenuComponent, ErrorMessageComponent],
   templateUrl: './client-details-page.component.html',
 })
 export class ClientDetailsPageComponent implements OnInit {
@@ -82,5 +85,18 @@ export class ClientDetailsPageComponent implements OnInit {
       ARCHIVED: 'secondary',
     };
     return map[status] ?? 'secondary';
+  }
+
+  readonly moreActions: DropdownMenuItem[] = [
+    { label: 'Edit Client', value: 'edit' },
+    { label: 'Delete Client', value: 'delete', danger: true, dividerBefore: true },
+  ];
+
+  onMoreAction(item: DropdownMenuItem): void {
+    if (item.value === 'edit') {
+      this.onEdit();
+    } else if (item.value === 'delete') {
+      this.onDelete();
+    }
   }
 }

@@ -81,7 +81,7 @@ export const PROJECTS_ROUTES: Routes = [
       },
       {
         path: '',
-        redirectTo: 'overview',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
     ],

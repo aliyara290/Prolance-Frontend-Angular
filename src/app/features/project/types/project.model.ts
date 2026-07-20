@@ -81,3 +81,15 @@ export interface ProjectsListMeta {
   hasNext: boolean;
   hasPrevious: boolean;
 }
+
+export interface ProjectActivity {
+  id: string;
+  type: string;
+  payload: string;
+  occurredOn: string;
+}
+
+export interface ProjectActivityResponse {
+  success: boolean;
+  data: ProjectActivity[];
+}

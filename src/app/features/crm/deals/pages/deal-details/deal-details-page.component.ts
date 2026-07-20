@@ -7,11 +7,13 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 import { DetailsSkeletonComponent } from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
+import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
+import { ErrorMessageComponent } from '../../../../../shared/ui/error-message/error-message.component';
 
 @Component({
   selector: 'app-deal-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent],
+  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent, DropdownMenuComponent, ErrorMessageComponent],
   templateUrl: './deal-details-page.component.html',
 })
 export class DealDetailsPageComponent implements OnInit {
@@ -94,5 +96,18 @@ export class DealDetailsPageComponent implements OnInit {
       LOW: 'success',
     };
     return map[priority] ?? 'secondary';
+  }
+
+  readonly moreActions: DropdownMenuItem[] = [
+    { label: 'Edit Deal', value: 'edit' },
+    { label: 'Delete Deal', value: 'delete', danger: true, dividerBefore: true },
+  ];
+
+  onMoreAction(item: DropdownMenuItem): void {
+    if (item.value === 'edit') {
+      this.onEdit();
+    } else if (item.value === 'delete') {
+      this.onDelete();
+    }
   }
 }

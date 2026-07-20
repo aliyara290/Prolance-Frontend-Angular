@@ -17,6 +17,7 @@ export interface BackendUser {
 
 export interface WorkspaceUser {
   id: string;
+  keycloakUserId: string;
   email: string;
   firstName: string;
   lastName: string;

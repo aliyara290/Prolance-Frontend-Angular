@@ -6,6 +6,7 @@ import {
   Building2,
   ContactRound,
   Files,
+  ListChecks,
 } from 'lucide-angular';
 
 export interface CrmNavSection {
@@ -31,7 +32,7 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
         id: 'dashboard',
         label: 'Dashboard',
         icon: LayoutDashboard,
-        route: '/app/dashboard',
+        route: '/app/crm/dashboard',
       },
     ],
   },
@@ -64,6 +65,17 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
         icon: ContactRound,
         route: '/app/crm/contacts',
         // roles: ['ADMIN', 'SALES'],
+      },
+    ],
+  },
+  {
+    title: 'PROJECT MANAGEMENT',
+    items: [
+      {
+        id: 'tasks',
+        label: 'Tasks',
+        icon: ListChecks,
+        route: '/app/projects/tasks',
       },
     ],
   },

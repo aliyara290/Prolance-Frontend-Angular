@@ -33,9 +33,6 @@
 
   <nav class="flex-1 overflow-y-auto overflow-x-hidden pb-4 custom-scrollbar pt-2">
 
-    <!-- ═══════════════════════════════════════
-         CRM TAB
-         ═══════════════════════════════════════ -->
     @if (activeTab() === 'CRM') {
       @for (section of crmNavSections(); track section.title) {
         <div class="px-4 py-2 mt-1 text-text-muted text-xs font-semibold uppercase tracking-wider">

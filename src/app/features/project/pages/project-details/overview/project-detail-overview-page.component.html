@@ -1,7 +1,7 @@
 @if (detailService.project(); as project) {
 
 
-  <div class="space-y-4">
+  <div class="space-y-4 m-md mt-0 mb-md">
 
     <div class="detail-quick-stats">
       <div class="detail-stat">
@@ -47,184 +47,183 @@
               [style.backgroundColor]="detailService.getProgressColor(detailService.project()!.progress)"
             ></div>
           </div>
-          <span class="text-sm font-bold text-[var(--color-text)]">{{ detailService.project()!.progress }}%</span>
+          <span class="text-sm font-bold text-[var(--color-text)]">{{ detailService.project()!.progress | number:'1.0-1' }}%</span>
         </div>
       </div>
     </div>
 
-    <!-- Project Information -->
-    <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-      <div class="border-b border-border-strong py-4 px-5">
-        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Project Information</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Project Information -->
+
+
+      <div class="flex flex-col gap-4">
+        <!-- Schedule Information -->
+        <div class="h-max bg-bg border border-border-strong rounded-lg shadow-sm">
+          <div class="border-b border-border-strong py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Schedule</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
+            <div class="space-y-4">
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Planned Start</span>
+                <span class="font-medium text-[var(--color-text)]">
+              {{ project.plannedStartDate ? (project.plannedStartDate | date:'mediumDate') : '-' }}
+            </span>
+              </div>
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Planned End</span>
+                <span class="font-medium text-[var(--color-text)]">
+              {{ project.plannedEndDate ? (project.plannedEndDate | date:'mediumDate') : '-' }}
+            </span>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Actual Start</span>
+                <span class="font-medium text-[var(--color-text)]">
+              {{ project.actualStartDate ? (project.actualStartDate | date:'mediumDate') : '-' }}
+            </span>
+              </div>
+
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Actual End</span>
+                <span class="font-medium text-[var(--color-text)]">
+              {{ project.actualEndDate ? (project.actualEndDate | date:'mediumDate') : '-' }}
+            </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget Information -->
+        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+          <div class="border-b border-border-strong py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Budget & Cost</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
+            <div class="space-y-4">
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Estimated Budget</span>
+                <span class="font-bold text-[var(--color-text)]">{{ detailService.formatCurrency(project.estimatedBudget) }}</span>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Actual Cost</span>
+                <span class="font-bold text-[var(--color-text)]">{{ detailService.formatCurrency(project.actualCost) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!--        &lt;!&ndash; Budget utilization bar &ndash;&gt;-->
+          <!--        @if (project.estimatedBudget > 0) {-->
+          <!--          <div class="px-5 pb-5">-->
+          <!--            <div class="flex items-center justify-between mb-1.5">-->
+          <!--              <span class="text-[10px] font-bold text-[var(&#45;&#45;color-text-muted)] uppercase tracking-wider">Budget Utilization</span>-->
+          <!--              <span class="text-xs font-bold text-[var(&#45;&#45;color-text)]">-->
+          <!--              {{ ((project.actualCost / project.estimatedBudget) * 100).toFixed(1) }}%-->
+          <!--            </span>-->
+          <!--            </div>-->
+          <!--            <div class="w-full h-2 bg-[var(&#45;&#45;color-bg-muted)] rounded-full overflow-hidden">-->
+          <!--              <div-->
+          <!--                class="h-full rounded-full transition-all duration-300"-->
+          <!--                [style.width.%]="(project.actualCost / project.estimatedBudget) * 100"-->
+          <!--                [style.backgroundColor]="(project.actualCost / project.estimatedBudget) > 0.9 ? 'var(&#45;&#45;color-danger)' : (project.actualCost / project.estimatedBudget) > 0.6 ? 'var(&#45;&#45;color-warning)' : 'var(&#45;&#45;color-success)'"-->
+          <!--              ></div>-->
+          <!--            </div>-->
+          <!--          </div>-->
+          <!--        }-->
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
-        <div class="space-y-4">
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Project Name</span>
-            <span class="font-semibold text-[var(--color-text)]">{{ project.name }}</span>
-          </div>
+      <div class="h-max bg-bg border border-border-strong rounded-lg shadow-sm">
+        <div class="border-b border-border-strong py-4 px-5">
+          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Project Information</h2>
+        </div>
 
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Prefix</span>
-            <span class="font-mono font-bold text-[var(--color-text)]">{{ project.prefix }}</span>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-1">
+              <span class="text-[var(--color-text-muted)] font-medium">Project Name</span>
+              <span class="font-semibold text-[var(--color-text)]">{{ project.name }}</span>
+            </div>
 
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Status</span>
-            <span
-              class="px-2 py-0.5 text-[10px] font-semibold text-white rounded uppercase tracking-wide"
-              [style.backgroundColor]="detailService.getStatusBg(project.status)"
-            >
+            <div class="flex justify-between items-center py-1">
+              <span class="text-[var(--color-text-muted)] font-medium">Prefix</span>
+              <span class="font-mono font-bold text-[var(--color-text)]">{{ project.prefix }}</span>
+            </div>
+
+            <div class="flex justify-between items-center py-1">
+              <span class="text-[var(--color-text-muted)] font-medium">Status</span>
+              <span
+                class="px-2 py-0.5 text-[10px] font-semibold text-white rounded uppercase tracking-wide"
+                [style.backgroundColor]="detailService.getStatusBg(project.status)"
+              >
               {{ project.status }}
             </span>
-          </div>
+            </div>
 
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Priority</span>
-            <div class="flex items-center gap-1.5">
+            <div class="flex justify-between items-center py-1">
+              <span class="text-[var(--color-text-muted)] font-medium">Priority</span>
+              <div class="flex items-center gap-1.5">
               <span
                 class="w-2 h-2 rounded-full"
                 [style.backgroundColor]="detailService.getPriorityColor(project.priority)"
               ></span>
-              <span class="font-semibold text-[var(--color-text)]">{{ project.priority }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Owner ID</span>
-            <span class="font-mono text-xs text-[var(--color-text)]">{{ project.ownerId }}</span>
-          </div>
-
-          @if (project.clientId) {
-            <div class="flex justify-between items-center py-1">
-              <span class="text-[var(--color-text-muted)] font-medium">Client ID</span>
-              <span class="font-mono text-xs text-[var(--color-text)]">{{ project.clientId }}</span>
-            </div>
-          }
-
-          @if (project.projectManagerId) {
-            <div class="flex justify-between items-center py-1">
-              <span class="text-[var(--color-text-muted)] font-medium">Project Manager</span>
-              <span class="font-mono text-xs text-[var(--color-text)]">{{ project.projectManagerId }}</span>
-            </div>
-          }
-
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Progress</span>
-            <div class="flex items-center gap-2">
-              <div class="w-16 h-1.5 bg-[var(--color-bg-muted)] rounded-full overflow-hidden">
-                <div
-                  class="h-full rounded-full"
-                  [style.width.%]="project.progress"
-                  [style.backgroundColor]="detailService.getProgressColor(project.progress)"
-                ></div>
+                <span class="font-semibold text-[var(--color-text)]">{{ project.priority }}</span>
               </div>
-              <span class="font-bold text-[var(--color-text)]">{{ project.progress }}%</span>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-1">
+              <span class="text-[var(--color-text-muted)] font-medium">Owner</span>
+              <span class="font-semibold text-[var(--color-text)]">{{ ownerName() }}</span>
+            </div>
+
+            @if (project.clientId) {
+              <div class="flex justify-between items-center py-1">
+                <span class="text-[var(--color-text-muted)] font-medium">Client</span>
+                <span class="font-semibold text-[var(--color-text)]">{{ clientName() || project.clientId }}</span>
+              </div>
+            }
+
+            <div class="flex justify-between items-center py-1">
+              <span class="text-[var(--color-text-muted)] font-medium">Progress</span>
+              <div class="flex items-center gap-2">
+                <div class="w-16 h-1.5 bg-[var(--color-bg-muted)] rounded-full overflow-hidden">
+                  <div
+                    class="h-full rounded-full"
+                    [style.width.%]="project.progress"
+                    [style.backgroundColor]="detailService.getProgressColor(project.progress)"
+                  ></div>
+                </div>
+                <span class="font-bold text-[var(--color-text)]">{{ project.progress | number:'1.0-1' }}%</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Schedule Information -->
-    <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-      <div class="border-b border-border-strong py-4 px-5">
-        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Schedule</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
-        <div class="space-y-4">
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Planned Start</span>
-            <span class="font-medium text-[var(--color-text)]">
-              {{ project.plannedStartDate ? (project.plannedStartDate | date:'mediumDate') : '-' }}
-            </span>
+      <!-- Description -->
+      @if (project.description) {
+        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
+          <div class="border-b border-border-strong py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Description</h2>
           </div>
-
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Planned End</span>
-            <span class="font-medium text-[var(--color-text)]">
-              {{ project.plannedEndDate ? (project.plannedEndDate | date:'mediumDate') : '-' }}
-            </span>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Actual Start</span>
-            <span class="font-medium text-[var(--color-text)]">
-              {{ project.actualStartDate ? (project.actualStartDate | date:'mediumDate') : '-' }}
-            </span>
-          </div>
-
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Actual End</span>
-            <span class="font-medium text-[var(--color-text)]">
-              {{ project.actualEndDate ? (project.actualEndDate | date:'mediumDate') : '-' }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Budget Information -->
-    <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-      <div class="border-b border-border-strong py-4 px-5">
-        <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Budget & Cost</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
-        <div class="space-y-4">
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Estimated Budget</span>
-            <span class="font-bold text-[var(--color-text)]">{{ detailService.formatCurrency(project.estimatedBudget) }}</span>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex justify-between items-center py-1">
-            <span class="text-[var(--color-text-muted)] font-medium">Actual Cost</span>
-            <span class="font-bold text-[var(--color-text)]">{{ detailService.formatCurrency(project.actualCost) }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Budget utilization bar -->
-      @if (project.estimatedBudget > 0) {
-        <div class="px-5 pb-5">
-          <div class="flex items-center justify-between mb-1.5">
-            <span class="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Budget Utilization</span>
-            <span class="text-xs font-bold text-[var(--color-text)]">
-              {{ ((project.actualCost / project.estimatedBudget) * 100).toFixed(1) }}%
-            </span>
-          </div>
-          <div class="w-full h-2 bg-[var(--color-bg-muted)] rounded-full overflow-hidden">
-            <div
-              class="h-full rounded-full transition-all duration-300"
-              [style.width.%]="(project.actualCost / project.estimatedBudget) * 100"
-              [style.backgroundColor]="(project.actualCost / project.estimatedBudget) > 0.9 ? 'var(--color-danger)' : (project.actualCost / project.estimatedBudget) > 0.6 ? 'var(--color-warning)' : 'var(--color-success)'"
-            ></div>
+          <div class="p-5">
+            <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">
+              {{ project.description }}
+            </p>
           </div>
         </div>
       }
     </div>
 
-    <!-- Description -->
-    @if (project.description) {
-      <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-        <div class="border-b border-border-strong py-4 px-5">
-          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Description</h2>
-        </div>
-        <div class="p-5">
-          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">
-            {{ project.description }}
-          </p>
-        </div>
-      </div>
-    }
 
   </div>
 }

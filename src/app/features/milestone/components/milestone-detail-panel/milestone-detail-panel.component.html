@@ -1,0 +1,271 @@
+<div
+  class="fixed inset-0 z-[9998] transition-all duration-300"
+  [class.pointer-events-none]="!isOpen"
+  [class.opacity-0]="!isOpen"
+  [class.opacity-100]="isOpen"
+>
+  <!-- Backdrop -->
+  <div
+    class="absolute inset-0 bg-black/40 backdrop-blur-sm panel-backdrop transition-opacity duration-300"
+    (click)="onBackdropClick($event)"
+  ></div>
+
+  <!-- Panel -->
+  <div
+    class="absolute right-0 top-0 bottom-0 w-full max-w-[600px] bg-[var(--color-bg)] shadow-[var(--shadow-2xl)] border-l border-[var(--color-border)] flex flex-col transform transition-transform duration-300 ease-in-out"
+    [class.translate-x-full]="!isOpen"
+    [class.translate-x-0]="isOpen"
+  >
+    @if (milestone) {
+      <!-- Header -->
+      <div class="flex flex-col border-b border-[var(--color-border)] bg-[var(--color-bg)] flex-shrink-0 relative z-10">
+
+        <div class="flex items-start justify-between px-6 pt-6 pb-2">
+          <div class="flex flex-col gap-3">
+
+            <h2 class="text-xl font-semibold text-[var(--color-text)] m-0 leading-tight">{{ milestone.title }}</h2>
+          </div>
+
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <app-dropdown-menu
+              [items]="panelMenuItems"
+              [iconOnly]="true"
+              (itemSelected)="onMenuItemClick($event)"
+            />
+            <button
+              type="button"
+              (click)="onClose()"
+              class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors ml-1"
+            >
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+
+
+        <!-- Section Tabs -->
+        <div class="panel-tabs-wrapper">
+          <div class="panel-tabs">
+            <button
+              class="panel-tab"
+              [class.active]="activeSection() === 'details'"
+              (click)="setSection('details')"
+            >Details</button>
+            <button
+              class="panel-tab"
+              [class.active]="activeSection() === 'tasks'"
+              (click)="setSection('tasks')"
+            >
+              Tasks
+              @if (tasks() && tasks().length > 0) {
+                <span class="panel-tab-count">{{ tasks().length }}</span>
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="flex-1 overflow-y-auto bg-[var(--color-bg-subtle)] scrollbar-thin">
+        <div class="p-6">
+
+          @if (activeSection() === 'details') {
+            <div class="space-y-6">
+
+              <!-- Fields List -->
+              <div class="detail-fields">
+                <!-- Status -->
+                <div class="detail-field">
+                  <div class="detail-field-label">
+                    <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    <span>Status</span>
+                  </div>
+                  <div class="detail-field-value">
+                    <span
+                      class="detail-field-tag"
+                      [style.color]="getStatusColor(milestone.status)"
+                      [style.background]="getStatusBg(milestone.status)"
+                    >
+                      {{ formatStatus(milestone.status) }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Sequence Order -->
+                <div class="detail-field">
+                  <div class="detail-field-label">
+                    <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                    </svg>
+                    <span>Sequence Order</span>
+                  </div>
+                  <div class="detail-field-value">
+                    <span class="detail-field-text">{{ milestone.sequenceOrder }}</span>
+                  </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="detail-field">
+                  <div class="detail-field-label">
+                    <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                    </svg>
+                    <span>Progress</span>
+                  </div>
+                  <div class="detail-field-value">
+                    <div class="flex items-center gap-3">
+                      <span class="detail-field-text w-10 font-medium">{{ milestone.progressPercentage }}%</span>
+                      <div class="flex-1 h-2 bg-[var(--color-bg-muted)] rounded-full overflow-hidden max-w-[150px]">
+                        <div
+                          class="h-full bg-[var(--color-primary)] transition-all duration-500"
+                          [style.width.%]="milestone.progressPercentage"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Start Date -->
+                <div class="detail-field">
+                  <div class="detail-field-label">
+                    <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+                    </svg>
+                    <span>Start Date</span>
+                  </div>
+                  <div class="detail-field-value">
+                    @if (milestone.startDate) {
+                      <span class="detail-field-text">{{ milestone.startDate | date:'MMM d, yyyy' }}</span>
+                    } @else {
+                      <span class="detail-field-empty">Not set</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Due Date -->
+                <div class="detail-field">
+                  <div class="detail-field-label">
+                    <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>Due Date</span>
+                  </div>
+                  <div class="detail-field-value">
+                    @if (milestone.dueDate) {
+                      <span class="detail-field-text">{{ milestone.dueDate | date:'MMM d, yyyy' }}</span>
+                    } @else {
+                      <span class="detail-field-empty">Not set</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Completed At -->
+                @if (milestone.completedAt) {
+                  <div class="detail-field">
+                    <div class="detail-field-label">
+                      <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                      </svg>
+                      <span>Completed At</span>
+                    </div>
+                    <div class="detail-field-value">
+                      <span class="detail-field-text">{{ milestone.completedAt | date:'MMM d, yyyy' }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- Description -->
+              @if (milestone.description) {
+                <div class="detail-description-section">
+                  <div class="detail-description-header">
+                    <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="17" x2="7" y1="10" y2="10"/><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="3" y1="14" y2="14"/><line x1="17" x2="7" y1="18" y2="18"/>
+                    </svg>
+                    <span>Description</span>
+                  </div>
+                  <p class="detail-description-text">{{ milestone.description }}</p>
+                </div>
+              }
+
+            </div>
+          }
+
+          @if (activeSection() === 'tasks') {
+            <div class="space-y-4">
+              @if (loadingTasks()) {
+                <div class="flex flex-col gap-3">
+                  @for (i of [1, 2, 3]; track i) {
+                    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4">
+                      <div class="flex items-start justify-between mb-3">
+                        <div class="h-4 bg-[var(--color-border)] rounded w-1/3 animate-pulse"></div>
+                        <div class="h-4 bg-[var(--color-border)] rounded w-16 animate-pulse"></div>
+                      </div>
+                      <div class="flex items-center gap-4">
+                        <div class="h-3 bg-[var(--color-bg-muted)] rounded w-24 animate-pulse"></div>
+                        <div class="h-3 bg-[var(--color-bg-muted)] rounded w-20 animate-pulse"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else if (tasks().length === 0) {
+                <div class="flex flex-col items-center justify-center py-12 px-6 text-center bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] border-dashed">
+                  <div class="w-12 h-12 rounded-full bg-[var(--color-bg-subtle)] flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-sm font-semibold text-[var(--color-text)] mb-1">No tasks found</h3>
+                  <p class="text-xs text-[var(--color-text-muted)] mb-4 max-w-[250px]">
+                    This milestone doesn't have any tasks associated with it yet.
+                  </p>
+                </div>
+              } @else {
+                <div class="flex flex-col gap-3">
+                  @for (task of tasks(); track task.id) {
+                    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4 hover:border-[var(--color-primary-soft)] transition-colors cursor-pointer group">
+                      <div class="flex items-start justify-between mb-2">
+                        <h4 class="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-1 flex-1 pr-4">
+                          {{ task.title }}
+                        </h4>
+                        <span
+                          class="px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap"
+                          [style.color]="getTaskStatusColor(task.status)"
+                          [style.background]="getTaskStatusBg(task.status)"
+                        >
+                          {{ task.status.replace('_', ' ') | titlecase }}
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-4 text-xs text-[var(--color-text-muted)]">
+                        @if (task.dueDate) {
+                          <div class="flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            {{ task.dueDate | date:'MMM d, yyyy' }}
+                          </div>
+                        }
+
+                        <div class="flex items-center gap-1.5">
+                          <svg class="w-3.5 h-3.5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><path d="m8 12 2 2 4-4"/>
+                          </svg>
+                          {{ task.priority | titlecase }}
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

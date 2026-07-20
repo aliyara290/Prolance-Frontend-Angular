@@ -1,0 +1,223 @@
+<div class="h-full flex flex-col overflow-y-auto p-4 mx-auto space-y-6">
+
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h2 class="text-2xl font-[var(--font-semibold)] text-text mb-1 tracking-tight">CRM Dashboard</h2>
+      <p class="text-sm text-text-muted">Overview of your leads, deals, and pipeline performance.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="flex items-center gap-2 px-3 py-2 bg-text hover:bg-text-inverse text-bg rounded-[var(--radius-md)] text-sm font-semibold transition-colors shadow-sm cursor-pointer">
+        <lucide-icon [img]="icons.plus" size="16"></lucide-icon>
+        <span>New Lead</span>
+      </button>
+    </div>
+  </div>
+  
+  @if (isLoading()) {
+    <app-dashboard-skeleton></app-dashboard-skeleton>
+  } @else if (error()) {
+    <app-error-message 
+      title="Failed to Load Dashboard" 
+      [message]="error() ?? 'An unexpected error occurred while fetching the CRM data.'" 
+      layout="full"
+      [showRetry]="false">
+    </app-error-message>
+  } @else if (dashboardData(); as data) {
+    
+    <!-- Top Metrics Enterprise Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Metric 1 -->
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
+        <div class="p-6 flex flex-col h-full">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Total Leads</h3>
+            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-text">
+              <lucide-icon [img]="icons.users" size="16"></lucide-icon>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.totalLeads | number }}</div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-medium text-text-muted">Currently active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metric 2 -->
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
+        <div class="p-6 flex flex-col h-full">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Conversion Rate</h3>
+            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-text">
+              <lucide-icon [img]="icons.activity" size="16"></lucide-icon>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.leadConversionRate | number:'1.0-2' }}%</div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-medium text-text-muted">Lead to Client</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metric 3 -->
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
+        <div class="p-6 flex flex-col h-full">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Open Deals</h3>
+            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-text">
+              <lucide-icon [img]="icons.briefcase" size="16"></lucide-icon>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.openDeals | number }}</div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-medium text-text-muted">In pipeline stages</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metric 4 -->
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
+        <div class="p-6 flex flex-col h-full">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Pipeline Value</h3>
+            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-[var(--color-success)]">
+              <lucide-icon [img]="icons.trendingUp" size="16"></lucide-icon>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.totalPipelineValue | currency:'USD':'symbol':'1.0-0' }}</div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-medium text-text-muted">Total projected revenue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Chart -->
+    <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[350px]">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-[var(--font-semibold)] text-text tracking-tight">Pipeline Value by Stage</h3>
+      </div>
+      <div class="flex-1 relative w-full h-full min-h-[250px]">
+        @if (pipelineValueData?.labels?.length > 0) {
+          <p-chart type="bar" [data]="pipelineValueData" [options]="barOptions" height="100%"></p-chart>
+        } @else {
+          <div class="text-text-muted flex flex-col items-center justify-center h-full">
+            <lucide-icon [img]="icons.trendingUp" size="32" class="mb-2 opacity-50"></lucide-icon>
+            <span class="text-sm">No pipeline data available</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Doughnut Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
+        <h3 class="text-sm font-[var(--font-semibold)] text-text tracking-tight mb-4">Leads by Status</h3>
+        <div class="flex-1 relative w-full h-full">
+          @if (leadsByStatusData?.labels?.length > 0) {
+            <p-chart type="doughnut" [data]="leadsByStatusData" [options]="doughnutOptions" height="100%"></p-chart>
+          } @else {
+            <div class="text-text-muted flex flex-col items-center justify-center h-full">
+              <lucide-icon [img]="icons.users" size="32" class="mb-2 opacity-50"></lucide-icon>
+              <span class="text-sm">No leads data available</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
+        <h3 class="text-sm font-[var(--font-semibold)] text-text tracking-tight mb-4">Deals by Stage</h3>
+        <div class="flex-1 relative w-full h-full">
+          @if (dealsByStageData?.labels?.length > 0) {
+            <p-chart type="pie" [data]="dealsByStageData" [options]="pieOptions" height="100%"></p-chart>
+          } @else {
+            <div class="text-text-muted flex flex-col items-center justify-center h-full">
+              <lucide-icon [img]="icons.briefcase" size="32" class="mb-2 opacity-50"></lucide-icon>
+              <span class="text-sm">No deals data available</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
+        <h3 class="text-sm font-[var(--font-semibold)] text-text tracking-tight mb-4">Won vs Lost</h3>
+        <div class="flex-1 relative w-full h-full">
+          @if (wonVsLostDealsData?.labels?.length > 0) {
+            <p-chart type="doughnut" [data]="wonVsLostDealsData" [options]="doughnutOptions" height="100%"></p-chart>
+          } @else {
+            <div class="text-text-muted flex flex-col items-center justify-center h-full">
+              <lucide-icon [img]="icons.activity" size="32" class="mb-2 opacity-50"></lucide-icon>
+              <span class="text-sm">No data available</span>
+            </div>
+          }
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Table Row -->
+    <div class="grid grid-cols-1">
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] overflow-hidden shadow-sm flex flex-col h-max">
+        <div class="px-5 py-4 border-b border-border-strong flex items-center justify-between bg-bg-muted/30">
+          <h3 class="text-xs font-[var(--font-semibold)] text-text-muted uppercase tracking-wider">Recent CRM Activity</h3>
+          <span class="text-xs font-medium text-text-muted">{{ data.kpis?.recentActivities?.length || 0 }} events</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-bg-muted border-b border-border-strong text-text-muted font-medium text-xs uppercase tracking-wider">
+              <tr>
+                <th class="px-5 py-3">Event Detail</th>
+                <th class="px-5 py-3">Entity</th>
+                <th class="px-5 py-3">Action</th>
+                <th class="px-5 py-3">Date</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-strong text-text">
+              @for (activity of data.kpis?.recentActivities; track activity.id) {
+                <tr class="hover:bg-bg-hover transition-colors group">
+                  <td class="px-5 py-3">
+                    <span class="font-[var(--font-semibold)] text-text tracking-tight">{{ activity.message }}</span>
+                  </td>
+                  <td class="px-5 py-3">
+                    <div class="flex items-center gap-2">
+                      <lucide-icon [img]="getIconForActivity(activity.entityType)" size="14" class="text-text-muted"></lucide-icon>
+                      <span class="text-text-muted">{{ activity.entityType | titlecase }}</span>
+                    </div>
+                  </td>
+                  <td class="px-5 py-3">
+                    <span class="px-2.5 py-1 text-[11px] font-[var(--font-medium)] rounded-md uppercase"
+                          [class.bg-success-soft]="activity.action === 'CREATE'" [class.text-success]="activity.action === 'CREATE'"
+                          [class.bg-info-soft]="activity.action === 'UPDATE'" [class.text-info]="activity.action === 'UPDATE'"
+                          [class.bg-danger-soft]="activity.action === 'DELETE'" [class.text-danger]="activity.action === 'DELETE'"
+                          [class.bg-primary-soft]="activity.action !== 'CREATE' && activity.action !== 'UPDATE' && activity.action !== 'DELETE'" 
+                          [class.text-primary]="activity.action !== 'CREATE' && activity.action !== 'UPDATE' && activity.action !== 'DELETE'">
+                      {{ activity.action }}
+                    </span>
+                  </td>
+                  <td class="px-5 py-3 text-text-muted text-xs">{{ activity.createdAt | date:'mediumDate' }}</td>
+                </tr>
+              }
+              @if (!data.kpis?.recentActivities || data.kpis?.recentActivities?.length === 0) {
+                <tr>
+                  <td colspan="4" class="p-8 text-center text-sm text-text-muted">No recent activity found.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  }
+</div>

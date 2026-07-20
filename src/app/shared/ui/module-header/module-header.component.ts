@@ -28,12 +28,6 @@ export class ModuleHeaderComponent {
   /** The page/module title e.g. "Contacts", "Leads" */
   @Input({ required: true }) title!: string;
 
-  /** The list of tabs shown under the title */
-  @Input() tabs: ModuleTab[] = [];
-
-  /** The currently active tab id */
-  @Input() activeTabId: string | null = null;
-
   /** Label for the primary CTA button */
   @Input() primaryActionLabel: string = 'Create';
 
@@ -45,9 +39,6 @@ export class ModuleHeaderComponent {
 
   /** Items for the tab-level "..." menu */
   @Input() tabMoreItems: ModuleHeaderAction[] = [];
-
-  /** Emitted when the active tab changes */
-  @Output() tabChange = new EventEmitter<ModuleTab>();
 
   /** Emitted when primary CTA button is clicked */
   @Output() primaryAction = new EventEmitter<void>();
@@ -61,9 +52,6 @@ export class ModuleHeaderComponent {
   /** Emitted when the view mode changes (list/kanban) */
   @Output() viewChange = new EventEmitter<'list' | 'kanban'>();
 
-  /** Emitted when a tab-more item is selected */
-  @Output() tabMoreSelected = new EventEmitter<ModuleHeaderAction>();
-
   /** Set the active view from parent */
   @Input() set view(v: 'list' | 'kanban') {
     if (v) {
@@ -71,23 +59,15 @@ export class ModuleHeaderComponent {
     }
   }
 
+  @Input() showListView: boolean = true;
+  @Input() showKanbanView: boolean = false;
+
   // View toggle: 'list' | 'grid'
   readonly activeView = signal<'list' | 'kanban'>('list');
-
-  // Toolbar visibility
-  readonly filterPanelOpen = signal(false);
-
-  setActiveTab(tab: ModuleTab): void {
-    this.tabChange.emit(tab);
-  }
 
   setView(view: 'list' | 'kanban'): void {
     this.activeView.set(view);
     this.viewChange.emit(view);
-  }
-
-  toggleFilterPanel(): void {
-    this.filterPanelOpen.update(v => !v);
   }
 
   onPrimaryAction(): void {
@@ -100,10 +80,6 @@ export class ModuleHeaderComponent {
 
   onMoreActionSelected(action: ModuleHeaderAction): void {
     this.moreActionSelected.emit(action);
-  }
-
-  onTabMoreSelected(action: ModuleHeaderAction): void {
-    this.tabMoreSelected.emit(action);
   }
 
   // Convert ModuleHeaderAction to DropdownMenuItem for the shared component

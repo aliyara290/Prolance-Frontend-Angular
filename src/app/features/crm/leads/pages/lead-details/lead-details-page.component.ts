@@ -1,4 +1,6 @@
 import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
+import { ErrorMessageComponent } from '../../../../../shared/ui/error-message/error-message.component';
+
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LeadsService } from '../../services/leads.service';
@@ -8,11 +10,12 @@ import { ButtonModule } from 'primeng/button';
 
 import {ArrowLeft, LucideAngularModule} from 'lucide-angular';
 import {DetailsSkeletonComponent} from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
+import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 
 @Component({
   selector: 'app-lead-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent],
+  imports: [CommonModule, RouterModule, TagModule, ButtonModule, LucideAngularModule, DetailsSkeletonComponent, DropdownMenuComponent, ErrorMessageComponent],
   templateUrl: './lead-details-page.component.html',
 })
 export class LeadDetailsPageComponent implements OnInit {
@@ -110,6 +113,28 @@ export class LeadDetailsPageComponent implements OnInit {
       LOW: 'info',
     };
     return map[priority] ?? 'secondary';
+  }
+
+  readonly moreActions: DropdownMenuItem[] = [
+    { label: 'Edit Lead', value: 'edit' },
+    { label: 'Convert to Deal', value: 'convert' },
+    { label: 'Email Lead', value: 'email' },
+    { label: 'Delete Lead', value: 'delete', danger: true, dividerBefore: true },
+  ];
+
+  onMoreAction(item: DropdownMenuItem): void {
+    if (item.value === 'edit') {
+      this.onEdit();
+    } else if (item.value === 'delete') {
+      this.onDelete();
+    } else if (item.value === 'convert') {
+      this.onConvert();
+    } else if (item.value === 'email') {
+      const email = this.lead()?.email || this.lead()?.contact?.email;
+      if (email) {
+        window.location.href = `mailto:${email}`;
+      }
+    }
   }
 
   protected readonly ArrowLeft = ArrowLeft;

@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy, computed, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -6,7 +6,9 @@ import { ProjectsService } from '../../services/projects.service';
 import { ClientsService } from '../../../crm/clients/services/clients.service';
 import { ProjectStatus, ProjectPriority } from '../../types/project.model';
 import { Client } from '../../../crm/clients/types/client.model';
-import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { ArrowLeft, LucideAngularModule, Search, ChevronDown, Check } from 'lucide-angular';
+import { UsersStateService } from '../../../tenant/settings/users/service/users-state.service';
+import { WorkspaceUser } from '../../../tenant/settings/users/models/user.models';
 
 @Component({
   selector: 'app-project-form-page',
@@ -21,6 +23,8 @@ export class ProjectFormPageComponent implements OnInit {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly usersState = inject(UsersStateService);
+  private readonly elementRef = inject(ElementRef);
 
   readonly isEditMode = signal(false);
   readonly currentProjectId = signal<string | null>(null);
@@ -43,12 +47,64 @@ export class ProjectFormPageComponent implements OnInit {
   ];
 
   readonly ArrowLeft = ArrowLeft;
+  readonly icons = {
+    search: Search,
+    chevronDown: ChevronDown,
+    check: Check
+  };
+
+  // User Dropdown State
+  readonly users = this.usersState.usersList;
+  readonly isUserDropdownOpen = signal(false);
+  readonly userSearchQuery = signal('');
+
+  readonly filteredProjectManagers = computed(() => {
+    const q = this.userSearchQuery().toLowerCase();
+    return this.users().filter(u => 
+      !q || 
+      `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q)
+    );
+  });
+
+  get selectedProjectManager(): WorkspaceUser | undefined {
+    const id = this.projectForm?.get('projectManagerId')?.value;
+    return this.users().find(u => u.id === id);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const targetElement = event.target as HTMLElement;
+    if (this.isUserDropdownOpen() && !targetElement.closest('.pm-dropdown-container')) {
+      this.isUserDropdownOpen.set(false);
+    }
+  }
+
+  toggleUserDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isUserDropdownOpen.update(v => !v);
+    if (this.isUserDropdownOpen()) {
+      this.userSearchQuery.set('');
+    }
+  }
+
+  selectProjectManager(user: WorkspaceUser | null): void {
+    this.projectForm.patchValue({ projectManagerId: user ? user.id : '' });
+    this.isUserDropdownOpen.set(false);
+    this.userSearchQuery.set('');
+  }
+
+  onUserSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.userSearchQuery.set(input.value);
+  }
 
   projectForm!: FormGroup;
 
   ngOnInit(): void {
     this.initForm();
     this.loadDropdownData();
+    this.usersState.loadUsers();
     this.checkEditMode();
   }
 

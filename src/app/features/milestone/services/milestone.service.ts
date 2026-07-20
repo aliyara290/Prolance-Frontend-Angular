@@ -56,6 +56,29 @@ export class MilestoneService {
     });
   }
 
+  loadMilestonesByProject(projectId: string, page?: number, size?: number): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    let params = new HttpParams();
+    if (page !== undefined) params = params.set('page', page.toString());
+    if (size !== undefined) params = params.set('size', size.toString());
+
+    this.http.get<ApiResponse<Milestone[]>>(`${this.baseProjectUrl}/${projectId}/milestones`, { params }).subscribe({
+      next: (res) => {
+        const data = Array.isArray(res.data) ? res.data : res.data ? [res.data] : [];
+        this.milestones.set(data as Milestone[]);
+        this.totalCount.set(res.meta?.totalElements ?? data.length);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load project milestones', err);
+        this.error.set('Failed to load project milestones from the server.');
+        this.loading.set(false);
+      },
+    });
+  }
+
   getMilestonesByStatus(status: string, page?: number, size?: number): Observable<ApiResponse<Milestone[]>> {
     let params = new HttpParams();
     if (page !== undefined) params = params.set('page', page.toString());

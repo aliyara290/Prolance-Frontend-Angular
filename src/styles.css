@@ -138,7 +138,7 @@
   --z-dropdown: 1000;
   --z-sticky: 1020;
   --z-fixed: 1030;
-  --z-modal-backdrop: 1040;
+  --z-modal-backdrop: 1000000000000000000040;
   --z-modal: 1050;
   --z-tooltip: 1060;
 }
@@ -204,4 +204,80 @@ input {
 
 input::placeholder {
   color: var(--color-text-inverse) !important;
+}
+
+/* =========================================
+   SKELETON ANIMATION
+========================================= */
+.skeleton {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-muted)    25%,
+    var(--color-bg-inverse)  50%,
+    var(--color-bg-muted)    75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: var(--color-bg-muted);
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-two {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-inverse)   25%,
+    white  50%,
+    #EFEFEF   75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: var(--color-bg-muted);
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Internet Explorer and old Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+
+input::placeholder {
+  color: var(--color-text-muted) !important;
+}
+
+select:valid {
+  color: var(--color-text-muted) !important;
+}
+
+select:invalid {
+  color: var(--color-text-muted) !important;
 }

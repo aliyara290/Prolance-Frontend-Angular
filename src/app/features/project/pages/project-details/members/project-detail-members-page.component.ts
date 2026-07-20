@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectDetailService } from '../../../services/project-detail.service';
@@ -8,6 +8,7 @@ import { WorkspaceUser } from '../../../../tenant/settings/users/models/user.mod
 import {
   ProjectMember,
   MemberRole,
+  MemberStatus,
   AddMemberRequest,
   UpdateMemberRequest,
   ALL_MEMBER_ROLES,
@@ -15,11 +16,12 @@ import {
   MEMBER_ROLE_COLORS,
   MEMBER_STATUS_COLORS,
 } from '../../../types/project-member.model';
+import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 
 @Component({
   selector: 'app-project-detail-members-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DropdownMenuComponent],
   templateUrl: './project-detail-members-page.component.html',
   styleUrls: ['./project-detail-members-page.component.css'],
 })
@@ -34,14 +36,21 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
   readonly selectedRole = signal<MemberRole>('MEMBER');
   readonly selectedAllocation = signal<number>(100);
   readonly addingMember = signal<boolean>(false);
+  readonly addUserSearch = signal<string>('');
 
   // ── Edit Member ──
   readonly editingMemberId = signal<string | null>(null);
   readonly editRole = signal<MemberRole>('MEMBER');
   readonly editAllocation = signal<number>(100);
 
-  // ── Search ──
+  // ── Search & Filter ──
   readonly searchQuery = signal<string>('');
+  readonly filterRole = signal<MemberRole | 'ALL'>('ALL');
+  readonly filterStatus = signal<MemberStatus | 'ALL'>('ALL');
+
+  // ── Detail Drawer ──
+  readonly showDetailDrawer = signal<boolean>(false);
+  readonly selectedMember = signal<ProjectMember | null>(null);
 
   // ── Constants ──
   readonly allRoles = ALL_MEMBER_ROLES;
@@ -49,34 +58,62 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
   readonly roleColors = MEMBER_ROLE_COLORS;
   readonly statusColors = MEMBER_STATUS_COLORS;
 
-  // ── Tenant Users (for select dropdown) ──
+  // ── Tenant Users ──
   readonly tenantUsers = this.usersStateService.usersList;
 
-  // ── Available Users (not yet added to this project) ──
+  // ── Available Users (not yet added) ──
   readonly availableUsers = computed(() => {
     const currentMemberUserIds = new Set(this.membersService.members().map(m => m.userId));
-    return this.tenantUsers().filter(u => !currentMemberUserIds.has(u.id) && u.status === 'ACTIVE');
+    return this.tenantUsers().filter(u => !currentMemberUserIds.has(u.keycloakUserId) && u.status === 'ACTIVE');
+  });
+
+  // ── Filtered available users for add modal search ──
+  readonly filteredAvailableUsers = computed(() => {
+    const query = this.addUserSearch().toLowerCase();
+    const users = this.availableUsers();
+    if (!query) return users;
+    return users.filter(u => {
+      const fullName = `${u.firstName} ${u.lastName}`.toLowerCase();
+      return fullName.includes(query) || u.email.toLowerCase().includes(query);
+    });
   });
 
   // ── Filtered Members ──
   readonly filteredMembers = computed(() => {
     const query = this.searchQuery().toLowerCase();
-    const members = this.membersService.members();
+    const roleFilter = this.filterRole();
+    const statusFilter = this.filterStatus();
+    let members = this.membersService.members();
+
+    if (roleFilter !== 'ALL') {
+      members = members.filter(m => m.role === roleFilter);
+    }
+    if (statusFilter !== 'ALL') {
+      members = members.filter(m => m.status === statusFilter);
+    }
     if (!query) return members;
+
     const users = this.tenantUsers();
     return members.filter(m => {
-      const user = users.find(u => u.id === m.userId);
+      const user = users.find(u => u.keycloakUserId === m.userId);
       if (!user) return true;
       const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
       return fullName.includes(query) || user.email.toLowerCase().includes(query) || m.role.toLowerCase().includes(query);
     });
   });
 
+
+
+  constructor() {
+    effect(() => {
+      const project = this.detailService.project();
+      if (project) {
+        this.membersService.loadMembers(project.id, 0, 100);
+      }
+    });
+  }
+
   ngOnInit(): void {
-    const project = this.detailService.project();
-    if (project) {
-      this.membersService.loadMembers(project.id, 0, 100);
-    }
   }
 
   ngOnDestroy(): void {
@@ -84,23 +121,28 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
   }
 
   getUserForMember(member: ProjectMember): WorkspaceUser | null {
-    return this.tenantUsers().find(u => u.id === member.userId) ?? null;
+    return this.tenantUsers().find(u => u.keycloakUserId === member.userId) ?? null;
   }
 
   getInitials(user: WorkspaceUser): string {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   }
 
-  // ── Add Member ──
+  // ── Add Modal ──
   openAddModal(): void {
     this.selectedUserId.set('');
     this.selectedRole.set('MEMBER');
     this.selectedAllocation.set(100);
+    this.addUserSearch.set('');
     this.showAddModal.set(true);
   }
 
   closeAddModal(): void {
     this.showAddModal.set(false);
+  }
+
+  selectUserForAdd(user: WorkspaceUser): void {
+    this.selectedUserId.set(user.keycloakUserId);
   }
 
   onAddMember(): void {
@@ -128,7 +170,18 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Edit Member ──
+  // ── Detail Drawer ──
+  openMemberDetail(member: ProjectMember): void {
+    this.selectedMember.set(member);
+    this.showDetailDrawer.set(true);
+  }
+
+  closeDetailDrawer(): void {
+    this.showDetailDrawer.set(false);
+    this.selectedMember.set(null);
+  }
+
+  // ── Inline Edit ──
   startEdit(member: ProjectMember): void {
     this.editingMemberId.set(member.userId);
     this.editRole.set(member.role);
@@ -159,7 +212,6 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Remove Member ──
   onRemove(member: ProjectMember): void {
     const project = this.detailService.project();
     const user = this.getUserForMember(member);
@@ -168,11 +220,50 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
     if (!project || !confirm(`Remove "${name}" from this project?`)) return;
 
     this.membersService.removeMember(project.id, member.userId).subscribe({
+      next: () => {
+        if (this.selectedMember()?.userId === member.userId) {
+          this.closeDetailDrawer();
+        }
+      },
       error: (err) => {
         console.error('Failed to remove member', err);
-        // Reload on error to restore the list
         this.membersService.loadMembers(project.id, 0, 100);
       },
     });
+  }
+
+  getMoreActions(member: ProjectMember): DropdownMenuItem[] {
+    const actions: DropdownMenuItem[] = [
+      { label: 'View Details', value: 'view' },
+      { label: 'Edit Member', value: 'edit' },
+    ];
+    if (member.role !== 'OWNER') {
+      actions.push({ label: 'Remove Member', value: 'remove', danger: true, dividerBefore: true });
+    }
+    return actions;
+  }
+
+  onMoreAction(item: DropdownMenuItem, member: ProjectMember): void {
+    if (item.value === 'view') {
+      this.openMemberDetail(member);
+    } else if (item.value === 'edit') {
+      this.startEdit(member);
+    } else if (item.value === 'remove') {
+      this.onRemove(member);
+    }
+  }
+
+  getSelectedUser(): WorkspaceUser | null {
+    const userId = this.selectedUserId();
+    if (!userId) return null;
+    return this.availableUsers().find(u => u.keycloakUserId === userId) ?? null;
+  }
+
+  getRoleBg(role: MemberRole): string {
+    return this.roleColors[role] + '18';
+  }
+
+  getStatusBg(status: MemberStatus): string {
+    return this.statusColors[status] + '18';
   }
 }

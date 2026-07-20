@@ -57,7 +57,7 @@
            (onDrop)="drop(column.status)">
         @for (project of getColumnProjects(column.status); track project.id) {
           <div
-            class="kanban-card cursor-grab active:cursor-grabbing"
+            class="kanban-card group cursor-grab active:cursor-grabbing"
             pDraggable="project"
             (onDragStart)="dragStart(project)"
             (onDragEnd)="dragEnd()"
@@ -119,14 +119,14 @@
 
               </div>
 
-              <!-- Three-dot menu -->
-              <button class="kanban-card-menu" (click)="$event.stopPropagation()">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="5" r="1.5"/>
-                  <circle cx="12" cy="12" r="1.5"/>
-                  <circle cx="12" cy="19" r="1.5"/>
-                </svg>
-              </button>
+              <!-- Three-dot menu dropdown -->
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200" (click)="$event.stopPropagation()">
+                <app-dropdown-menu 
+                  [iconOnly]="true" 
+                  [items]="cardMenuItems" 
+                  (itemSelected)="onMenuItemClick($event, project)" 
+                />
+              </div>
             </div>
           </div>
         } @empty {

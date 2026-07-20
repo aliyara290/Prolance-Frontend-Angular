@@ -1,29 +1,88 @@
 @if (detailService.project(); as project) {
-  <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-    <div class="border-b border-border-strong py-4 px-5">
-      <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">System Audit &amp; Timeline Logs</h2>
-    </div>
+  <div class="w-full px-4 sm:px-6">
 
-    <div class="space-y-6 relative py-5 px-6">
-      <!-- Create Log -->
-      <div class="relative pl-6 border-l border-border-strong">
-        <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-success)] border-4 border-bg shadow"></div>
-        <div class="text-sm space-y-1">
-          <h3 class="font-bold text-[var(--color-text)]">Project Created successfully</h3>
-          <p class="text-[var(--color-text-muted)] text-[10px]">{{ project.createdAt | date:'medium' }}</p>
-          <p class="text-text-muted">Project record created. Status initialized as {{ project.status }}.</p>
+    <div>
+      @if (detailService.loadingActivities()) {
+        <div class="space-y-6">
+          @for (i of [1,2,3]; track i) {
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-[var(--color-bg-muted)] animate-pulse">
+              <div class="w-12 h-12 rounded-full bg-[var(--color-bg)] flex-shrink-0"></div>
+              <div class="w-full space-y-2 mt-1">
+                <div class="h-3 bg-[var(--color-bg)] rounded w-32"></div>
+                <div class="h-4 bg-[var(--color-bg)] rounded w-3/4"></div>
+              </div>
+            </div>
+          }
         </div>
-      </div>
-
-      <!-- Update Log -->
-      @if (project.updatedAt && project.updatedAt !== project.createdAt) {
-        <div class="relative pl-6 border-l border-border-strong">
-          <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-primary)] border-4 border-bg shadow"></div>
-          <div class="text-sm space-y-1">
-            <h3 class="font-bold text-[var(--color-text)]">Project Details updated</h3>
-            <p class="text-[var(--color-text-muted)] text-[10px]">{{ project.updatedAt | date:'medium' }}</p>
-            <p class="text-text-muted">Project fields successfully synchronized with backend database.</p>
+      } @else if (detailService.activities().length === 0) {
+        <div class="flex flex-col items-center justify-center py-16 text-center z-10 relative">
+          <div class="w-16 h-16 rounded-full bg-[var(--color-bg-muted)] flex items-center justify-center mb-4">
+            <lucide-icon [img]="ActivityIcon" [size]="28" class="text-[var(--color-text-muted)]"></lucide-icon>
           </div>
+          <h3 class="text-[var(--color-text)] font-semibold text-lg">No activity yet</h3>
+          <p class="text-[var(--color-text-muted)] text-sm max-w-sm mt-1">When tasks are created, statuses are changed, or members join, they will appear here.</p>
+        </div>
+      } @else {
+        <div class="pb-10">
+          @for (group of groupedActivities(); track group.dateLabel) {
+            <!-- Date Separator -->
+            <div class="flex items-center my-6">
+              <span class="text-[14px] font-bold text-[var(--color-text)] mr-4 tracking-wide">{{ group.dateLabel }}</span>
+              <div class="flex-1 border-t border-[var(--color-border-strong)] opacity-50"></div>
+            </div>
+
+            <div class="space-y-3">
+              @for (activity of group.activities; track activity.id) {
+                <div class="flex items-start gap-4 p-4 rounded-2xl bg-[var(--color-bg)] border border-[var(--color-border-strong)] shadow-sm  transition-colors group">
+
+                  <!-- Avatar / Icon indicator -->
+                  <div class="relative flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm" [style.backgroundColor]="activity.actorBg" [class]="!activity.actionBy ? activity.iconColorClass : ''">
+                      @if (activity.actionBy) {
+                        {{ activity.actorInitials }}
+                      } @else {
+                        <lucide-icon [img]="ActivityIcon" [size]="20" class="text-current"></lucide-icon>
+                      }
+                    </div>
+
+                    <!-- Small badge icon on bottom right -->
+                    <div class="absolute -bottom-1 -right-1 w-[22px] h-[22px] rounded-full border-[2.5px] border-[var(--color-bg)] flex items-center justify-center shadow-sm text-white" [class]="activity.iconColorClass">
+                      <lucide-icon [img]="activity.icon" [size]="11"></lucide-icon>
+                    </div>
+                  </div>
+
+                  <!-- Content -->
+                  <div class="flex-1 min-w-0 pt-0.5">
+                    <div class="text-[12px] text-[var(--color-text-muted)] mb-1 flex items-center gap-1.5 font-medium">
+                      <span>{{ activity.actionName }}</span>
+                      <span class="text-[8px] opacity-50">&bull;</span>
+                      <span>{{ activity.occurredOn | date:'shortTime' }}</span>
+                    </div>
+
+                    <div class="text-[14px] text-[var(--color-text-muted)] leading-relaxed font-normal">
+                      <span [innerHTML]="activity.titleHtml"></span>
+
+                      @if (activity.changes.length > 0) {
+                        <div class="mt-2 space-y-1 border-l-2 border-[var(--color-border-strong)] pl-3">
+                          @for (change of activity.changes; track change.field) {
+                            <div class="text-[13px] text-[var(--color-text-muted)] flex items-center gap-2">
+                              <span class="font-medium tracking-wide text-[11px] uppercase opacity-70">{{ change.field }}:</span>
+                              @if (change.oldValue !== undefined) {
+                                <span class="line-through opacity-70">{{ change.oldValue || 'None' }}</span>
+                                <lucide-icon [img]="ArrowRight" [size]="12" class="opacity-50"></lucide-icon>
+                              }
+                              <span class="text-[var(--color-text)] font-medium">{{ change.newValue }}</span>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                </div>
+              }
+            </div>
+          }
         </div>
       }
     </div>

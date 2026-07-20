@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-marketing-cta',
@@ -7,4 +8,10 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: 'marketing-cta.component.html'
 })
-export class MarketingCtaComponent {}
+export class MarketingCtaComponent {
+  private readonly authService = inject(AuthService);
+
+  register() {
+    this.authService.register();
+  }
+}

@@ -1,20 +1,15 @@
-<div class="relative flex items-center text-left h-8 ">
+<div class="relative flex items-center text-left h-8" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
 
-  <!-- ====================================================
-       TRIGGER BUTTON — three modes
-  ==================================================== -->
-
-  <!-- Mode 1: iconOnly → "⋯" three-dots -->
   @if (iconOnly) {
     <button
       type="button"
       (click)="toggle()"
-      class="flex items-center justify-center text-text-muted   duration-150 focus:outline-none cursor-pointer"
+      class="flex items-center justify-center text-text-muted bg-bg px-2 py-0.5 rounded-md border shadow-sm border-border duration-150 focus:outline-none cursor-pointer hover:bg-bg-hover"
       aria-haspopup="true"
       [attr.aria-expanded]="isOpen()"
     >
       <!-- Three dots icon -->
-      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
         <circle cx="4" cy="10" r="1.5" />
         <circle cx="10" cy="10" r="1.5" />
         <circle cx="16" cy="10" r="1.5" />
@@ -40,6 +35,7 @@
     </button>
   }
 
+
   @else {
     <button
       type="button"
@@ -64,32 +60,32 @@
     </button>
   }
 
-  @if (isOpen()) {
-    <div
-      class="absolute top-7 !z-[1000000] mt-1 min-w-[180px] rounded-lg border border-border-strong bg-bg shadow-lg p-1 overflow-hidden"
-      [class.right-0]="align === 'right'"
-      [class.left-0]="align === 'left'"
-    >
-      @for (item of items; track item.value) {
-        @if (item.dividerBefore) {
-          <div class="my-1 border-t border-border-strong"></div>
-        }
-        <button
-          type="button"
-          [disabled]="item.disabled ?? false"
-          (click)="selectItem(item)"
-          class="flex w-full items-center text-text-muted gap-2.5 px-4 py-2 text-left text-sm  duration-100 rounded-sm hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
-          [class.text-danger]="item.danger"
-          [class.text-[#1a2942]]="!item.danger"
-        >
-          <!-- Optional icon slot -->
-          @if (item.icon) {
-            <span class="w-4 h-4 shrink-0 text-[#8492a6]" [innerHTML]="item.icon"></span>
-          }
-          {{ item.label }}
-        </button>
-      }
-    </div>
-  }
-
 </div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen()"
+  (overlayOutsideClick)="close()"
+>
+  <div class="mt-1 min-w-[180px] rounded-lg border border-border-strong bg-bg shadow-xl p-1 overflow-hidden">
+    @for (item of items; track item.value) {
+      @if (item.dividerBefore) {
+        <div class="my-1 border-t border-border-strong"></div>
+      }
+      <button
+        type="button"
+        [disabled]="item.disabled ?? false"
+        (click)="selectItem(item)"
+        class="flex w-full items-center text-text-muted gap-2.5 px-4 py-2 text-left text-sm  duration-100 rounded-sm hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+        [class.text-danger]="item.danger"
+        [class.text-[#1a2942]]="!item.danger"
+      >
+<!--        @if (item.icon) {-->
+<!--          <span class="w-4 h-4 shrink-0 text-[#8492a6]" [innerHTML]="item.icon"></span>-->
+<!--        }-->
+        {{ item.label }}
+      </button>
+    }
+  </div>
+</ng-template>

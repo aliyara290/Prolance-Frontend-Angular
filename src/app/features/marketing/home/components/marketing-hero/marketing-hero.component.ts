@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {AsyncPipe} from '@angular/common';
 import {Store} from '@ngrx/store';
 import {selectIsAuthenticated} from '../../../../../core/auth/store/auth.selectors';
+import {AuthService} from '../../../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-marketing-hero',
@@ -12,6 +13,11 @@ import {selectIsAuthenticated} from '../../../../../core/auth/store/auth.selecto
 })
 export class MarketingHeroComponent {
   private readonly store = inject(Store);
+  private readonly authService = inject(AuthService);
 
   public isAuthenticated$ = this.store.select(selectIsAuthenticated);
+
+  register() {
+    this.authService.register();
+  }
 }

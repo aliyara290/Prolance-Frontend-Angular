@@ -189,7 +189,7 @@
               [style.backgroundColor]="project.progress >= 75 ? 'var(--color-success)' : project.progress >= 40 ? 'var(--color-warning)' : 'var(--color-primary)'"
             ></div>
           </div>
-          <span class="text-xs font-medium text-[var(--color-text-muted)] w-8 text-right">{{ project.progress }}%</span>
+          <span class="text-xs font-medium text-[var(--color-text-muted)] w-8 text-right">{{ project.progress | number:'1.0-1' }}%</span>
         </div>
       </td>
 

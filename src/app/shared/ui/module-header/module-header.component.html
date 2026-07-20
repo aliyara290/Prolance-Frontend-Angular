@@ -1,103 +1,59 @@
-<div class="border border-border-strong rounded-md">
-  <div
-    class="flex items-center justify-between py-4 px-5 border-b border-border-strong bg-bg rounded-tl-sm rounded-tr-sm">
+<div class="flex items-center justify-between">
 
-    <h1 class="text-xl font-semibold text-text-muted tracking-tight shrink-0 mr-6">
-      {{ title }}
-    </h1>
-  </div>
+  <!-- Title -->
+  <h1 class="text-xl text-text-muted tracking-tight">
+    {{ title }}
+  </h1>
 
+  <!-- Actions -->
+  <div class="flex items-center gap-[var(--spacing-md)]">
 
-  <div class="flex items-center justify-between pr-3 bg-bg  rounded-bl-sm rounded-br-sm">
-
-    <div class="flex items-center gap-2">
-
-      <div class="flex items-center gap-0 flex-1 overflow-x-auto no-scrollbar">
-        @for (tab of tabs; track tab.id) {
+    <!-- View Toggles -->
+    @if (showListView || showKanbanView) {
+      <div class="flex items-center gap-1">
+        @if (showListView) {
           <button
             type="button"
-            (click)="setActiveTab(tab)"
-            class="relative flex items-center gap-1.5 px-4 text-sm font-medium whitespace-nowrap  duration-150 focus:outline-none cursor-pointer"
-            [class]="activeTabId === tab.id
-          ? ' text-primary font-bold'
-          : 'border-transparent text-text-muted hover:text-text '"
+            (click)="setView('list')"
+            class="p-1.5 rounded-[var(--radius-sm)] transition-all duration-150 cursor-pointer"
+            [class]="activeView() === 'list'
+              ? 'bg-[var(--color-bg-muted)] text-[var(--color-text)] shadow-sm border border-[var(--color-border-strong)]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] border border-transparent'"
+            title="List view"
           >
-            {{ tab.label }}
-            @if (tab.count !== undefined) {
-              <span
-                class="text-xs font-semibold px-1.5 py-0.5 rounded-full"
-                [class]="activeTabId === tab.id
-              ? 'bg-primary text-white'
-              : 'bg-bg-muted text-text-muted border border-border-strong'"
-              >{{ tab.count }}</span>
-            }
+            <lucide-icon [img]="icons.list" [size]="16"></lucide-icon>
           </button>
-          <div class="h-5 w-px bg-bar-bg mx-1"></div>
+        }
+
+        @if (showKanbanView) {
+          <button
+            type="button"
+            (click)="setView('kanban')"
+            class="p-1.5 rounded-[var(--radius-sm)] transition-all duration-150 cursor-pointer"
+            [class]="activeView() === 'kanban'
+              ? 'bg-[var(--color-bg-muted)] text-[var(--color-text)] shadow-sm border border-[var(--color-border-strong)]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] border border-transparent'"
+            title="Kanban view"
+          >
+            <lucide-icon [img]="icons.kanban" [size]="16"></lucide-icon>
+          </button>
         }
       </div>
+    }
 
-      <div class="flex items-center gap-0.5 ml-2">
-        <button
-          type="button"
-          (click)="setView('list')"
-          class="p-1.5 rounded cursor-pointer transition-all duration-150"
-          [class]="activeView() === 'list'
-            ? 'bg-[var(--color-bg)] text-[var(--color-primary)] shadow-sm border border-[var(--color-border-strong)]'
-            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-transparent'"
-          title="List view"
-        >
-          <lucide-icon
-            [img]="icons.list"
-            [size]="16">
-          </lucide-icon>
-        </button>
-        <button
-          type="button"
-          (click)="setView('kanban')"
-          class="p-1.5 rounded cursor-pointer transition-all duration-150"
-          [class]="activeView() === 'kanban'
-            ? 'bg-[var(--color-bg)] text-[var(--color-primary)] shadow-sm border border-[var(--color-border-strong)]'
-            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-transparent'"
-          title="Kanban view"
-        >
-          <lucide-icon
-            [img]="icons.kanban"
-            [size]="16">
 
-          </lucide-icon>
-        </button>
-      </div>
 
+    <div class="fixed bottom-12 right-5 z-[12345678934567]">
+      <button
+        type="button"
+        (click)="onPrimaryAction()"
+        class="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-primary)] text-white text-[var(--text-sm)] hover:bg-[var(--color-primary-hover)] shadow-md transition-colors duration-150 focus:outline-none cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-plus-icon lucide-badge-plus"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+      </button>
     </div>
 
-    <div class="flex items-center gap-2 py-3">
 
-      <div class="flex items-center rounded overflow-hidden shadow-sm">
-        <button
-          type="button"
-          (click)="onPrimaryAction()"
-          class="px-4 py-1.5 bg-primary text-white text-sm font-semibold hover:bg-primary-hover  duration-150 focus:outline-none cursor-pointer"
-        >
-          {{ primaryActionLabel }}
-        </button>
 
-<!--        @if (primaryActionItems.length > 0) {-->
-<!--          <app-dropdown-menu-->
-<!--            [items]="primaryActionItems"-->
-<!--            [splitChevron]="true"-->
-<!--            (itemSelected)="onPrimaryActionSelected($event)"-->
-<!--          />-->
-<!--        }-->
-      </div>
-
-<!--      @if (moreActionItems.length > 0) {-->
-<!--        <app-dropdown-menu-->
-<!--          [items]="toDropdownItems(moreActionItems)"-->
-<!--          [iconOnly]="true"-->
-<!--          (itemSelected)="onMoreActionSelected($any($event))"-->
-<!--        />-->
-<!--      }-->
-
-    </div>
   </div>
 </div>

@@ -1,6 +1,4 @@
-/* =========================================
-   KANBAN BOARD LAYOUT
-========================================= */
+
 .kanban-board {
   display: flex;
   gap: var(--spacing-md);
@@ -10,26 +8,21 @@
   align-items: flex-start;
 }
 
-/* =========================================
-   KANBAN COLUMN
-========================================= */
 .kanban-column {
   flex: 0 0 320px;
   min-width: 320px;
   max-width: 320px;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 260px);
-  min-height: 198px;
+  max-height: 533px;
+  min-height: 533px;
   background-color: var(--color-bg);
   padding: 10px;
   border-radius: var(--radius-md);
-  border: 1.5px dashed var(--color-border-strong);
+  border: 2px dashed var(--color-border-strong);
 }
 
-/* =========================================
-   COLUMN HEADER
-========================================= */
+
 .kanban-column-header {
   padding: var(--spacing-sm) 0;
   display: flex;
@@ -321,8 +314,8 @@
   text-align: center;
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-lg);
+  height: 470px;
 }
-
 /* =========================================
    BOARD SCROLLBAR
 ========================================= */

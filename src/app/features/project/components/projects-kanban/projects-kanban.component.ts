@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from 'primeng/dragdrop';
+import { DropdownMenuComponent, DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { Project, ProjectStatus, ProjectPriority } from '../../types/project.model';
 
 interface KanbanColumn {
@@ -25,7 +26,7 @@ interface AvatarData {
   selector: 'app-projects-kanban',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterModule, DragDropModule],
+  imports: [CommonModule, RouterModule, DragDropModule, DropdownMenuComponent],
   templateUrl: './projects-kanban.component.html',
   styleUrls: ['./projects-kanban.component.css'],
 })
@@ -34,7 +35,23 @@ export class ProjectsKanbanComponent {
 
   @Output() viewProject = new EventEmitter<Project>();
   @Output() editProject = new EventEmitter<Project>();
+  @Output() deleteProject = new EventEmitter<Project>();
   @Output() statusChange = new EventEmitter<{ project: Project; newStatus: ProjectStatus }>();
+
+  cardMenuItems: DropdownMenuItem[] = [
+    {
+      label: 'Edit project',
+      value: 'edit',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>'
+    },
+    {
+      label: 'Delete project',
+      value: 'delete',
+      danger: true,
+      dividerBefore: true,
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>'
+    }
+  ];
 
   draggedProject: Project | null = null;
 
@@ -139,5 +156,13 @@ export class ProjectsKanbanComponent {
 
   onCardClick(project: Project): void {
     this.viewProject.emit(project);
+  }
+
+  onMenuItemClick(item: DropdownMenuItem, project: Project): void {
+    if (item.value === 'edit') {
+      this.editProject.emit(project);
+    } else if (item.value === 'delete') {
+      this.deleteProject.emit(project);
+    }
   }
 }

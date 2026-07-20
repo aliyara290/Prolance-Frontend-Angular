@@ -133,7 +133,6 @@ export class UsersStateService {
     this.http.post<ApiResponse<BackendUser>>(apiUrl, payload).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          // Dynamic Self-Learning Role Group Map Integration
           if (payload.roles.length > 0 && res.data.keycloakRoleGroupIds?.length > 0) {
             payload.roles.forEach((r, idx) => {
               const groupId = res.data.keycloakRoleGroupIds[idx] || res.data.keycloakRoleGroupIds[0];
@@ -142,7 +141,7 @@ export class UsersStateService {
             this.saveRoleGroupMap();
           }
           this.loadUsers();
-          this._activeTab.set('PENDING');
+          this._activeTab.set('ACTIVE');
           this._selectedUserId.set(res.data.id);
         }
         this._isLoading.set(false);
@@ -294,6 +293,7 @@ export class UsersStateService {
 
     return {
       id: u.id,
+      keycloakUserId: u.keycloakUserId,
       email: u.email,
       firstName: u.firstName,
       lastName: u.lastName,

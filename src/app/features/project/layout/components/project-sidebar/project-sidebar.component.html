@@ -92,13 +92,15 @@
         }
       </a>
     }
-
     @if (!layoutState.sidebarCollapsed()) {
       <div class="nav-section nav-section--with-action">
         <span class="nav-section-title">RECENT PROJECTS</span>
-        <button class="section-action-btn" aria-label="Add project">
-          <lucide-icon [img]="icons.plus" [size]="14"></lucide-icon>
-        </button>
+        <a [routerLink]="['/app/projects/all/create']">
+          <button class="section-action-btn" aria-label="Add project">
+            <lucide-icon [img]="icons.plus" [size]="14"></lucide-icon>
+          </button>
+        </a>
+
       </div>
 
       @for (project of recentProjects(); track project.id) {

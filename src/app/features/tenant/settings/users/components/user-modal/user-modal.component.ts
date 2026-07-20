@@ -18,15 +18,12 @@ export class UserModalComponent {
   readonly allRoles       = ALL_ROLES;
   readonly allDepartments = ALL_DEPARTMENTS;
 
-  // ── Util passthrough ──
   getRoleBadgeClass = getRoleBadgeClass;
   getRoleLabel      = getRoleLabel;
 
-  // ── Modal state ──
   isOpen    = signal(false);
   step      = signal<1 | 2>(1);
 
-  // ── Form fields ──
   firstName  = '';
   lastName   = '';
   email      = '';
@@ -37,7 +34,6 @@ export class UserModalComponent {
 
   selectedRoles = signal<Set<UserRole>>(new Set(['MEMBER']));
 
-  // ── Computed helpers ──
   get isStep1Valid(): boolean {
     return !!(this.email && this.firstName && this.lastName && this.username && this.password);
   }

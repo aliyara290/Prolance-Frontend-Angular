@@ -11,9 +11,9 @@ export const LAYOUT_ROUTES: Routes = [
     canActivate: [authGuard, tenantGuard],
     children: [
       {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./components/temp-dashboard/temp-dashboard.component').then(m => m.TempDashboardComponent)
+        path: 'crm/dashboard',
+        loadChildren: () =>
+          import('../../features/crm/dashboard/crm-dashboard.routes').then(m => m.CRM_DASHBOARD_ROUTES)
       },
       {
         path: 'crm/leads',
@@ -35,7 +35,6 @@ export const LAYOUT_ROUTES: Routes = [
         loadChildren: () =>
           import('../../features/crm/deals/deals.routes').then(m => m.DEALS_ROUTES)
       },
-      // ── Project workspace routes ──
       {
         path: 'projects/dashboard',
         loadComponent: () =>
@@ -52,6 +51,16 @@ export const LAYOUT_ROUTES: Routes = [
         path: 'projects/milestones',
         loadChildren: () =>
           import('../../features/milestone/milestones.routes').then(m => m.MILESTONES_ROUTES),
+      },
+      {
+        path: 'projects/tasks',
+        loadChildren: () =>
+          import('../../features/task/task.routes').then(m => m.TASK_ROUTES),
+      },
+      {
+        path: 'projects/docs',
+        loadChildren: () =>
+          import('../../features/documents/documents.routes').then(m => m.DOCUMENTS_ROUTES),
       },
 
       {

@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, RouterLinkActive } from '@angular/router';
-import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { ArrowLeft, RefreshCw, LucideAngularModule } from 'lucide-angular';
 import { ProjectDetailService } from '../../../services/project-detail.service';
 import { ProjectsService } from '../../../services/projects.service';
 import { DetailsSkeletonComponent } from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
+import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 
 interface DetailTab {
   id: string;
@@ -21,6 +22,7 @@ interface DetailTab {
     RouterLinkActive,
     LucideAngularModule,
     DetailsSkeletonComponent,
+    DropdownMenuComponent,
   ],
   templateUrl: './project-detail-layout.component.html',
   styleUrls: ['./project-detail-layout.component.css'],
@@ -32,30 +34,40 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   private readonly projectsService = inject(ProjectsService);
 
   readonly ArrowLeft = ArrowLeft;
+  readonly RefreshCw = RefreshCw;
 
   readonly tabs: DetailTab[] = [
     { id: 'dashboard', label: 'Dashboard', route: 'dashboard' },
     { id: 'overview', label: 'Overview', route: 'overview' },
     { id: 'tasks', label: 'Tasks', route: 'tasks' },
     { id: 'members', label: 'Members', route: 'members' },
-    { id: 'issues', label: 'Issues', route: 'issues' },
+    // { id: 'issues', label: 'Issues', route: 'issues' },
     { id: 'milestones', label: 'Milestones', route: 'milestones' },
     { id: 'documents', label: 'Documents', route: 'documents' },
     { id: 'activity', label: 'Activity', route: 'activity' },
   ];
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.detailService.loadProject(id);
-    } else {
-      this.detailService.error.set('No Project ID provided in route.');
-      this.detailService.loading.set(false);
-    }
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.detailService.loadProject(id);
+      } else {
+        this.detailService.error.set('No Project ID provided in route.');
+        this.detailService.loading.set(false);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.detailService.clear();
+  }
+
+  reloadProject(): void {
+    const project = this.detailService.project();
+    if (project) {
+      this.detailService.loadProject(project.id);
+    }
   }
 
   onEdit(): void {
@@ -77,6 +89,19 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
           alert('Failed to delete project.');
         },
       });
+    }
+  }
+
+  readonly moreActions: DropdownMenuItem[] = [
+    { label: 'Edit Project', value: 'edit' },
+    { label: 'Delete Project', value: 'delete', danger: true, dividerBefore: true },
+  ];
+
+  onMoreAction(item: DropdownMenuItem): void {
+    if (item.value === 'edit') {
+      this.onEdit();
+    } else if (item.value === 'delete') {
+      this.onDelete();
     }
   }
 }

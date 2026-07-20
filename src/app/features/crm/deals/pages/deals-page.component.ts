@@ -1,4 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { ErrorMessageComponent } from '../../../../shared/ui/error-message/error-message.component';
+
 import { Router } from '@angular/router';
 import { DealsService } from '../services/deals.service';
 import { DealsTableComponent } from '../components/deals-table/deals-table.component';
@@ -12,7 +14,7 @@ import { Deal } from '../types/deal.model';
   selector: 'app-deals-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ModuleHeaderComponent, DealsTableComponent, EntityListSkeletonComponent],
+  imports: [ModuleHeaderComponent, DealsTableComponent, EntityListSkeletonComponent, ErrorMessageComponent],
   templateUrl: './deals-page.component.html',
 })
 export class DealsPageComponent implements OnInit {

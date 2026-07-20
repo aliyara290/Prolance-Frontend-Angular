@@ -1,0 +1,40 @@
+@if (layout === 'full') {
+  <div class="flex flex-col items-center justify-center w-full py-16 px-6 bg-bg border border-border-strong rounded-[var(--radius-md)] text-center h-full min-h-[300px]">
+    <div class="relative mb-6">
+      <div class="absolute inset-0 rounded-full bg-danger/20 blur-xl"></div>
+      <div class="relative w-16 h-16 rounded-full bg-danger-muted text-danger flex items-center justify-center ring-1 ring-danger-border ring-offset-4 ring-offset-bg">
+        <lucide-icon [img]="icons.alertTriangle" size="28"></lucide-icon>
+      </div>
+    </div>
+
+    <h3 class="w-full text-lg font-[var(--font-bold)] text-text tracking-tight mb-2">{{ title }}</h3>
+    <p class="w-full text-sm text-text-muted mb-8 leading-relaxed">{{ message }}</p>
+
+    @if (showRetry) {
+      <button
+        (click)="onRetry()"
+        class="group inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-text hover:bg-text/90 text-bg rounded-[var(--radius-md)] text-sm font-[var(--font-semibold)] transition-all shadow-sm hover:shadow-md active:scale-95 cursor-pointer">
+        <lucide-icon [img]="icons.refreshCw" size="16" class="transition-transform duration-500 group-hover:rotate-180"></lucide-icon>
+        <span>Try Again</span>
+      </button>
+    }
+  </div>
+} @else {
+  <div class="w-full flex items-start gap-3.5 p-4 bg-danger-muted border border-danger-border rounded-[var(--radius-md)] shadow-sm">
+    <div class="flex-shrink-0 mt-0.5 w-8 h-8 rounded-full bg-bg/60 text-danger flex items-center justify-center ring-1 ring-danger-border/60">
+      <lucide-icon [img]="icons.alertTriangle" size="16"></lucide-icon>
+    </div>
+    <div class="flex-1 min-w-0 pt-0.5">
+      <h3 class="text-sm font-[var(--font-semibold)] text-danger mb-1 tracking-tight">{{ title }}</h3>
+      <p class="text-sm text-danger/80 leading-relaxed">{{ message }}</p>
+    </div>
+    @if (showRetry) {
+      <button
+        (click)="onRetry()"
+        class="group flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg/60 hover:bg-bg text-danger text-xs font-[var(--font-semibold)] rounded-[var(--radius-sm)] transition-all border border-danger-border shadow-sm hover:shadow active:scale-95 cursor-pointer">
+        <lucide-icon [img]="icons.refreshCw" size="13" class="transition-transform duration-500 group-hover:rotate-180"></lucide-icon>
+        <span>Retry</span>
+      </button>
+    }
+  </div>
+}
