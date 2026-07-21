@@ -6,14 +6,15 @@ import { ProjectsService } from '../../services/projects.service';
 import { ClientsService } from '../../../crm/clients/services/clients.service';
 import { ProjectStatus, ProjectPriority } from '../../types/project.model';
 import { Client } from '../../../crm/clients/types/client.model';
-import { ArrowLeft, LucideAngularModule, Search, ChevronDown, Check } from 'lucide-angular';
+import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 import { UsersStateService } from '../../../tenant/settings/users/service/users-state.service';
 import { WorkspaceUser } from '../../../tenant/settings/users/models/user.models';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-project-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './project-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -47,57 +48,28 @@ export class ProjectFormPageComponent implements OnInit {
   ];
 
   readonly ArrowLeft = ArrowLeft;
-  readonly icons = {
-    search: Search,
-    chevronDown: ChevronDown,
-    check: Check
-  };
-
-  // User Dropdown State
   readonly users = this.usersState.usersList;
-  readonly isUserDropdownOpen = signal(false);
-  readonly userSearchQuery = signal('');
 
-  readonly filteredProjectManagers = computed(() => {
-    const q = this.userSearchQuery().toLowerCase();
-    return this.users().filter(u => 
-      !q || 
-      `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q)
-    );
-  });
+  readonly projectManagerOptions = computed<CustomSelectOption[]>(() => 
+    this.users().map(u => ({
+      value: u.id,
+      label: `${u.firstName} ${u.lastName}`,
+      subLabel: u.email,
+      avatarName: `${u.firstName} ${u.lastName}`
+    }))
+  );
 
-  get selectedProjectManager(): WorkspaceUser | undefined {
-    const id = this.projectForm?.get('projectManagerId')?.value;
-    return this.users().find(u => u.id === id);
-  }
+  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+    this.clients().map(c => ({
+      value: c.id,
+      label: c.name,
+      subLabel: c.industry,
+      avatarName: c.name
+    }))
+  );
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const targetElement = event.target as HTMLElement;
-    if (this.isUserDropdownOpen() && !targetElement.closest('.pm-dropdown-container')) {
-      this.isUserDropdownOpen.set(false);
-    }
-  }
-
-  toggleUserDropdown(event: Event): void {
-    event.stopPropagation();
-    this.isUserDropdownOpen.update(v => !v);
-    if (this.isUserDropdownOpen()) {
-      this.userSearchQuery.set('');
-    }
-  }
-
-  selectProjectManager(user: WorkspaceUser | null): void {
-    this.projectForm.patchValue({ projectManagerId: user ? user.id : '' });
-    this.isUserDropdownOpen.set(false);
-    this.userSearchQuery.set('');
-  }
-
-  onUserSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.userSearchQuery.set(input.value);
-  }
+  readonly prioritySelectOptions: CustomSelectOption[] = this.priorityOptions.map(p => ({ label: p, value: p }));
+  readonly statusSelectOptions: CustomSelectOption[] = this.statusOptions.map(s => ({ label: s, value: s }));
 
   projectForm!: FormGroup;
 

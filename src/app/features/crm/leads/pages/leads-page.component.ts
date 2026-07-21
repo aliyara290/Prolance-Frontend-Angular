@@ -58,6 +58,10 @@ export class LeadsPageComponent implements OnInit {
     this.leadsService.loadLeads();
   }
 
+  onRefresh(): void {
+    this.leadsService.loadLeads();
+  }
+
   onTabChange(tab: ModuleTab): void {
     this.activeTabId.set(tab.id);
   }

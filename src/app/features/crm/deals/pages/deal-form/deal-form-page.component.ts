@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy, computed, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -7,11 +7,12 @@ import { ClientsService } from '../../../clients/services/clients.service';
 import { Stage, Priority, OpportunityType, Source } from '../../types/deal.model';
 import { Client } from '../../../clients/types/client.model';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-deal-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './deal-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -34,6 +35,19 @@ export class DealFormPageComponent implements OnInit {
   readonly sourceOptions: Source[] = ['WEBSITE', 'REFERRAL', 'SOCIAL_MEDIA', 'COLD_CALL', 'EVENT', 'OTHER'];
 
   readonly ArrowLeft = ArrowLeft;
+  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+    this.clients().map(c => ({
+      value: c.id,
+      label: c.name,
+      subLabel: c.industry,
+      avatarName: c.name
+    }))
+  );
+
+  readonly stageSelectOptions: CustomSelectOption[] = this.stageOptions.map(s => ({ label: s, value: s }));
+  readonly prioritySelectOptions: CustomSelectOption[] = this.priorityOptions.map(p => ({ label: p, value: p }));
+  readonly typeSelectOptions: CustomSelectOption[] = this.typeOptions.map(t => ({ label: t, value: t }));
+  readonly sourceSelectOptions: CustomSelectOption[] = this.sourceOptions.map(s => ({ label: s, value: s }));
 
   dealForm!: FormGroup;
 

@@ -13,6 +13,8 @@ interface DetailTab {
   route: string;
 }
 
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-project-detail-layout',
   standalone: true,
@@ -32,6 +34,7 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   readonly detailService = inject(ProjectDetailService);
   private readonly projectsService = inject(ProjectsService);
+  private readonly confirmService = inject(ConfirmModalService);
 
   readonly ArrowLeft = ArrowLeft;
   readonly RefreshCw = RefreshCw;
@@ -77,9 +80,19 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDelete(): void {
+  async onDelete(): Promise<void> {
     const project = this.detailService.project();
-    if (project && confirm(`Are you sure you want to delete project "${project.name}"?`)) {
+    if (!project) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Project',
+      message: `Are you sure you want to delete project "${project.name}"? This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (confirmed) {
       this.projectsService.deleteProject(project.id).subscribe({
         next: () => {
           this.router.navigate(['/app/projects/all']);

@@ -33,11 +33,15 @@ const STATUS_OPTIONS: { value: MilestoneStatus; label: string }[] = [
 import { MilestoneFormModalComponent } from '../../../../milestone/components/milestone-form-modal/milestone-form-modal.component';
 import { MilestoneDetailPanelComponent } from '../../../../milestone/components/milestone-detail-panel/milestone-detail-panel.component';
 import { EntityListSkeletonComponent } from '../../../../../shared/ui/skeletons/entity-list-skeleton/entity-list-skeleton.component';
+import { ErrorMessageComponent } from '../../../../../shared/ui/error-message/error-message.component';
+
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-project-detail-milestones-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DropdownMenuComponent, MilestoneFormModalComponent, MilestoneDetailPanelComponent, EntityListSkeletonComponent],
+  imports: [CommonModule, FormsModule, DropdownMenuComponent, MilestoneFormModalComponent, MilestoneDetailPanelComponent, EntityListSkeletonComponent, ErrorMessageComponent, CustomSelectComponent],
   templateUrl: './project-detail-milestones-page.component.html',
   styleUrls: ['./project-detail-milestones-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,8 +50,14 @@ export class ProjectDetailMilestonesPageComponent implements OnInit, OnDestroy {
   readonly detailService = inject(ProjectDetailService);
   readonly milestonesService = inject(ProjectMilestonesService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly confirmService = inject(ConfirmModalService);
 
   readonly statusOptions = STATUS_OPTIONS;
+
+  readonly filterStatusSelectOptions: CustomSelectOption[] = [
+    { label: 'All Statuses', value: 'ALL' },
+    ...STATUS_OPTIONS
+  ];
 
   readonly showCreateModal = signal<boolean>(false);
   readonly editingMilestoneId = signal<string | null>(null);
@@ -144,10 +154,20 @@ export class ProjectDetailMilestonesPageComponent implements OnInit, OnDestroy {
   }
 
 
-  onDelete(milestone: Milestone, event: Event): void {
+  async onDelete(milestone: Milestone, event: Event): Promise<void> {
     event.stopPropagation();
     const project = this.detailService.project();
-    if (!project || !confirm(`Are you sure you want to delete "${milestone.title}"?`)) return;
+    if (!project) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Milestone',
+      message: `Are you sure you want to delete "${milestone.title}"? This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.milestonesService.deleteMilestone(project.id, milestone.id).subscribe({
       next: () => {

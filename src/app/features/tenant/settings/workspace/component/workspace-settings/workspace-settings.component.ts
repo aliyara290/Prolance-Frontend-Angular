@@ -3,16 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkspaceSettings, TIMEZONES, LANGUAGES, INDUSTRIES } from '../../models/workspace.models';
 
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../../shared/ui/custom-select/custom-select.component';
+
 @Component({
   selector: 'app-workspace-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './workspace-settings.component.html',
 })
 export class WorkspaceSettingsComponent {
   readonly timezones  = TIMEZONES;
   readonly languages  = LANGUAGES;
   readonly industries = INDUSTRIES;
+
+  readonly timezoneOptions: CustomSelectOption[] = this.timezones.map(t => ({ label: t, value: t }));
+  readonly languageOptions: CustomSelectOption[] = this.languages.map(l => ({ label: l, value: l }));
+  readonly industryOptions: CustomSelectOption[] = this.industries.map(i => ({ label: i, value: i }));
 
   saving  = signal(false);
   saved   = signal(false);

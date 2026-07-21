@@ -139,21 +139,58 @@
       <!-- RECENT PROJECTS -->
       @if (!layoutState.sidebarCollapsed()) {
         <div class="px-4 py-2 mt-3 flex items-center justify-between">
-          <span class="text-text-muted text-xs font-semibold uppercase tracking-wider">RECENT PROJECTS</span>
-          <button class="flex items-center justify-center w-5 h-5 rounded-[var(--radius-sm)] text-text-muted hover:text-text-inverse hover:bg-bg-hover cursor-pointer"
-                  aria-label="Add project">
-            <lucide-icon [img]="icons.plus" [size]="14"></lucide-icon>
-          </button>
+          <span class="text-text-muted text-xs font-semibold uppercase tracking-wider">
+            {{ projectSearchQuery() ? 'SEARCH RESULTS' : 'RECENT PROJECTS' }}
+          </span>
         </div>
 
-        @for (project of recentProjects(); track project.id) {
-          <a class="flex items-center gap-3 px-4 pl-5 py-2 text-text-muted hover:text-text-inverse hover:bg-bg-hover relative cursor-pointer border-l-3 border-transparent"
-             [routerLink]="['/app/projects/all/', project.id]"
-             routerLinkActive="!bg-bg-active !text-primary"
-          >
-            <span class="w-2 h-2 rounded-full flex-shrink-0 bg-primary"></span>
-            <span class="text-sm">{{ project.name }}</span>
-          </a>
+        <div class="px-4 my-2">
+          <div class="relative">
+            <lucide-icon [img]="icons.search" [size]="14" class="absolute left-1.5 top-1/2 -translate-y-1/2 text-text-muted"></lucide-icon>
+            <input
+              type="text"
+              placeholder="Search projects..."
+              [ngModel]="projectSearchQuery()"
+              (ngModelChange)="projectSearchQuery.set($event)"
+              class="w-full pl-8 pr-3 py-[6px] text-xs bg-bg-hover border border-border-strong rounded-[var(--radius-md)] text-text placeholder:text-text-muted"
+            >
+          </div>
+        </div>
+
+        @if (loadingProjects()) {
+          <div class="flex flex-col gap-2 px-4 py-2">
+            <div class="h-6 rounded-md bg-bg-muted animate-pulse"></div>
+            <div class="h-6 rounded-md bg-bg-muted animate-pulse"></div>
+            <div class="h-6 rounded-md bg-bg-muted animate-pulse"></div>
+          </div>
+        } @else if (displayedProjects().length === 0) {
+          <div class="mx-4 my-3 p-4 rounded-xl bg-bg-muted border border-border-strong flex flex-col items-center justify-center text-center group">
+
+
+            <h4 class="text-sm font-semibold text-text-inverse">No projects found</h4>
+            @if (projectSearchQuery()) {
+              <p class="text-xs text-text-muted mt-1 mb-2 leading-relaxed">Try adjusting your search query.</p>
+            } @else {
+              <p class="text-xs text-text-muted mt-1 mb-4 leading-relaxed">Get started by creating your first project.</p>
+            }
+
+            <a [routerLink]="['/app/projects/all/create']" class="w-full block">
+              <button class="w-full py-2 px-3 bg-primary text-white text-xs font-semibold rounded-lg shadow-sm hover:bg-primary-hover flex items-center justify-center cursor-pointer">
+                Create Project
+              </button>
+            </a>
+          </div>
+        } @else {
+          @for (project of displayedProjects(); track project.id) {
+            <a class="flex items-center gap-3 px-4 pl-5 py-2 text-text-muted hover:text-text-inverse hover:bg-bg-hover relative cursor-pointer border-l-3 border-transparent"
+               [routerLink]="['/app/projects/all/', project.id]"
+               routerLinkActive="!bg-bg-active !text-primary"
+               [title]="project.name"
+            >
+              <span class="w-2 h-2 rounded-full flex-shrink-0 bg-primary"></span>
+              <span class="text-sm truncate">{{ project.name }}</span>
+            </a>
+          }
         }
       }
     }

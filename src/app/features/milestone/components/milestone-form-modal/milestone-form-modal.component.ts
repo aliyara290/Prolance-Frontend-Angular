@@ -5,11 +5,12 @@ import { MilestoneService } from '../../services/milestone.service';
 import { ProjectsService } from '../../../project/services/projects.service';
 import { MilestoneStatus } from '../../types/milestone.model';
 import { Flag, X, LucideAngularModule } from 'lucide-angular';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-milestone-form-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './milestone-form-modal.component.html',
   styleUrls: ['./milestone-form-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +38,15 @@ export class MilestoneFormModalComponent implements OnInit, OnChanges {
     'CANCELLED',
     'ARCHIVED'
   ];
+
+  get projectSelectOptions(): CustomSelectOption[] {
+    return this.projects().map(p => ({ label: p.name, value: p.id }));
+  }
+
+  readonly statusSelectOptions: CustomSelectOption[] = this.statusOptions.map(s => ({
+    label: s.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()),
+    value: s
+  }));
 
   readonly icons = { flag: Flag, x: X };
 

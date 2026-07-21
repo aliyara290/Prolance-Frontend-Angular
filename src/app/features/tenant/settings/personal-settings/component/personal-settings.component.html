@@ -79,40 +79,19 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-medium text-text-muted mb-1.5">Timezone</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <lucide-icon [img]="ClockIcon" [size]="14" class="text-text-muted" />
-              </div>
-              <select
-
-                class="w-full pl-9 pr-8 py-2.5 text-sm rounded-md bg-bg-muted border border-border-strong text-text appearance-none cursor-pointer outline-none"
-              >
-                @for (tz of timezones; track tz) {
-                  <option [value]="tz">{{ tz }}</option>
-                }
-              </select>
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <lucide-icon [img]="ChevronDownIcon" [size]="13" class="text-text-muted" />
-              </div>
-            </div>
+            <app-custom-select
+              [(ngModel)]="selectedTimezone"
+              [options]="timezoneOptions"
+              [searchable]="true"
+            ></app-custom-select>
           </div>
           <div>
             <label class="block text-xs font-medium text-text-muted mb-1.5">Language</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <lucide-icon [img]="GlobeIcon" [size]="14" class="text-text-muted" />
-              </div>
-              <select
-                class="w-full pl-9 pr-8 py-2.5 text-sm rounded-md bg-bg-muted border border-border-strong text-text appearance-none cursor-pointer outline-none"
-              >
-                @for (lang of languages; track lang.code) {
-                  <option [value]="lang.code">{{ lang.label }}</option>
-                }
-              </select>
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <lucide-icon [img]="ChevronDownIcon" [size]="13" class="text-text-muted" />
-              </div>
-            </div>
+            <app-custom-select
+              [(ngModel)]="selectedLanguage"
+              [options]="languageOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
         </div>
       </div>

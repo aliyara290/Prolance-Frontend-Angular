@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleTab, ModuleHeaderAction } from './module-header.types';
 import { DropdownMenuComponent, DropdownMenuItem } from '../dropdown-menu/dropdown-menu.component';
 import { IconWrapperComponent } from '../icon-wrapper/icon-wrapper';
-import { Kanban, List, LucideAngularModule } from 'lucide-angular';
+import { Kanban, List, RefreshCw, LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-module-header',
@@ -24,6 +24,7 @@ export class ModuleHeaderComponent {
   icons = {
     list: List,
     kanban: Kanban,
+    refresh: RefreshCw,
   }
   /** The page/module title e.g. "Contacts", "Leads" */
   @Input({ required: true }) title!: string;
@@ -52,6 +53,9 @@ export class ModuleHeaderComponent {
   /** Emitted when the view mode changes (list/kanban) */
   @Output() viewChange = new EventEmitter<'list' | 'kanban'>();
 
+  /** Emitted when the refresh button is clicked */
+  @Output() refresh = new EventEmitter<void>();
+
   /** Set the active view from parent */
   @Input() set view(v: 'list' | 'kanban') {
     if (v) {
@@ -68,6 +72,10 @@ export class ModuleHeaderComponent {
   setView(view: 'list' | 'kanban'): void {
     this.activeView.set(view);
     this.viewChange.emit(view);
+  }
+
+  onRefresh(): void {
+    this.refresh.emit();
   }
 
   onPrimaryAction(): void {

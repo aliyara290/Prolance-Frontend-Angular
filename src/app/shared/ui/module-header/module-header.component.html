@@ -41,6 +41,16 @@
       </div>
     }
 
+    <!-- Refresh Button -->
+    <button
+      type="button"
+      (click)="onRefresh()"
+      class="p-1.5 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-all duration-150 cursor-pointer border border-transparent"
+      title="Refresh data"
+    >
+      <lucide-icon [img]="icons.refresh" [size]="16"></lucide-icon>
+    </button>
+
 
 
     <div class="fixed bottom-12 right-5 z-[12345678934567]">

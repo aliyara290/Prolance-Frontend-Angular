@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, finalize } from 'rxjs';
 import { ConfigService } from '../../../core/config/config.service';
 import {
   Project,
@@ -36,13 +36,23 @@ export class ProjectsService {
   readonly totalCount = signal<number>(0);
   readonly meta = signal<ProjectsListMeta | null>(null);
   readonly projectNames = signal<ProjectsNames[]>([]);
+  readonly loadingNames = signal<boolean>(false);
 
   loadProjectNames(): void {
+    this.loadingNames.set(true);
     this.getProjectsNames().subscribe({
       next: (res) => {
-        if (res.success) {
-          this.projectNames.set(res.data);
+        if (res?.success) {
+          this.projectNames.set(res.data || []);
+        } else {
+          this.projectNames.set([]);
         }
+        this.loadingNames.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load project names', err);
+        this.projectNames.set([]);
+        this.loadingNames.set(false);
       }
     });
   }

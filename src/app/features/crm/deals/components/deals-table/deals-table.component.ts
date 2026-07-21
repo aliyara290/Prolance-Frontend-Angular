@@ -31,6 +31,8 @@ interface SelectOption {
   value: string;
 }
 
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-deals-table',
   standalone: true,
@@ -56,6 +58,7 @@ interface SelectOption {
 })
 export class DealsTableComponent {
   private readonly dealsService = inject(DealsService);
+  private readonly confirmService = inject(ConfirmModalService);
   private readonly searchSubject = new Subject<string>();
 
   @Input({ required: true }) deals: Deal[] = [];
@@ -135,11 +138,18 @@ export class DealsTableComponent {
     { label: 'Delete Deal', value: 'delete', danger: true, dividerBefore: true },
   ];
 
-  onMoreAction(item: DropdownMenuItem, deal: Deal): void {
+  async onMoreAction(item: DropdownMenuItem, deal: Deal): Promise<void> {
     if (item.value === 'edit') {
       this.editDeal.emit(deal);
     } else if (item.value === 'delete') {
-      if (confirm(`Are you sure you want to delete deal "${deal.title}"?`)) {
+      const confirmed = await this.confirmService.confirm({
+        title: 'Delete Deal',
+        message: `Are you sure you want to delete deal "${deal.title}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true
+      });
+      if (confirmed) {
         this.dealsService.deleteDeal(deal.id).subscribe({
           next: () => console.log('Deal deleted successfully'),
           error: (err) => console.error('Failed to delete deal', err)

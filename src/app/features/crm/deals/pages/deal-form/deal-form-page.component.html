@@ -48,17 +48,16 @@
             }
           </div>
 
-          <div>
+          <div class="relative">
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Associated Client <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select formControlName="clientId"
-                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none">
-              <option value="">— Select Client —</option>
-              @for (client of clients(); track client.id) {
-                <option [value]="client.id">{{ client.name }}</option>
-              }
-            </select>
+            <app-custom-select 
+              formControlName="clientId" 
+              [options]="clientOptions()" 
+              placeholder="— Select Client —" 
+              nullOptionLabel="— None —">
+            </app-custom-select>
             @if (dealForm.get('clientId')?.touched && dealForm.get('clientId')?.invalid) {
               <span class="text-xs text-[var(--color-danger)] mt-1 block">Selecting a client is required.</span>
             }
@@ -66,46 +65,42 @@
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Type</label>
-            <select formControlName="type"
-                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none">
-              @for (t of typeOptions; track t) {
-                <option [value]="t">{{ t }}</option>
-              }
-            </select>
+            <app-custom-select
+              formControlName="type"
+              [options]="typeSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Stage <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select formControlName="stage"
-                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none">
-              @for (s of stageOptions; track s) {
-                <option [value]="s">{{ s }}</option>
-              }
-            </select>
+            <app-custom-select
+              formControlName="stage"
+              [options]="stageSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Priority <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select formControlName="priority"
-                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none">
-              @for (p of priorityOptions; track p) {
-                <option [value]="p">{{ p }}</option>
-              }
-            </select>
+            <app-custom-select
+              formControlName="priority"
+              [options]="prioritySelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Source</label>
-            <select formControlName="source"
-                    class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none">
-              @for (src of sourceOptions; track src) {
-                <option [value]="src">{{ src }}</option>
-              }
-            </select>
+            <app-custom-select
+              formControlName="source"
+              [options]="sourceSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>

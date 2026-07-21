@@ -30,6 +30,8 @@ interface SelectOption {
   value: string;
 }
 
+import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-projects-table',
   standalone: true,
@@ -54,6 +56,7 @@ interface SelectOption {
 })
 export class ProjectsTableComponent {
   private readonly projectsService = inject(ProjectsService);
+  private readonly confirmService = inject(ConfirmModalService);
   private readonly searchSubject = new Subject<string>();
 
   @Input({ required: true }) projects: Project[] = [];
@@ -140,11 +143,18 @@ export class ProjectsTableComponent {
     { label: 'Delete Project', value: 'delete', danger: true, dividerBefore: true },
   ];
 
-  onMoreAction(item: DropdownMenuItem, project: Project): void {
+  async onMoreAction(item: DropdownMenuItem, project: Project): Promise<void> {
     if (item.value === 'edit') {
       this.editProject.emit(project);
     } else if (item.value === 'delete') {
-      if (confirm(`Are you sure you want to delete project "${project.name}"?`)) {
+      const confirmed = await this.confirmService.confirm({
+        title: 'Delete Project',
+        message: `Are you sure you want to delete project "${project.name}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true
+      });
+      if (confirmed) {
         this.projectsService.deleteProject(project.id).subscribe({
           next: () => console.log('Project deleted successfully'),
           error: (err) => console.error('Failed to delete project', err),

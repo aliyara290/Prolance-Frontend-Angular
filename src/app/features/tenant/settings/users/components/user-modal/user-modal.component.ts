@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { UsersStateService } from '../../service/users-state.service';
 import { ALL_ROLES, ALL_DEPARTMENTS, UserRole, CreateUserPayload } from '../../models/user.models';
 import { getRoleBadgeClass, getRoleLabel } from '../../util/user.utils';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-user-modal',
   standalone: true,
   host: { style: 'display:contents' },
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './user-modal.component.html',
 })
 export class UserModalComponent {
@@ -17,6 +18,8 @@ export class UserModalComponent {
 
   readonly allRoles       = ALL_ROLES;
   readonly allDepartments = ALL_DEPARTMENTS;
+
+  readonly departmentSelectOptions: CustomSelectOption[] = this.allDepartments.map(d => ({ label: d, value: d }));
 
   getRoleBadgeClass = getRoleBadgeClass;
   getRoleLabel      = getRoleLabel;

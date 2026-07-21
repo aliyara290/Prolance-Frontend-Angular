@@ -1,0 +1,112 @@
+<div class="custom-select-container relative w-full">
+  <!-- Dropdown Toggle -->
+  <button
+    type="button"
+    (click)="toggleDropdown($event)"
+    [disabled]="disabled"
+    class="w-full flex items-center justify-between px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] hover:border-[var(--color-primary)] transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    @if (selectedOption) {
+      <div class="flex items-center gap-2 overflow-hidden">
+        @if (selectedOption.avatarName) {
+          <div
+            class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase shrink-0 shadow-sm"
+            [style.backgroundColor]="getAvatarColor(selectedOption.avatarName, selectedOption.avatarColor)"
+          >
+            {{ getAvatarInitials(selectedOption.avatarName) }}
+          </div>
+        }
+        <span class="truncate font-medium">{{ selectedOption.label }}</span>
+      </div>
+    } @else {
+      <span class="text-[var(--color-text-muted)] truncate">{{ placeholder }}</span>
+    }
+    <lucide-icon [img]="icons.chevronDown" size="16" class="text-[var(--color-text-muted)] shrink-0 ml-2"></lucide-icon>
+  </button>
+
+  <!-- Dropdown Menu -->
+  @if (isDropdownOpen()) {
+    <div class="absolute z-[60] w-full bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-lg flex flex-col max-h-[300px] overflow-hidden"
+         [class.top-full]="dropdownPosition === 'bottom'"
+         [class.mt-1]="dropdownPosition === 'bottom'"
+         [class.bottom-full]="dropdownPosition === 'top'"
+         [class.mb-1]="dropdownPosition === 'top'"
+    >
+
+      <!-- Search Input -->
+      @if (searchable) {
+        <div class="p-2 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)] shrink-0">
+          <div class="relative">
+            <lucide-icon [img]="icons.search" size="14" class="absolute left-1.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"></lucide-icon>
+            <input
+              type="text"
+              placeholder="Search..."
+              (input)="onSearch($event)"
+              class="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] outline-none"
+              (click)="$event.stopPropagation()"
+              autofocus
+            >
+          </div>
+        </div>
+      }
+
+      <!-- Options List -->
+      <div class="overflow-y-auto p-1 custom-scrollbar">
+
+        <!-- None option -->
+        @if (nullOptionLabel) {
+          <button
+            type="button"
+            (click)="selectOption(null)"
+            class="w-full flex items-center justify-between px-3 py-2 text-sm text-left rounded-md hover:bg-[var(--color-bg-hover)] transition-colors focus:outline-none"
+            [class.bg-[var(--color-primary-soft)]]="!selectedOption"
+            [class.text-[var(--color-primary)]]="!selectedOption"
+          >
+            <span class="italic text-[var(--color-text-muted)]">{{ nullOptionLabel }}</span>
+            @if (!selectedOption) {
+              <lucide-icon [img]="icons.check" size="14"></lucide-icon>
+            }
+          </button>
+        }
+
+        @for (opt of filteredOptions(); track opt.value) {
+          <button
+            type="button"
+            (click)="selectOption(opt)"
+            class="w-full flex items-center justify-between px-3 py-2 text-sm text-left rounded-md hover:bg-[var(--color-bg-hover)] transition-colors focus:outline-none group"
+            [class.bg-[var(--color-primary-soft)]]="selectedOption?.value === opt.value"
+            [class.text-[var(--color-primary)]]="selectedOption?.value === opt.value"
+          >
+            <div class="flex items-center gap-2 overflow-hidden">
+              @if (opt.avatarName) {
+                <div
+                  class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase shrink-0 shadow-sm"
+                  [style.backgroundColor]="getAvatarColor(opt.avatarName, opt.avatarColor)"
+                >
+                  {{ getAvatarInitials(opt.avatarName) }}
+                </div>
+              }
+              <div class="flex flex-col overflow-hidden">
+                <span class="truncate font-medium group-hover:text-[var(--color-primary)] transition-colors" [class.text-[var(--color-primary)]]="selectedOption?.value === opt.value">
+                  {{ opt.label }}
+                </span>
+                @if (opt.subLabel) {
+                  <span class="truncate text-[10px] text-[var(--color-text-muted)]">{{ opt.subLabel }}</span>
+                }
+              </div>
+            </div>
+            @if (selectedOption?.value === opt.value) {
+              <lucide-icon [img]="icons.check" size="14" class="shrink-0 ml-2"></lucide-icon>
+            }
+          </button>
+        }
+
+        @if (filteredOptions().length === 0) {
+          <div class="px-3 py-4 text-center text-xs text-[var(--color-text-muted)]">
+            No results found.
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

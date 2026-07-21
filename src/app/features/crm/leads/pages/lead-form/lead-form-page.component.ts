@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -9,11 +9,12 @@ import { LeadStatus, Priority, Source } from '../../types/lead.model';
 import { Client } from '../../../clients/types/client.model';
 import { Contact } from '../../../contacts/types/contact.model';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-lead-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './lead-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -37,8 +38,34 @@ export class LeadFormPageComponent implements OnInit {
   readonly priorityOptions: Priority[] = ['HIGH', 'MEDIUM', 'LOW'];
   readonly statusOptions: LeadStatus[] = ['NEW', 'CONTACTED', 'QUALIFIED', 'UNQUALIFIED'];
   readonly sourceOptions: Source[] = ['WEBSITE', 'REFERRAL', 'SOCIAL_MEDIA', 'COLD_CALL', 'EVENT', 'OTHER'];
+  
+  readonly prioritySelectOptions: CustomSelectOption[] = this.priorityOptions.map(p => ({ label: p, value: p }));
+  readonly statusSelectOptions: CustomSelectOption[] = this.statusOptions.map(s => ({ label: s, value: s }));
+  readonly sourceSelectOptions: CustomSelectOption[] = this.sourceOptions.map(s => ({ label: s, value: s }));
+  
+  readonly clientTypeOptions: CustomSelectOption[] = ['ENTERPRISE', 'STARTUP', 'B2B', 'B2C'].map(t => ({ label: t, value: t }));
+  readonly roleOptions: CustomSelectOption[] = ['CEO', 'DIRECTOR', 'INFLUENCER', 'BUYER'].map(r => ({ label: r, value: r }));
+  readonly influenceLevelOptions: CustomSelectOption[] = ['HIGH', 'MEDIUM', 'LOW'].map(l => ({ label: l, value: l }));
 
   readonly ArrowLeft = ArrowLeft;
+
+  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+    this.clients().map(c => ({
+      value: c.id,
+      label: c.name,
+      subLabel: c.industry,
+      avatarName: c.name
+    }))
+  );
+
+  readonly contactOptions = computed<CustomSelectOption[]>(() => 
+    this.contacts().map(c => ({
+      value: c.id,
+      label: `${c.firstName} ${c.lastName}`,
+      subLabel: c.email,
+      avatarName: `${c.firstName} ${c.lastName}`
+    }))
+  );
 
   leadForm!: FormGroup;
 

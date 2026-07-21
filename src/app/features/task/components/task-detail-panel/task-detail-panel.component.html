@@ -25,15 +25,12 @@
       @if (showStatusChange()) {
         <div class="panel-inline-form">
           <label class="panel-form-label">New Status</label>
-          <select
-            class="panel-select"
+          <app-custom-select
             [ngModel]="newStatus()"
             (ngModelChange)="newStatus.set($event)"
-          >
-            @for (s of allStatuses; track s) {
-              <option [value]="s">{{ statusLabels[s] }}</option>
-            }
-          </select>
+            [options]="statusSelectOptions"
+            [searchable]="false"
+          ></app-custom-select>
           <label class="panel-form-label">Comment (optional)</label>
           <input
             type="text"
@@ -106,7 +103,8 @@
 
         <!-- DETAILS Section -->
         @if (activeSection() === 'details') {
-          <div class="detail-fields">
+          <div class="h-full overflow-y-auto p-4">
+            <div class="detail-fields">
 
             <!-- Type -->
             <div class="detail-field">
@@ -271,11 +269,57 @@
               <p class="detail-description-text">{{ task.description }}</p>
             </div>
           }
+          </div>
         }
 
         <!-- ASSIGNMENTS Section -->
         @if (activeSection() === 'assignments') {
-          <div class="assignments-section">
+          <div class="assignments-section h-full overflow-y-auto p-4">
+            @if (showAssignForm()) {
+              <div class="panel-inline-form">
+                <label class="panel-form-label">User</label>
+                <app-custom-select
+                  [ngModel]="assignUserId()"
+                  (ngModelChange)="assignUserId.set($event)"
+                  [options]="assignUserOptions"
+                  [searchable]="true"
+                  placeholder="Select a user..."
+                ></app-custom-select>
+                <label class="panel-form-label">Role</label>
+                <app-custom-select
+                  [ngModel]="assignRole()"
+                  (ngModelChange)="assignRole.set($event)"
+                  [options]="assignRoleOptions"
+                  [searchable]="false"
+                ></app-custom-select>
+                <label class="panel-form-label">Allocation %</label>
+                <input
+                  type="number"
+                  class="panel-input"
+                  [ngModel]="assignAllocation()"
+                  (ngModelChange)="assignAllocation.set($event)"
+                  min="0"
+                  max="100"
+                />
+                <div class="panel-form-actions">
+                  <button
+                    class="panel-btn-primary"
+                    (click)="onAssignUser()"
+                    [disabled]="assigningUser() || !assignUserId()"
+                  >
+                    @if (assigningUser()) { Assigning... } @else { Assign }
+                  </button>
+                  <button class="panel-btn-secondary" (click)="showAssignForm.set(false)">Cancel</button>
+                </div>
+              </div>
+            } @else {
+              <button class="panel-add-btn" (click)="showAssignForm.set(true)">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Assignee
+              </button>
+            }
             @if (task.assignments && task.assignments.length > 0) {
               @for (assignment of task.assignments; track assignment.id) {
                 <div class="assignment-card">
@@ -307,119 +351,56 @@
               </div>
             }
 
-            @if (showAssignForm()) {
-              <div class="panel-inline-form">
-                <label class="panel-form-label">User</label>
-                <select
-                  class="panel-select"
-                  [ngModel]="assignUserId()"
-                  (ngModelChange)="assignUserId.set($event)"
-                >
-                  <option value="">Select a user...</option>
-                  @for (user of getAvailableUsers(); track user.id) {
-                    <option [value]="user.keycloakUserId">{{ user.firstName }} {{ user.lastName }} ({{ user.email }})</option>
-                  }
-                </select>
-                <label class="panel-form-label">Role</label>
-                <select
-                  class="panel-select"
-                  [ngModel]="assignRole()"
-                  (ngModelChange)="assignRole.set($event)"
-                >
-                  @for (role of allRolesInTask; track role) {
-                    <option [value]="role">{{ roleLabels[role] }}</option>
-                  }
-                </select>
-                <label class="panel-form-label">Allocation %</label>
-                <input
-                  type="number"
-                  class="panel-input"
-                  [ngModel]="assignAllocation()"
-                  (ngModelChange)="assignAllocation.set($event)"
-                  min="0"
-                  max="100"
-                />
-                <div class="panel-form-actions">
-                  <button
-                    class="panel-btn-primary"
-                    (click)="onAssignUser()"
-                    [disabled]="assigningUser() || !assignUserId()"
-                  >
-                    @if (assigningUser()) { Assigning... } @else { Assign }
-                  </button>
-                  <button class="panel-btn-secondary" (click)="showAssignForm.set(false)">Cancel</button>
-                </div>
-              </div>
-            } @else {
-              <button class="panel-add-btn" (click)="showAssignForm.set(true)">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-                Add Assignee
-              </button>
-            }
+
           </div>
         }
 
         <!-- COMMENTS Section -->
         @if (activeSection() === 'comments') {
-          <div class="comments-section">
-            <!-- Add Comment -->
-            <div class="comment-form">
-              <textarea
-                class="comment-textarea"
-                placeholder="Add a comment..."
-                [ngModel]="newCommentContent()"
-                (ngModelChange)="newCommentContent.set($event)"
-                maxlength="2000"
-                rows="3"
-              ></textarea>
-              <div class="comment-form-footer">
-                <button
-                  class="panel-btn-primary"
-                  (click)="onAddComment()"
-                  [disabled]="addingComment() || !newCommentContent().trim()"
-                >
-                  @if (addingComment()) { Posting... } @else { Post Comment }
-                </button>
-              </div>
-            </div>
-
+          <div class="comments-section flex flex-col h-full overflow-hidden pt-6">
             <!-- Comment List -->
+            <div class="flex-1 overflow-y-auto p-4">
             @if (task.comments && task.comments.length > 0) {
               <div class="comments-list">
                 @for (comment of task.comments; track comment.id) {
-                  <div class="comment-card">
-                    <div class="comment-avatar-col">
-                      <div class="comment-avatar" [style.background]="getUserDisplay(comment.userId).avatarColor">
-                        {{ getUserDisplay(comment.userId).initials }}
+                  <div class="bg-[var(--color-bg)] flex flex-col gap-3 pb-5 group">
+                    <div class="flex items-center justify-between w-full">
+                      <div class="flex items-center gap-3">
+                        <div class="comment-avatar w-8 h-8 rounded-full text-xs shadow-sm shrink-0 flex items-center justify-center text-white" [style.background]="getUserDisplay(comment.userId).avatarColor">
+                          {{ getUserDisplay(comment.userId).initials }}
+                        </div>
+                        <div class="text-[14px]">
+                          <span class="font-semibold text-[var(--color-text)]">{{ getUserDisplay(comment.userId).name }}</span>
+                          <span class="text-[var(--color-text-muted)] ml-1">added a comment {{ comment.createdAt | date:'short' }}</span>
+                        </div>
+                      </div>
+                      <div class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <app-dropdown-menu
+                          [items]="commentMenuItems"
+                          [iconOnly]="true"
+                          (itemSelected)="onCommentMenuItemClick($event, comment)"
+                        />
                       </div>
                     </div>
-                    <div class="comment-body">
-                      <div class="comment-header">
-                        <span class="comment-user-name">{{ getUserDisplay(comment.userId).name }}</span>
-                        <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
-                      </div>
 
+                    <div class="w-full">
                       @if (editingCommentId() === comment.id) {
-                        <div class="comment-edit-form">
+                        <div class="comment-edit-form w-full">
                           <textarea
-                            class="comment-textarea"
+                            class="comment-textarea w-full"
                             [ngModel]="editCommentContent()"
                             (ngModelChange)="editCommentContent.set($event)"
                             maxlength="2000"
                             rows="3"
                           ></textarea>
-                          <div class="panel-form-actions">
+                          <div class="panel-form-actions mt-2">
                             <button class="panel-btn-primary" (click)="saveEditComment(comment)">Save</button>
                             <button class="panel-btn-secondary" (click)="cancelEditComment()">Cancel</button>
                           </div>
                         </div>
                       } @else {
-                        <p class="comment-content">{{ comment.content }}</p>
-                        <div class="comment-actions">
-                          <button class="comment-action-btn" (click)="startEditComment(comment)">Edit</button>
-                          <button class="comment-action-btn danger" (click)="onRemoveComment(comment)">Delete</button>
+                        <div class="bg-[var(--color-bg-muted)] text-[var(--color-text)] px-4 py-3 rounded-xl border border-[var(--color-border-strong)] text-[14px]">
+                          <p class="whitespace-pre-wrap m-0 leading-relaxed">{{ comment.content }}</p>
                         </div>
                       }
                     </div>
@@ -435,12 +416,39 @@
                 <span class="empty-state-desc">Be the first to comment on this task</span>
               </div>
             }
+
+            </div>
+
+            <!-- Add Comment -->
+             <div class="p-4 border-t border-border-strong bg-bg-muted">
+
+               <div class="comment-form shrink-0">
+                 <textarea
+                   class="comment-textarea"
+                   placeholder="Add a comment..."
+                   [ngModel]="newCommentContent()"
+                   (ngModelChange)="newCommentContent.set($event)"
+                   maxlength="2000"
+                   rows="3"
+                 ></textarea>
+                 <div class="comment-form-footer">
+                   <button
+                     class=""
+                     (click)="onAddComment()"
+                     [disabled]="addingComment() || !newCommentContent().trim()"
+                   >
+                     @if (addingComment()) { <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-icon lucide-loader animate-spin"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg> } @else { <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-icon lucide-send"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg> }
+                   </button>
+                 </div>
+               </div>
+             </div>
+
           </div>
         }
 
         <!-- DEPENDENCIES Section -->
         @if (activeSection() === 'dependencies') {
-          <div class="dependencies-section">
+          <div class="dependencies-section h-full overflow-y-auto p-4">
             @if (task.dependencies && task.dependencies.length > 0) {
               @for (dep of task.dependencies; track dep.id) {
                 <div class="dependency-card">
@@ -468,26 +476,20 @@
             @if (showDepForm()) {
               <div class="panel-inline-form">
                 <label class="panel-form-label">Dependency Type</label>
-                <select
-                  class="panel-select"
+                <app-custom-select
                   [ngModel]="depType()"
                   (ngModelChange)="depType.set($event)"
-                >
-                  @for (dt of allDependencyTypes; track dt) {
-                    <option [value]="dt">{{ depTypeLabels[dt] }}</option>
-                  }
-                </select>
+                  [options]="depTypeSelectOptions"
+                  [searchable]="false"
+                ></app-custom-select>
                 <label class="panel-form-label">Task</label>
-                <select
-                  class="panel-select"
+                <app-custom-select
                   [ngModel]="depTaskId()"
                   (ngModelChange)="depTaskId.set($event)"
-                >
-                  <option value="">Select a task...</option>
-                  @for (t of getAvailableTasksForDep(); track t.id) {
-                    <option [value]="t.id">{{ t.title }}</option>
-                  }
-                </select>
+                  [options]="depTaskOptions"
+                  [searchable]="true"
+                  placeholder="Select a task..."
+                ></app-custom-select>
                 <div class="panel-form-actions">
                   <button
                     class="panel-btn-primary"
@@ -511,7 +513,7 @@
         }
         <!-- HISTORY Section -->
         @if (activeSection() === 'history') {
-          <div class="history-section p-4">
+          <div class="history-section h-full overflow-y-auto p-4">
             @if (task.statusHistory && task.statusHistory.length > 0) {
               <div class="relative pl-4 space-y-6">
                 <!-- Vertical Line -->

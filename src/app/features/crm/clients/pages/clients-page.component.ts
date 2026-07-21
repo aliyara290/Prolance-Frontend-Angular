@@ -57,6 +57,10 @@ export class ClientsPageComponent implements OnInit {
     this.clientsService.loadClients();
   }
 
+  onRefresh(): void {
+    this.clientsService.loadClients();
+  }
+
   onTabChange(tab: ModuleTab): void {
     this.activeTabId.set(tab.id);
   }

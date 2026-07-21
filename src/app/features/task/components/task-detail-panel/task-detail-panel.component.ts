@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
 import { DropdownMenuComponent, DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { TasksService, UserDisplay } from '../../services/tasks.service';
 import { TaskAssignmentsService } from '../../services/task-assignments.service';
@@ -47,11 +48,13 @@ import {
   CreateTaskDependencyRequest,
 } from '../../types/task.model';
 
+import { CustomSelectComponent, CustomSelectOption } from '../../../../shared/ui/custom-select/custom-select.component';
+
 @Component({
   selector: 'app-task-detail-panel',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DropdownMenuComponent],
+  imports: [CommonModule, FormsModule, DropdownMenuComponent, CustomSelectComponent],
   templateUrl: './task-detail-panel.component.html',
   styleUrls: ['./task-detail-panel.component.css'],
 })
@@ -62,6 +65,7 @@ export class TaskDetailPanelComponent implements OnChanges {
   private readonly dependenciesService = inject(TaskDependenciesService);
   private readonly usersStateService = inject(UsersStateService);
   private readonly milestonesService = inject(ProjectMilestonesService, { optional: true });
+  private readonly confirmService = inject(ConfirmModalService);
 
   @Input() task: TaskResponse | null = null;
   @Input() isOpen = false;
@@ -114,10 +118,27 @@ export class TaskDetailPanelComponent implements OnChanges {
 
   readonly tenantUsers = this.usersStateService.usersList;
 
+  readonly assignRoleOptions: CustomSelectOption[] = this.allRolesInTask.map(r => ({ label: this.roleLabels[r], value: r }));
+  readonly depTypeSelectOptions: CustomSelectOption[] = this.allDependencyTypes.map(d => ({ label: this.depTypeLabels[d], value: d }));
+  readonly statusSelectOptions: CustomSelectOption[] = this.allStatuses.map(s => ({ label: this.statusLabels[s], value: s }));
+
+  get assignUserOptions(): CustomSelectOption[] {
+    return this.getAvailableUsers().map(u => ({ label: `${u.firstName} ${u.lastName}`, value: u.keycloakUserId }));
+  }
+
+  get depTaskOptions(): CustomSelectOption[] {
+    return this.getAvailableTasksForDep().map(t => ({ label: t.title, value: t.id }));
+  }
+
   readonly panelMenuItems: DropdownMenuItem[] = [
     { label: 'Change Status', value: 'status', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>' },
     { label: 'Edit Task', value: 'edit', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' },
     { label: 'Delete Task', value: 'delete', danger: true, dividerBefore: true, icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' }
+  ];
+
+  readonly commentMenuItems: DropdownMenuItem[] = [
+    { label: 'Edit', value: 'edit', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' },
+    { label: 'Delete', value: 'delete', danger: true, icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' }
   ];
 
   onMenuItemClick(item: DropdownMenuItem): void {
@@ -132,6 +153,14 @@ export class TaskDetailPanelComponent implements OnChanges {
       case 'delete':
         this.deleteTask();
         break;
+    }
+  }
+
+  onCommentMenuItemClick(item: DropdownMenuItem, comment: TaskCommentResponse): void {
+    if (item.value === 'edit') {
+      this.startEditComment(comment);
+    } else if (item.value === 'delete') {
+      this.onRemoveComment(comment);
     }
   }
 
@@ -178,8 +207,18 @@ export class TaskDetailPanelComponent implements OnChanges {
     this.resetState();
   }
 
-  deleteTask(): void {
-    if (!this.task || !confirm(`Are you sure you want to delete task "${this.task.title}"?`)) return;
+  async deleteTask(): Promise<void> {
+    if (!this.task) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Task',
+      message: `Are you sure you want to delete task "${this.task.title}"? This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.tasksService.deleteTask(this.task.id).subscribe({
       next: () => {
@@ -292,10 +331,19 @@ export class TaskDetailPanelComponent implements OnChanges {
     });
   }
 
-  onUnassignUser(assignment: TaskAssignmentResponse): void {
+  async onUnassignUser(assignment: TaskAssignmentResponse): Promise<void> {
     if (!this.task) return;
     const display = this.getUserDisplay(assignment.userId);
-    if (!confirm(`Remove ${display.name} from this task?`)) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Remove User',
+      message: `Remove ${display.name} from this task?`,
+      confirmText: 'Remove',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.assignmentsService.unassignUser(this.task.id, assignment.userId).subscribe({
       next: () => this.taskUpdated.emit(),
@@ -351,8 +399,18 @@ export class TaskDetailPanelComponent implements OnChanges {
     });
   }
 
-  onRemoveComment(comment: TaskCommentResponse): void {
-    if (!this.task || !confirm('Delete this comment?')) return;
+  async onRemoveComment(comment: TaskCommentResponse): Promise<void> {
+    if (!this.task) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Comment',
+      message: 'Delete this comment?',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.commentsService.removeComment(this.task.id, comment.id).subscribe({
       next: () => this.taskUpdated.emit(),
@@ -385,8 +443,18 @@ export class TaskDetailPanelComponent implements OnChanges {
     });
   }
 
-  onRemoveDependency(dep: TaskDependencyResponse): void {
-    if (!this.task || !confirm('Remove this dependency?')) return;
+  async onRemoveDependency(dep: TaskDependencyResponse): Promise<void> {
+    if (!this.task) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Remove Dependency',
+      message: 'Remove this dependency?',
+      confirmText: 'Remove',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.dependenciesService.removeDependency(this.task.id, dep.id).subscribe({
       next: () => this.taskUpdated.emit(),

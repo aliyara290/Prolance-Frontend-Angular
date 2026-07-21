@@ -46,7 +46,7 @@
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 3px;
   margin-bottom: 48px;
 }
 
@@ -64,7 +64,6 @@
 
 .brand-name {
   font-size: var(--text-xl);
-  font-weight: var(--font-bold);
   color: #ffffff;
   letter-spacing: -0.02em;
 }
@@ -516,7 +515,7 @@
   right: 0;
   max-height: 240px;
   overflow-y: auto;
-  background: var(--color-card);
+  background: var(--color-bg);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);

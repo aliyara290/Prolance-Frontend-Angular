@@ -69,42 +69,33 @@
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Source <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="source"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-            >
-              @for (src of sourceOptions; track src) {
-                <option [value]="src">{{ src }}</option>
-              }
-            </select>
+              [options]="sourceSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Priority <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="priority"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-            >
-              @for (prio of priorityOptions; track prio) {
-                <option [value]="prio">{{ prio }}</option>
-              }
-            </select>
+              [options]="prioritySelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Status <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="status"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-            >
-              @for (stat of statusOptions; track stat) {
-                <option [value]="stat">{{ stat }}</option>
-              }
-            </select>
+              [options]="statusSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
         </div>
       </div>
@@ -223,17 +214,14 @@
           <div class="p-5">
             <!-- Option A: Select Existing Client -->
             @if (clientMode() === 'select') {
-              <div>
+              <div class="relative">
                 <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Select Client</label>
-                <select
-                  formControlName="clientId"
-                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-                >
-                  <option value="">-- No Client Associated --</option>
-                  @for (cli of clients(); track cli.id) {
-                    <option [value]="cli.id">{{ cli.name }} ({{ cli.industry || 'No Industry' }})</option>
-                  }
-                </select>
+                <app-custom-select 
+                  formControlName="clientId" 
+                  [options]="clientOptions()" 
+                  placeholder="Select client..." 
+                  nullOptionLabel="-- No Client Associated --">
+                </app-custom-select>
               </div>
             }
 
@@ -291,28 +279,21 @@
 
                   <div>
                     <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Type</label>
-                    <select
+                    <app-custom-select
                       formControlName="type"
-                      class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none cursor-pointer focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
-                    >
-                      <option value="ENTERPRISE">ENTERPRISE</option>
-                      <option value="STARTUP">STARTUP</option>
-                      <option value="B2B">B2B</option>
-                      <option value="B2C">B2C</option>
-                    </select>
+                      [options]="clientTypeOptions"
+                      [searchable]="false"
+                    ></app-custom-select>
                   </div>
 
                   <div>
                     <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client
                       Source</label>
-                    <select
+                    <app-custom-select
                       formControlName="source"
-                      class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] outline-none cursor-pointer focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
-                    >
-                      @for (src of sourceOptions; track src) {
-                        <option [value]="src">{{ src }}</option>
-                      }
-                    </select>
+                      [options]="sourceSelectOptions"
+                      [searchable]="false"
+                    ></app-custom-select>
                   </div>
                 </div>
               </div>
@@ -355,17 +336,14 @@
           <div class="p-5">
             <!-- Option A: Select Existing Contact -->
             @if (contactMode() === 'select') {
-              <div>
+              <div class="relative">
                 <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Select Contact</label>
-                <select
-                  formControlName="contactId"
-                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-                >
-                  <option value="">-- No Contact Associated --</option>
-                  @for (con of contacts(); track con.id) {
-                    <option [value]="con.id">{{ con.firstName }} {{ con.lastName }} ({{ con.role }})</option>
-                  }
-                </select>
+                <app-custom-select 
+                  formControlName="contactId" 
+                  [options]="contactOptions()" 
+                  placeholder="Select contact..." 
+                  nullOptionLabel="-- No Contact Associated --">
+                </app-custom-select>
               </div>
             }
 
@@ -435,28 +413,21 @@
 
                   <div>
                     <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Role</label>
-                    <select
+                    <app-custom-select
                       formControlName="role"
-                      class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] cursor-pointer outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
-                    >
-                      <option value="CEO">CEO</option>
-                      <option value="DIRECTOR">DIRECTOR</option>
-                      <option value="INFLUENCER">INFLUENCER</option>
-                      <option value="BUYER">BUYER</option>
-                    </select>
+                      [options]="roleOptions"
+                      [searchable]="false"
+                    ></app-custom-select>
                   </div>
 
                   <div>
                     <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Influence
                       Level</label>
-                    <select
+                    <app-custom-select
                       formControlName="influenceLevel"
-                      class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] cursor-pointer outline-none focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
-                    >
-                      <option value="HIGH">HIGH</option>
-                      <option value="MEDIUM">MEDIUM</option>
-                      <option value="LOW">LOW</option>
-                    </select>
+                      [options]="influenceLevelOptions"
+                      [searchable]="false"
+                    ></app-custom-select>
                   </div>
                 </div>
               </div>

@@ -55,6 +55,10 @@ export class DealsPageComponent implements OnInit {
     this.dealsService.loadDeals();
   }
 
+  onRefresh(): void {
+    this.dealsService.loadDeals();
+  }
+
   onTabChange(tab: ModuleTab): void {
     this.activeTabId.set(tab.id);
   }

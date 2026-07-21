@@ -9,10 +9,13 @@ import {AuthService} from '../../../../../core/auth/services/auth.service';
 import {Store} from '@ngrx/store';
 import {selectAuthUser} from '../../../../../core/auth/store/auth.selectors';
 
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-personal-settings',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, CustomSelectComponent, FormsModule],
   templateUrl: './personal-settings.component.html',
 })
 export class PersonalSettingsComponent {
@@ -57,6 +60,12 @@ export class PersonalSettingsComponent {
     { code: 'en', label: 'English' },
     { code: 'fr', label: 'Français' }
   ];
+
+  readonly timezoneOptions: CustomSelectOption[] = this.timezones.map(t => ({ label: t, value: t }));
+  readonly languageOptions: CustomSelectOption[] = this.languages.map(l => ({ label: l.label, value: l.code }));
+
+  selectedTimezone = 'UTC+01:00 — Casablanca, Morocco';
+  selectedLanguage = 'en';
 
 
   onAvatarChange(event: Event): void {

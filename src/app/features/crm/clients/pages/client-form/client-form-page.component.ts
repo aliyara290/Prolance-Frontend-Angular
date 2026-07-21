@@ -5,11 +5,12 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { ClientsService } from '../../services/clients.service';
 import { ClientType, ClientSource, Ownership } from '../../types/client.model';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-client-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './client-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,6 +27,10 @@ export class ClientFormPageComponent implements OnInit {
   readonly typeOptions: ClientType[] = ['B2B', 'B2C', 'ENTERPRISE', 'STARTUP'];
   readonly sourceOptions: ClientSource[] = ['WEBSITE', 'REFERRAL', 'SOCIAL_MEDIA', 'COLD_CALL', 'EVENT', 'OTHER'];
   readonly ownershipOptions: Ownership[] = ['PRIVATE', 'PUBLIC', 'GOVERNMENT', 'PARTNERSHIP', 'OTHER'];
+
+  readonly typeSelectOptions: CustomSelectOption[] = this.typeOptions.map(t => ({ label: t, value: t }));
+  readonly sourceSelectOptions: CustomSelectOption[] = this.sourceOptions.map(s => ({ label: s, value: s }));
+  readonly ownershipSelectOptions: CustomSelectOption[] = this.ownershipOptions.map(o => ({ label: o, value: o }));
 
   readonly ArrowLeft = ArrowLeft;
 

@@ -65,7 +65,7 @@ export const LAYOUT_ROUTES: Routes = [
 
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: '/crm/dashboard',
         pathMatch: 'full'
       }
     ]

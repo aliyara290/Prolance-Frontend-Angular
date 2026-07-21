@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy, computed, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -7,11 +7,12 @@ import { ClientsService } from '../../../clients/services/clients.service';
 import { Role, InfluenceLevel, Department } from '../../types/contact.model';
 import { Client } from '../../../clients/types/client.model';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-contact-form-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './contact-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -37,6 +38,18 @@ export class ContactFormPageComponent implements OnInit {
   ];
 
   readonly ArrowLeft = ArrowLeft;
+  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+    this.clients().map(c => ({
+      value: c.id,
+      label: c.name,
+      subLabel: c.industry,
+      avatarName: c.name
+    }))
+  );
+
+  readonly roleSelectOptions: CustomSelectOption[] = this.roleOptions.map(r => ({ label: r, value: r }));
+  readonly influenceLevelSelectOptions: CustomSelectOption[] = this.influenceLevelOptions.map(l => ({ label: l, value: l }));
+  readonly departmentSelectOptions: CustomSelectOption[] = this.departmentOptions.map(d => ({ label: d, value: d }));
 
   contactForm!: FormGroup;
 

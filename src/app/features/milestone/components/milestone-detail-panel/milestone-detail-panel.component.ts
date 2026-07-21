@@ -7,6 +7,8 @@ import { TaskResponse } from '../../../task/types/task.model';
 import { TasksService } from '../../../task/services/tasks.service';
 import { DropdownMenuComponent, DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 
+import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-milestone-detail-panel',
   standalone: true,
@@ -18,6 +20,7 @@ import { DropdownMenuComponent, DropdownMenuItem } from '../../../../shared/ui/d
 export class MilestoneDetailPanelComponent implements OnChanges {
   private readonly milestoneService = inject(MilestoneService);
   private readonly tasksService = inject(TasksService);
+  private readonly confirmService = inject(ConfirmModalService);
 
   @Input() milestone: Milestone | null = null;
   @Input() isOpen = false;
@@ -115,8 +118,18 @@ export class MilestoneDetailPanelComponent implements OnChanges {
     }
   }
 
-  deleteMilestone(): void {
-    if (!this.milestone || !confirm(`Are you sure you want to delete milestone "${this.milestone.title}"?`)) return;
+  async deleteMilestone(): Promise<void> {
+    if (!this.milestone) return;
+
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Milestone',
+      message: `Are you sure you want to delete milestone "${this.milestone.title}"?`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.milestoneService.deleteMilestone(this.milestone.projectId, this.milestone.id).subscribe({
       next: () => {

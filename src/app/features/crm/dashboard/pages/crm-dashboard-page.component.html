@@ -6,28 +6,23 @@
       <h2 class="text-2xl font-[var(--font-semibold)] text-text mb-1 tracking-tight">CRM Dashboard</h2>
       <p class="text-sm text-text-muted">Overview of your leads, deals, and pipeline performance.</p>
     </div>
-    <div class="flex items-center gap-3">
-      <button class="flex items-center gap-2 px-3 py-2 bg-text hover:bg-text-inverse text-bg rounded-[var(--radius-md)] text-sm font-semibold transition-colors shadow-sm cursor-pointer">
-        <lucide-icon [img]="icons.plus" size="16"></lucide-icon>
-        <span>New Lead</span>
-      </button>
-    </div>
+
   </div>
-  
+
   @if (isLoading()) {
     <app-dashboard-skeleton></app-dashboard-skeleton>
   } @else if (error()) {
-    <app-error-message 
-      title="Failed to Load Dashboard" 
-      [message]="error() ?? 'An unexpected error occurred while fetching the CRM data.'" 
+    <app-error-message
+      title="Failed to Load Dashboard"
+      [message]="error() ?? 'An unexpected error occurred while fetching the CRM data.'"
       layout="full"
       [showRetry]="false">
     </app-error-message>
   } @else if (dashboardData(); as data) {
-    
+
     <!-- Top Metrics Enterprise Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      
+
       <!-- Metric 1 -->
       <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
         <div class="p-6 flex flex-col h-full">
@@ -120,7 +115,7 @@
 
     <!-- Doughnut Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      
+
       <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
         <h3 class="text-sm font-[var(--font-semibold)] text-text tracking-tight mb-4">Leads by Status</h3>
         <div class="flex-1 relative w-full h-full">
@@ -162,7 +157,7 @@
           }
         </div>
       </div>
-      
+
     </div>
 
     <!-- Table Row -->
@@ -172,7 +167,7 @@
           <h3 class="text-xs font-[var(--font-semibold)] text-text-muted uppercase tracking-wider">Recent CRM Activity</h3>
           <span class="text-xs font-medium text-text-muted">{{ data.kpis?.recentActivities?.length || 0 }} events</span>
         </div>
-        
+
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm whitespace-nowrap">
             <thead class="bg-bg-muted border-b border-border-strong text-text-muted font-medium text-xs uppercase tracking-wider">
@@ -200,7 +195,7 @@
                           [class.bg-success-soft]="activity.action === 'CREATE'" [class.text-success]="activity.action === 'CREATE'"
                           [class.bg-info-soft]="activity.action === 'UPDATE'" [class.text-info]="activity.action === 'UPDATE'"
                           [class.bg-danger-soft]="activity.action === 'DELETE'" [class.text-danger]="activity.action === 'DELETE'"
-                          [class.bg-primary-soft]="activity.action !== 'CREATE' && activity.action !== 'UPDATE' && activity.action !== 'DELETE'" 
+                          [class.bg-primary-soft]="activity.action !== 'CREATE' && activity.action !== 'UPDATE' && activity.action !== 'DELETE'"
                           [class.text-primary]="activity.action !== 'CREATE' && activity.action !== 'UPDATE' && activity.action !== 'DELETE'">
                       {{ activity.action }}
                     </span>

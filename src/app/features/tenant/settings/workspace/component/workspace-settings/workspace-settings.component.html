@@ -56,10 +56,11 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Industry</label>
-          <select [(ngModel)]="form.industry"
-                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer">
-            <option *ngFor="let i of industries" [value]="i">{{ i }}</option>
-          </select>
+          <app-custom-select
+            [(ngModel)]="form.industry"
+            [options]="industryOptions"
+            [searchable]="true"
+          ></app-custom-select>
         </div>
         <div>
           <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Founded Date</label>
@@ -72,17 +73,19 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Timezone</label>
-          <select [(ngModel)]="form.timezone"
-                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer">
-            <option *ngFor="let tz of timezones" [value]="tz">{{ tz }}</option>
-          </select>
+          <app-custom-select
+            [(ngModel)]="form.timezone"
+            [options]="timezoneOptions"
+            [searchable]="true"
+          ></app-custom-select>
         </div>
         <div>
           <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Language</label>
-          <select [(ngModel)]="form.language"
-                  class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-bg  cursor-pointer">
-            <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
-          </select>
+          <app-custom-select
+            [(ngModel)]="form.language"
+            [options]="languageOptions"
+            [searchable]="false"
+          ></app-custom-select>
         </div>
       </div>
 

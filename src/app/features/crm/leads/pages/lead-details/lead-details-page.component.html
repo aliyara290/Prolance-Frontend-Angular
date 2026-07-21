@@ -1,415 +1,478 @@
-<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
+<div class="h-full flex flex-col text-[var(--color-text)]">
+
   @if (loading()) {
     <app-details-skeleton></app-details-skeleton>
-  } @else if (error()) {
-    <div class="flex flex-col items-center gap-4 py-16 bg-bg border border-border-strong rounded-lg">
-      <div class="w-12 h-12 rounded-full bg-[var(--color-danger-soft)] flex items-center justify-center">
-        <svg class="w-6 h-6 text-[var(--color-danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-             stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
+  }
+
+  @else if (error()) {
+    <div class="p-8">
+      <app-error-message
+        title="Something went wrong!"
+        [message]="error() ?? 'An unexpected error occurred while fetching the lead details.'"
+        layout="full"
+        [showRetry]="false">
+      </app-error-message>
+      <div class="flex justify-center mt-5">
+        <a routerLink="/app/crm/leads"
+           class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] hover:underline transition-colors">
+          <lucide-icon [img]="ArrowLeft" [size]="14"></lucide-icon>
+          Back to Leads
+        </a>
       </div>
-      <span class="text-sm font-medium text-[var(--color-text)]">{{ error() }}</span>
-      <a routerLink="/app/crm/leads">
-        <div
-          class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
-          <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
-        </div>
-        <span>Go back to leads</span>
-      </a>
     </div>
-  } @else if (lead()) {
+  }
 
-    <div class="space-y-4">
+  @else if (lead()) {
 
+    <!-- ────────── STICKY HEADER ────────── -->
+    <header class="sticky top-0 z-10 bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border-strong)]">
+      <div class="px-4 py-4 flex items-center justify-between gap-4">
 
-      <div class="p-md mb-0 sticky top-0 bg-bg-muted">
-        <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
+        <!-- Left: Back + Identity -->
+        <div class="flex items-center gap-4 min-w-0">
+          <!-- Back -->
+          <a routerLink="/app/crm/leads"
+             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
+            <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+          </a>
 
-          <div class="flex items-center gap-4">
-            <!-- Back arrow key -->
-            <a routerLink="/app/crm/leads">
-              <div
-                class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
-                <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
-              </div>
-            </a>
+          <!-- Avatar -->
+          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm"
+               [style.background]="getAvatarColor()">
+            {{ getInitials() }}
+          </div>
 
-            <div>
-              <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
-                <span>{{ lead().contact ? (lead().contact.firstName + ' ' + lead().contact.lastName) : lead().title }}</span>
-                @if (lead().company || lead().client?.name) {
-                  <a [routerLink]="'/app/crm/clients/' + lead().clientId" class="text-sm font-normal text-text-muted underline border-l border-border-strong pl-2">
-                    {{ lead().company || lead().client?.name }}
-                  </a>
-                }
+          <!-- Name + Breadcrumb -->
+          <div class="min-w-0">
+            <div class="flex items-center gap-1 min-w-0">
+              <h1 class="text-lg font-bold text-[var(--color-text)] truncate leading-tight">
+                {{ getLeadDisplayName() }}
               </h1>
+
             </div>
           </div>
+        </div>
 
-          <div class="flex items-center flex-wrap gap-2.5">
-            <button
-              (click)="onConvert()"
-              class="px-4 py-2 bg-bg hover:bg-primary hover:text-white text-text-muted border border-border-strong text-xs font-semibold rounded-[var(--radius-md)] cursor-pointer "
-            >
-              Convert to deal
-            </button>
-
-            @if (lead().email || lead().contact?.email) {
-              <a
-                [href]="'mailto:' + (lead().email || lead().contact?.email)"
-                class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
-              </a>
-            }
-
-
-            <button
-              (click)="onEdit()"
-              class="px-4 py-2 bg-bg hover:bg-bg-hover hover:text-text text-text-muted border border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
-            </button>
-
-            <button
-              (click)="onDelete()"
-              class="px-4 py-2 bg-bg hover:bg-danger text-text-muted border hover:text-white border-border-strong text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer "
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   class="lucide lucide-trash-icon lucide-trash">
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-                <path d="M3 6h18"/>
-                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-            </button>
-          </div>
+        <div class="flex items-center gap-2.5 flex-shrink-0">
+          <app-dropdown-menu
+            [items]="moreActions"
+            [iconOnly]="true"
+            (itemSelected)="onMoreAction($event)"
+          ></app-dropdown-menu>
         </div>
       </div>
+    </header>
 
+    <div class="flex-1 overflow-y-auto">
+      <div class="p-4">
+        <div class="flex flex-col lg:flex-row gap-4">
 
-      <div class="px-md">
+          <div class="flex-1 min-w-0 flex flex-col gap-4">
 
-        <div class="flex pb-4 items-center justify-between flex-wrap gap-3 pr-4">
-          <div class="flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
-            <button
-              (click)="activeTab.set('overview')"
-              [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
-              [class.bg-bg-active]="activeTab() === 'overview'"
-              [class.!text-text]="activeTab() === 'overview'"
-              [class.!border-border-strong]="activeTab() === 'overview'"
-              class=" text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer  focus:outline-none"
-            >
-              Overview
-            </button>
-            <button
-              (click)="activeTab.set('timeline')"
-              [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
-              [class.bg-bg-active]="activeTab() === 'timeline'"
-              [class.!border-border-strong]="activeTab() === 'timeline'"
-              class=" text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer  focus:outline-none"
-            >
-              Timeline
-            </button>
-          </div>
-
-          <div class="text-sm text-[var(--color-text-muted)] font-medium">
-            <span>Last Update : </span>
-            <span
-              class="text-text-muted font-mono">{{ lead().updatedAt || lead().createdAt | date:'mediumDate' }}</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-5 bg-bg rounded-lg border border-border-strong">
-
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Lead
-              Owner</label>
-            <span class="text-sm font-semibold text-[var(--color-text)]">{{ lead().createdBy || 'Ali Yara' }}</span>
-          </div>
-
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Email
-              Address</label>
-            @if (lead().email || lead().contact?.email) {
-              <a [href]="'mailto:' + (lead().email || lead().contact?.email)"
-                 class="text-sm font-semibold text-[var(--color-primary)] hover:underline truncate block">
-                {{ lead().email || lead().contact?.email }}
-              </a>
-            } @else {
-              <span class="text-sm text-[var(--color-text-muted)]">-</span>
-            }
-          </div>
-
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Phone</label>
-            @if (lead().phone || lead().contact?.phone) {
-              <a [href]="'tel:' + (lead().phone || lead().contact?.phone)"
-                 class="text-sm font-semibold text-[var(--color-text)] hover:underline flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2.5" class="text-[var(--color-success)]">
-                  <path
-                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
-                {{ lead().phone || lead().contact?.phone }}
-              </a>
-            } @else {
-              <span class="text-sm text-[var(--color-text-muted)]">-</span>
-            }
-          </div>
-
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Lead
-              Status</label>
-            <div class="flex items-center mt-0.5">
-              <span
-                class="px-2 py-0.5 text-[10px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)] rounded border border-[var(--color-primary-border)] uppercase tracking-wide">
-                {{ lead().status }}
-              </span>
+            <!-- ── Tabs ── -->
+            <div class=" w-max flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
+              <button (click)="activeTab.set('overview')"
+                      [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
+                      [class.bg-bg-active]="activeTab() === 'overview'"
+                      [class.!text-text]="activeTab() === 'overview'"
+                      [class.!border-border-strong]="activeTab() === 'overview'"
+                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+                Overview
+              </button>
+              <button (click)="activeTab.set('timeline')"
+                      [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
+                      [class.bg-bg-active]="activeTab() === 'timeline'"
+                      [class.!border-border-strong]="activeTab() === 'timeline'"
+                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+                Timeline
+              </button>
             </div>
+
+            @if (activeTab() === 'overview') {
+              <div class="flex flex-col gap-5">
+
+                <!-- Description -->
+                @if (lead()!.description || lead()!.lostReason) {
+                  <div class="bg-bg border border-border-strong rounded-xl shadow-sm overflow-hidden">
+                    <div class="border-b border-border-strong py-4 px-5 bg-bg-muted/30">
+                      <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Details &amp; Description</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                      @if (lead()!.description) {
+                        <div>
+                          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Description</label>
+                          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ lead()!.description }}</p>
+                        </div>
+                      }
+                      @if (lead()!.lostReason) {
+                        <div>
+                          <label class="block text-xs font-bold text-[var(--color-text-danger)] uppercase tracking-wider mb-1">Lost Reason</label>
+                          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ lead()!.lostReason }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- ── Contact Information ── -->
+                <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
+                  <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <h3 class="text-sm font-bold text-[var(--color-text)]">Contact Information</h3>
+                  </div>
+                  <div class="p-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
+                      <!-- Lead Name -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Full Name</span>
+                        <span class="text-sm font-medium text-[var(--color-text)]">{{ getLeadDisplayName() }}</span>
+                      </div>
+
+                      <!-- Title / Role -->
+                      @if (lead().contact?.role) {
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Title</span>
+                          <span class="text-sm font-medium text-[var(--color-text)]">{{ lead().contact.role }}</span>
+                        </div>
+                      }
+
+                      <!-- Email -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Email</span>
+                        @if (getEmail()) {
+                          <a [href]="'mailto:' + getEmail()"
+                             class="text-sm font-medium text-[var(--color-primary)] hover:underline truncate inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                            </svg>
+                            {{ getEmail() }}
+                          </a>
+                        } @else {
+                          <span class="text-sm text-[var(--color-text-muted)]">—</span>
+                        }
+                      </div>
+
+                      <!-- Phone -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Phone</span>
+                        @if (getPhone()) {
+                          <a [href]="'tel:' + getPhone()"
+                             class="text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors inline-flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[var(--color-success)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            {{ getPhone() }}
+                          </a>
+                        } @else {
+                          <span class="text-sm text-[var(--color-text-muted)]">—</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- ── Company Information ── -->
+                @if (getCompany() || lead().industry || lead().client?.industry || lead().annualRevenue || lead().numberOfEmployees) {
+                  <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
+                    <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+                      <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                      </svg>
+                      <h3 class="text-sm font-bold text-[var(--color-text)]">Company Information</h3>
+                    </div>
+                    <div class="p-5">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
+                        @if (getCompany()) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Company</span>
+                            @if (lead().clientId) {
+                              <a [routerLink]="'/app/crm/clients/' + lead().clientId"
+                                 class="text-sm font-semibold text-[var(--color-primary)] hover:underline inline-flex items-center gap-1.5 transition-colors">
+                                {{ getCompany() }}
+                                <svg class="w-3 h-3 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M7 7h10v10"/><path d="M7 17 17 7"/>
+                                </svg>
+                              </a>
+                            } @else {
+                              <span class="text-sm font-medium text-[var(--color-text)]">{{ getCompany() }}</span>
+                            }
+                          </div>
+                        }
+
+                        @if (lead().industry || lead().client?.industry) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Industry</span>
+                            <span class="text-sm font-medium text-[var(--color-text)]">{{ lead().industry || lead().client?.industry }}</span>
+                          </div>
+                        }
+
+                        @if (lead().annualRevenue) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Annual Revenue</span>
+                            <span class="text-sm font-bold text-[var(--color-text)]">${{ lead().annualRevenue | number }}</span>
+                          </div>
+                        }
+
+                        @if (lead().numberOfEmployees) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Employees</span>
+                            <span class="text-sm font-medium text-[var(--color-text)]">{{ lead().numberOfEmployees | number }}</span>
+                          </div>
+                        }
+
+                        @if (getWebsite()) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Website</span>
+                            <a [href]="getWebsite()" target="_blank"
+                               class="text-sm font-medium text-[var(--color-primary)] hover:underline truncate inline-flex items-center gap-1.5">
+                              <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+                              </svg>
+                              {{ getWebsite() }}
+                            </a>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </section>
+                }
+
+                <!-- ── Address Information ── -->
+                <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
+                  <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <h3 class="text-sm font-bold text-[var(--color-text)]">Address</h3>
+                  </div>
+                  @if (hasAddress()) {
+                    <div class="p-5">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
+                        @if (getAddressField('street')) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Street</span>
+                            <span class="text-sm font-medium text-[var(--color-text)]">{{ getAddressField('street') }}</span>
+                          </div>
+                        }
+                        @if (getAddressField('city')) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">City</span>
+                            <span class="text-sm font-medium text-[var(--color-text)]">{{ getAddressField('city') }}</span>
+                          </div>
+                        }
+                        @if (getAddressField('state')) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">State / Province</span>
+                            <span class="text-sm font-medium text-[var(--color-text)]">{{ getAddressField('state') }}</span>
+                          </div>
+                        }
+                        @if (getAddressField('country')) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Country</span>
+                            <span class="text-sm font-medium text-[var(--color-text)]">{{ getAddressField('country') }}</span>
+                          </div>
+                        }
+                        @if (getAddressField('zipCode')) {
+                          <div class="flex flex-col gap-1">
+                            <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Zip Code</span>
+                            <span class="text-sm font-medium text-[var(--color-text)] font-mono">{{ getAddressField('zipCode') }}</span>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="p-8 flex flex-col items-center justify-center gap-2 text-center">
+                      <svg class="w-8 h-8 text-[var(--color-text-muted)] opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                      </svg>
+                      <p class="text-sm text-[var(--color-text-muted)]">No address information available</p>
+                    </div>
+                  }
+                </section>
+
+              </div>
+            }
+
+            <!-- ═══════════ TIMELINE TAB ═══════════ -->
+            @if (activeTab() === 'timeline') {
+              <div class="flex flex-col gap-0">
+
+                <!-- Update event -->
+                @if (lead().updatedAt) {
+                  <div class="flex gap-4 py-5 border-b border-[var(--color-border-strong)]">
+                    <!-- Icon column -->
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary-soft)] flex items-center justify-center">
+                      <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
+                      </svg>
+                    </div>
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(lead().updatedBy, 'System') }}</span>
+                        <span class="text-sm text-[var(--color-text-muted)]">updated lead details</span>
+                      </div>
+                      <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ lead().updatedAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
+                    </div>
+                  </div>
+                }
+
+                <!-- Created event -->
+                <div class="flex gap-4 py-5">
+                  <!-- Icon column -->
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-success-soft)] flex items-center justify-center">
+                    <svg class="w-4 h-4 text-[var(--color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 5v14"/><path d="M5 12h14"/>
+                    </svg>
+                  </div>
+                  <!-- Content -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(lead().createdBy, 'System') }}</span>
+                      <span class="text-sm text-[var(--color-text-muted)]">created this lead</span>
+                    </div>
+                    <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ lead().createdAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
+                  </div>
+                </div>
+
+              </div>
+            }
+
           </div>
 
+          <aside class="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-5">
+
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Properties</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-5">
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Status</span>
+                  <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border"
+                        [ngClass]="getStatusConfig(lead().status).classes">
+                    {{ getStatusConfig(lead().status).label }}
+                  </span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Priority</span>
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full" [ngClass]="getPriorityConfig(lead().priority).dotColor"></span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ getPriorityConfig(lead().priority).label }}</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Source</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ formatSource(lead().source) }}</span>
+                </div>
+
+                <hr class="border-[var(--color-border-strong)] my-0">
+
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Owner</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-[9px] font-bold flex-shrink-0">
+                      {{ getOwnerInitials() }}
+                    </div>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ getUserName(lead().assignedTo || lead().createdBy, 'Unassigned') }}</span>
+                  </div>
+                </div>
+
+                @if (getCompany()) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Company</span>
+                    @if (lead().clientId) {
+                      <a [routerLink]="'/app/crm/clients/' + lead().clientId"
+                         class="text-sm font-medium text-[var(--color-primary)] hover:underline truncate max-w-[160px]">
+                        {{ getCompany() }}
+                      </a>
+                    } @else {
+                      <span class="text-sm font-medium text-[var(--color-text)] truncate max-w-[160px]">{{ getCompany() }}</span>
+                    }
+                  </div>
+                }
+
+                @if (lead().industry || lead().client?.industry) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Industry</span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ lead().industry || lead().client?.industry }}</span>
+                  </div>
+                }
+
+                @if (lead().annualRevenue) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Revenue</span>
+                    <span class="text-sm font-bold text-[var(--color-text)]">${{ lead().annualRevenue | number }}</span>
+                  </div>
+                }
+
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Dates</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Created</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ lead().createdAt | date:'mediumDate' }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Updated</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ (lead().updatedAt || lead().createdAt) | date:'mediumDate' }}</span>
+                </div>
+              </div>
+            </div>
+
+            @if (getEmail() || getPhone()) {
+              <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                  <h3 class="text-sm font-bold text-[var(--color-text)]">Quick Contact</h3>
+                </div>
+                <div class="p-5 flex flex-col gap-3">
+                  @if (getEmail()) {
+                    <a [href]="'mailto:' + getEmail()"
+                       class="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border-strong)] hover:bg-[var(--color-bg-hover)] hover:border-[var(--color-border-strong)] transition-all cursor-pointer group">
+                      <div class="w-8 h-8 rounded-lg bg-[var(--color-primary-soft)] flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                        </svg>
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-xs text-[var(--color-text-muted)]">Send Email</p>
+                        <p class="text-sm font-medium text-[var(--color-text)] truncate group-hover:text-[var(--color-primary)] transition-colors">{{ getEmail() }}</p>
+                      </div>
+                    </a>
+                  }
+                  @if (getPhone()) {
+                    <a [href]="'tel:' + getPhone()"
+                       class="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border-strong)] hover:bg-[var(--color-bg-hover)] hover:border-[var(--color-border-strong)] transition-all cursor-pointer group">
+                      <div class="w-8 h-8 rounded-lg bg-[var(--color-success-soft)] flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-[var(--color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-xs text-[var(--color-text-muted)]">Call</p>
+                        <p class="text-sm font-medium text-[var(--color-text)] truncate group-hover:text-[var(--color-primary)] transition-colors">{{ getPhone() }}</p>
+                      </div>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+
+          </aside>
+
         </div>
-
       </div>
-
     </div>
-
-    @if (activeTab() === 'overview') {
-      <div class="space-y-4 px-md pb-md">
-
-        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-          <div class="border-b border-border-strong py-4 px-5">
-            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Lead Information</h2>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
-
-            <!-- Column 1 left -->
-            <div class="space-y-4">
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Lead Owner</span>
-                <span class="font-semibold text-[var(--color-text)]">{{ lead().createdBy || 'Ali Yara' }}</span>
-              </div>
-
-              @if (lead().contact?.role) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Title</span>
-                  <span class="font-medium text-[var(--color-text)]">{{ lead().contact.role }}</span>
-                </div>
-              }
-
-              @if (lead().phone || lead().contact?.phone) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Phone</span>
-                  <span class="font-medium text-[var(--color-text)]">{{ lead().phone || lead().contact?.phone }}</span>
-                </div>
-              }
-
-              @if (lead().contact?.phone) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Mobile</span>
-                  <span class="font-medium text-text-muted">{{ lead().contact.phone }}</span>
-                </div>
-              }
-
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Lead Source</span>
-                <span class="font-medium text-[var(--color-text)]">{{ lead().source }}</span>
-              </div>
-
-              @if (lead().industry || lead().client?.industry) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Industry</span>
-                  <span
-                    class="font-medium text-[var(--color-text)]">{{ lead().industry || lead().client?.industry }}</span>
-                </div>
-              }
-
-              @if (lead().annualRevenue) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Annual Revenue</span>
-                  <span class="font-bold text-[var(--color-text)]">${{ lead().annualRevenue | number }}</span>
-                </div>
-              }
-            </div>
-
-            <!-- Column 2 right -->
-            <div class="space-y-4">
-              @if (lead().company || lead().client?.name) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Company</span>
-                  <a [routerLink]="'/app/crm/clients/' + lead().clientId"
-                    class="font-semibold underline text-[var(--color-text)]">{{ lead().company || lead().client?.name }}</a>
-                </div>
-              }
-
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Lead Name</span>
-                <span
-                  class="font-semibold text-[var(--color-text)]">{{ lead().contact ? (lead().contact.firstName + ' ' + lead().contact.lastName) : lead().title }}</span>
-              </div>
-
-              @if (lead().email || lead().contact?.email) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Email</span>
-                  <a [href]="'mailto:' + (lead().email || lead().contact?.email)"
-                     class="font-semibold text-[var(--color-primary)] hover:underline truncate max-w-[180px]">
-                    {{ lead().email || lead().contact?.email }}
-                  </a>
-                </div>
-              }
-
-              @if (lead().website || lead().client?.website) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Website</span>
-                  <a [href]="lead().website || lead().client?.website" target="_blank"
-                     class="font-semibold text-[var(--color-primary)] hover:underline truncate max-w-[180px]">
-                    {{ lead().website || lead().client?.website }}
-                  </a>
-                </div>
-              }
-
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Lead Status</span>
-                <span class="font-semibold text-[var(--color-text)]">{{ lead().status }}</span>
-              </div>
-
-              @if (lead().numberOfEmployees) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">No. of Employees</span>
-                  <span class="font-medium text-[var(--color-text)]">{{ lead().numberOfEmployees }}</span>
-                </div>
-              }
-            </div>
-
-          </div>
-        </div>
-
-        <!-- SECTION 2: ADDRESS INFORMATION -->
-        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-          <div class="border-b border-border-strong py-4 px-5">
-            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Address Information</h2>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
-
-            <div class="space-y-4">
-              @if (lead().address?.street || lead().client?.address?.street) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Street</span>
-                  <span
-                    class="font-medium text-[var(--color-text)]">{{ lead().address?.street || lead().client?.address?.street }}</span>
-                </div>
-              }
-
-              @if (lead().address?.city || lead().client?.address?.city) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">City</span>
-                  <span
-                    class="font-medium text-[var(--color-text)]">{{ lead().address?.city || lead().client?.address?.city }}</span>
-                </div>
-              }
-
-              @if (lead().address?.state || lead().client?.address?.state) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">State</span>
-                  <span
-                    class="font-medium text-[var(--color-text)]">{{ lead().address?.state || lead().client?.address?.state }}</span>
-                </div>
-              }
-            </div>
-
-            <div class="space-y-4">
-              @if (lead().address?.country || lead().client?.address?.country) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Country</span>
-                  <span
-                    class="font-medium text-[var(--color-text)]">{{ lead().address?.country || lead().client?.address?.country }}</span>
-                </div>
-              }
-
-              @if (lead().address?.zipCode || lead().client?.address?.zipCode) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Zip Code</span>
-                  <span
-                    class="font-medium text-[var(--color-text)] font-mono">{{ lead().address?.zipCode || lead().client?.address?.zipCode }}</span>
-                </div>
-              }
-            </div>
-
-          </div>
-
-          <!-- Empty fallback -->
-          @if (!lead().address?.street && !lead().client?.address?.street && !lead().address?.city && !lead().client?.address?.city) {
-            <div class="text-sm text-[var(--color-text-muted)] italic py-2">
-              No geographical address details have been populated.
-            </div>
-          }
-        </div>
-
-        <!-- SECTION 3: DESCRIPTION INFORMATION -->
-        @if (lead().description) {
-          <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-            <div class="border-b border-border-strong py-4 px-5">
-              <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Description Information</h2>
-            </div>
-            <div class="p-5">
-
-              <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">
-                {{ lead().description }}
-              </p>
-            </div>
-          </div>
-        }
-
-      </div>
-    }
-
-    @if (activeTab() === 'timeline') {
-      <div class="bg-bg border border-border-strong rounded-lg shadow-sm mx-md mb-md">
-        <div class="border-b border-border-strong py-4 px-5">
-          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">System Audit &amp; Timeline Logs</h2>
-        </div>
-
-        <div class="space-y-6 relative  py-5 px-6">
-          <!-- Create Log -->
-          <div class="relative pl-6 border-l border-border-strong">
-            <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-success)] border-4 border-bg shadow"></div>
-            <div class="text-sm space-y-1">
-              <h3 class="font-bold text-[var(--color-text)]">Lead Created successfully</h3>
-              <p class="text-[var(--color-text-muted)] text-[10px]">{{ lead().createdAt | date:'medium' }}</p>
-              <p class="text-text-muted">Lead aggregate created dynamically via REST request. Record
-                initialized.</p>
-              <div class="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wide">
-                Operator: {{ lead().createdBy || 'system' }}
-              </div>
-            </div>
-          </div>
-
-          <!-- Update Log -->
-          @if (lead().updatedAt) {
-            <div class="relative pl-6 border-l border-border-strong">
-              <div
-                class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-primary)] border-4 border-bg shadow"></div>
-              <div class="text-sm space-y-1">
-                <h3 class="font-bold text-[var(--color-text)]">Lead Details updated</h3>
-                <p class="text-[var(--color-text-muted)] text-[10px]">{{ lead().updatedAt | date:'medium' }}</p>
-                <p class="text-text-muted">Lead fields successfully synchronized with backend
-                  aggregates database.</p>
-                <div class="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wide">
-                  Operator: {{ lead().updatedBy || 'system' }}
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    }
 
   }
 

@@ -13,6 +13,8 @@ import {
 import { ProjectFiltersComponent, ProjectFilters } from '../../components/project-filters/project-filters.component';
 import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
+import {ErrorMessageComponent} from '../../../../shared/ui/error-message/error-message.component';
+import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
 
 @Component({
   selector: 'app-projects-page',
@@ -26,6 +28,7 @@ import { CommonModule } from '@angular/common';
     ProjectsKanbanComponent,
     EntityListSkeletonComponent,
     ProjectFiltersComponent,
+    ErrorMessageComponent,
   ],
   templateUrl: './projects-page.component.html',
 })
@@ -33,6 +36,7 @@ export class ProjectsPageComponent implements OnInit {
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly confirmService = inject(ConfirmModalService);
 
   readonly projects = this.projectsService.projects;
   readonly totalCount = this.projectsService.totalCount;
@@ -133,8 +137,15 @@ export class ProjectsPageComponent implements OnInit {
     this.router.navigate(['/app/projects/all', project.id, 'edit']);
   }
 
-  onDeleteProject(project: Project): void {
-    if (confirm(`Are you sure you want to delete project "${project.name}"?`)) {
+  async onDeleteProject(project: Project): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Project',
+      message: `Are you sure you want to delete project "${project.name}"? This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    if (confirmed) {
       this.projectsService.deleteProject(project.id).subscribe();
     }
   }

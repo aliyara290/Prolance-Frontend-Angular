@@ -29,6 +29,8 @@ interface SelectOption {
   value: string;
 }
 
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-leads-table',
   standalone: true,
@@ -54,6 +56,7 @@ interface SelectOption {
 })
 export class LeadsTableComponent {
   private readonly leadsService = inject(LeadsService);
+  private readonly confirmService = inject(ConfirmModalService);
 
   @Input({ required: true }) leads: Lead[] = [];
   @Input() totalCount = 0;
@@ -120,18 +123,32 @@ export class LeadsTableComponent {
     { label: 'Delete Lead', value: 'delete', danger: true, dividerBefore: true },
   ];
 
-  onMoreAction(item: DropdownMenuItem, lead: Lead): void {
+  async onMoreAction(item: DropdownMenuItem, lead: Lead): Promise<void> {
     if (item.value === 'edit') {
       this.editLead.emit(lead);
     } else if (item.value === 'delete') {
-      if (confirm(`Are you sure you want to delete lead "${lead.title}"?`)) {
+      const confirmed = await this.confirmService.confirm({
+        title: 'Delete Lead',
+        message: `Are you sure you want to delete lead "${lead.title}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true
+      });
+      if (confirmed) {
         this.leadsService.deleteLead(lead.id).subscribe({
           next: () => console.log('Lead deleted successfully'),
           error: (err) => console.error('Failed to delete lead', err)
         });
       }
     } else if (item.value === 'convert') {
-      if (confirm(`Are you sure you want to convert lead "${lead.title}" to a deal?`)) {
+      const confirmed = await this.confirmService.confirm({
+        title: 'Convert to Deal',
+        message: `Are you sure you want to convert lead "${lead.title}" to a deal?`,
+        confirmText: 'Convert',
+        cancelText: 'Cancel',
+        danger: false
+      });
+      if (confirmed) {
         this.leadsService.convertToDeal(lead.id).subscribe({
           next: (res) => {
             alert('Lead converted to deal successfully!');

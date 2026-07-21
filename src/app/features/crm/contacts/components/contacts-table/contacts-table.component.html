@@ -161,9 +161,15 @@
       </td>
 
       <td>
-        <a [routerLink]="['/app/crm/contacts', contact.id]" class="text-primary font-medium hover:underline cursor-pointer text-sm">
-          {{ contact.firstName }} {{ contact.lastName }}
-        </a>
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white shadow-sm shrink-0"
+               [style.background]="getAvatarColor(contact)">
+            {{ getInitials(contact) }}
+          </div>
+          <a [routerLink]="['/app/crm/contacts', contact.id]" class="text-primary font-medium hover:underline cursor-pointer text-sm">
+            {{ contact.firstName }} {{ contact.lastName }}
+          </a>
+        </div>
       </td>
 
       <td class="text-sm">

@@ -80,9 +80,3 @@ export const PROJECT_CURRENT_NAV: ProjectNavSection = {
   ],
 };
 
-export interface RecentProject {
-  id: string;
-  name: string;
-  color: string;
-}
-

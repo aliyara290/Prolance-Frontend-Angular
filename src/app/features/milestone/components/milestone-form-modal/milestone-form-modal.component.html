@@ -48,15 +48,12 @@
             <label class="block text-sm font-medium text-[var(--color-text)] mb-1">
               Project <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="projectId"
-              class="w-full px-3 py-2 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent disabled:opacity-50"
-            >
-              <option value="" disabled>Select a project</option>
-              @for (project of projects(); track project.id) {
-                <option [value]="project.id">{{ project.name }}</option>
-              }
-            </select>
+              [options]="projectSelectOptions"
+              [searchable]="true"
+              placeholder="Select a project"
+            ></app-custom-select>
           </div>
 
           <!-- Title -->
@@ -77,14 +74,11 @@
             <label class="block text-sm font-medium text-[var(--color-text)] mb-1">
               Status <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="status"
-              class="w-full px-3 py-2 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-            >
-              @for (status of statusOptions; track status) {
-                <option [value]="status">{{ status.replace('_', ' ') | titlecase }}</option>
-              }
-            </select>
+              [options]="statusSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <!-- <div>

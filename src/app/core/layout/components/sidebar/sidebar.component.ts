@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -12,6 +13,7 @@ import {
 import {
   LucideAngularModule,
   Plus,
+  Search,
 } from 'lucide-angular';
 import {
   PROJECT_OVERVIEW_NAV,
@@ -24,7 +26,7 @@ import { ProjectsNames } from '../../../../features/project/types/project.model'
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, LucideAngularModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, LucideAngularModule],
   templateUrl: 'sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {
@@ -51,13 +53,27 @@ export class SidebarComponent implements OnInit {
     this.projectsService.loadProjectNames();
   }
 
-  // ── Project nav data ──
   readonly overviewNav: ProjectNavSection = PROJECT_OVERVIEW_NAV;
   readonly currentProjectNav: ProjectNavSection = PROJECT_CURRENT_NAV;
-  readonly recentProjects = this.projectsService.projectNames;
+  
+  readonly projectSearchQuery = signal<string>('');
+  
+  readonly displayedProjects = computed(() => {
+    const query = this.projectSearchQuery().toLowerCase();
+    const allProjects = this.projectsService.projectNames();
+    
+    if (!query) {
+      return allProjects.slice(0, 5);
+    }
+    
+    return allProjects.filter(p => p.name.toLowerCase().includes(query));
+  });
+  
+  readonly loadingProjects = this.projectsService.loadingNames;
 
   readonly icons = {
     plus: Plus,
+    search: Search,
   };
 
   toggleTab(): void {

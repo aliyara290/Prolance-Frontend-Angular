@@ -15,6 +15,8 @@ import { MilestoneDetailPanelComponent } from '../../components/milestone-detail
 import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
+import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-milestones-page',
   standalone: true,
@@ -38,6 +40,7 @@ export class MilestonesPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly confirmService = inject(ConfirmModalService);
 
   readonly milestones = this.milestoneService.milestones;
   readonly totalCount = this.milestoneService.totalCount;
@@ -136,6 +139,15 @@ export class MilestonesPageComponent implements OnInit {
     });
   }
 
+  onRefresh(): void {
+    const pId = this.scopedProjectId();
+    if (pId) {
+      this.milestoneService.loadMilestonesByProject(pId);
+    } else {
+      this.milestoneService.loadAllMilestones();
+    }
+  }
+
   toggleSidebar(): void {
     this.sidebarVisible.update(v => !v);
   }
@@ -209,8 +221,15 @@ export class MilestonesPageComponent implements OnInit {
     this.milestoneService.completeMilestone(milestone.projectId, milestone.id).subscribe();
   }
 
-  onDeleteMilestone(milestone: Milestone): void {
-    if (confirm('Are you sure you want to delete this milestone?')) {
+  async onDeleteMilestone(milestone: Milestone): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Milestone',
+      message: 'Are you sure you want to delete this milestone?',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    if (confirmed) {
       this.milestoneService.deleteMilestone(milestone.projectId, milestone.id).subscribe();
     }
   }

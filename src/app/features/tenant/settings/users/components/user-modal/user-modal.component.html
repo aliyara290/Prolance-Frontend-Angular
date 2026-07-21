@@ -133,17 +133,12 @@
             </div>
             <div>
               <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Department</label>
-              <select
+              <app-custom-select
                 [(ngModel)]="department"
-                class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
-                       rounded-[var(--radius-md)] text-[var(--color-text)]
-                       focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer"
-              >
-                <option value="">Select...</option>
-                @for (dept of allDepartments; track dept) {
-                  <option [value]="dept">{{ dept }}</option>
-                }
-              </select>
+                [options]="departmentSelectOptions"
+                [searchable]="false"
+                placeholder="Select..."
+              ></app-custom-select>
             </div>
           </div>
 

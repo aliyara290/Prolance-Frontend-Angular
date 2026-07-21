@@ -55,6 +55,10 @@ export class ContactsPageComponent implements OnInit {
     this.contactsService.loadContacts();
   }
 
+  onRefresh(): void {
+    this.contactsService.loadContacts();
+  }
+
   onTabChange(tab: ModuleTab): void {
     this.activeTabId.set(tab.id);
   }

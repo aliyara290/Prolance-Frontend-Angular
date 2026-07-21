@@ -19,7 +19,10 @@ import { TaskFormModalComponent } from '../../components/task-form-modal/task-fo
 import { TaskFiltersComponent, TaskFilters } from '../../components/task-filters/task-filters.component';
 import { KanbanSkeletonComponent } from '../../../../shared/ui/skeletons/kanban-skeleton/kanban-skeleton.component';
 import { TaskResponse, TaskStatus, TaskPriority, TaskType, ChangeTaskStatusRequest } from '../../types/task.model';
-import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
+import { LucideAngularModule, PanelLeftClose, PanelLeftOpen, RefreshCw } from 'lucide-angular';
+import {ErrorMessageComponent} from '../../../../shared/ui/error-message/error-message.component';
+
+import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
 
 @Component({
   selector: 'app-tasks-list-page',
@@ -33,6 +36,7 @@ import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angul
     TaskFormModalComponent,
     TaskFiltersComponent,
     KanbanSkeletonComponent,
+    ErrorMessageComponent,
   ],
   templateUrl: './tasks-list-page.component.html',
 })
@@ -40,6 +44,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   private readonly tasksService = inject(TasksService);
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
+  private readonly confirmService = inject(ConfirmModalService);
 
   /** When provided (from project context), scopes tasks to a specific project. */
   @Input() projectId: string | null = null;
@@ -127,6 +132,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   readonly icons = {
     panelClose: PanelLeftClose,
     panelOpen: PanelLeftOpen,
+    refresh: RefreshCw,
   };
 
 
@@ -148,6 +154,10 @@ export class TasksListPageComponent implements OnInit, OnChanges {
     } else {
       this.tasksService.loadAllTasks();
     }
+  }
+
+  onRefresh(): void {
+    this.loadTasks();
   }
 
   // onTabChange(tab: ModuleTab): void {
@@ -194,8 +204,16 @@ export class TasksListPageComponent implements OnInit, OnChanges {
     this.createPanelOpen.set(true);
   }
 
-  onDeleteTask(task: TaskResponse): void {
-    if (!confirm(`Are you sure you want to delete task "${task.title}"?`)) return;
+  async onDeleteTask(task: TaskResponse): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Delete Task',
+      message: `Are you sure you want to delete task "${task.title}"? This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.tasksService.deleteTask(task.id).subscribe({
       next: () => {

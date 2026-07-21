@@ -25,24 +25,8 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class DetailsSkeletonComponent {
-  metaCells = [
-    { labelWidth: '100px', valueWidth: '70px' },
-    { labelWidth: '60px',  valueWidth: '80px' },
-    { labelWidth: '50px',  valueWidth: '120px' },
-    { labelWidth: '55px',  valueWidth: '56px' },
-  ];
-
-  clientRowsLeft = [
-    { label: '100px', value: '80px' },
-    { label: '60px',  value: '90px' },
-    { label: '40px',  value: '90px' },
-    { label: '55px',  value: '85px' },
-    { label: '75px',  value: '70px' },
-  ];
-
-  clientRowsRight = [
-    { label: '50px',  value: '110px' },
-    { label: '30px',  value: '90px' },
-    { label: '60px',  value: '140px' },
-  ];
+  // Simple helper arrays for repeating skeleton lines
+  lines3 = [1, 2, 3];
+  lines4 = [1, 2, 3, 4];
+  lines5 = [1, 2, 3, 4, 5];
 }

@@ -31,6 +31,8 @@ interface SelectOption {
   value: string;
 }
 
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-contacts-table',
   standalone: true,
@@ -56,6 +58,7 @@ interface SelectOption {
 })
 export class ContactsTableComponent {
   private readonly contactsService = inject(ContactsService);
+  private readonly confirmService = inject(ConfirmModalService);
   private readonly searchSubject = new Subject<string>();
 
   @Input({ required: true }) contacts: Contact[] = [];
@@ -131,11 +134,18 @@ export class ContactsTableComponent {
     { label: 'Delete Contact', value: 'delete', danger: true, dividerBefore: true },
   ];
 
-  onMoreAction(item: DropdownMenuItem, contact: Contact): void {
+  async onMoreAction(item: DropdownMenuItem, contact: Contact): Promise<void> {
     if (item.value === 'edit') {
       this.editContact.emit(contact);
     } else if (item.value === 'delete') {
-      if (confirm(`Are you sure you want to delete contact "${contact.firstName} ${contact.lastName}"?`)) {
+      const confirmed = await this.confirmService.confirm({
+        title: 'Delete Contact',
+        message: `Are you sure you want to delete contact "${contact.firstName} ${contact.lastName}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true
+      });
+      if (confirmed) {
         this.contactsService.deleteContact(contact.id).subscribe({
           next: () => console.log('Contact deleted successfully'),
           error: (err) => console.error('Failed to delete contact', err)
@@ -146,5 +156,22 @@ export class ContactsTableComponent {
 
   getFullName(contact: Contact): string {
     return `${contact.firstName} ${contact.lastName}`;
+  }
+
+  getInitials(contact: Contact): string {
+    const f = contact.firstName?.charAt(0) || '';
+    const l = contact.lastName?.charAt(0) || '';
+    return (f + l).toUpperCase() || '?';
+  }
+
+  getAvatarColor(contact: Contact): string {
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6'];
+    const idStr = contact.id || '';
+    let hash = 0;
+    for (let i = 0; i < idStr.length; i++) {
+      hash = idStr.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colors.length;
+    return colors[index];
   }
 }

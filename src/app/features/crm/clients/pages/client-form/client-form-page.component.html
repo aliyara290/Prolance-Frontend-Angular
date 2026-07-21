@@ -96,40 +96,31 @@
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Type <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="type"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-            >
-              @for (t of typeOptions; track t) {
-                <option [value]="t">{{ t }}</option>
-              }
-            </select>
+              [options]="typeSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
               Source <span class="text-[var(--color-danger)]">*</span>
             </label>
-            <select
+            <app-custom-select
               formControlName="source"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-            >
-              @for (src of sourceOptions; track src) {
-                <option [value]="src">{{ src }}</option>
-              }
-            </select>
+              [options]="sourceSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Ownership</label>
-            <select
+            <app-custom-select
               formControlName="ownership"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] cursor-pointer outline-none"
-            >
-              @for (own of ownershipOptions; track own) {
-                <option [value]="own">{{ own }}</option>
-              }
-            </select>
+              [options]="ownershipSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
         </div>
       </div>

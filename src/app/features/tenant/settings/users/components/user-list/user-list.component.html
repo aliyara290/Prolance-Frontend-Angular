@@ -1,26 +1,25 @@
-<div
-  class="w-[400px] min-w-[320px] border-r border-[var(--color-border)] flex flex-col h-full overflow-hidden transition-all duration-300">
+<div class="w-[400px] min-w-[320px] border-r border-border flex flex-col h-full overflow-hidden bg-bg z-10">
 
   <!-- ── Tab Bar ── -->
-  <div class="flex items-center gap-1 px-4 border-b border-[var(--color-border)] bg-[var(--color-bg)] shrink-0">
+  <div class="flex items-center gap-6 px-6 pt-3 border-b border-border bg-bg shrink-0">
     @for (tab of tabs; track tab.key) {
       <button
         (click)="setTab(tab.key)"
-        class="relative flex items-center gap-2 px-3 py-3 text-sm font-medium duration-[var(--transition-fast)] cursor-pointer"
-        [class.text-[var(--color-primary)]]="activeTab() === tab.key"
+        class="relative flex items-center gap-2 pb-3 text-sm font-medium duration-200 cursor-pointer"
+        [class.text-text-inverse]="activeTab() === tab.key"
         [class.border-b-2]="activeTab() === tab.key"
-        [class.border-[var(--color-primary)]]="activeTab() === tab.key"
+        [class.border-primary]="activeTab() === tab.key"
         [class.-mb-px]="activeTab() === tab.key"
-        [class.text-[var(--color-text-muted)]]="activeTab() !== tab.key"
-        [class.hover:text-[var(--color-text)]]="activeTab() !== tab.key"
+        [class.text-text-muted]="activeTab() !== tab.key"
+        [class.hover:text-text]="activeTab() !== tab.key"
       >
         {{ tab.label }}
         <span
-          class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-semibold"
-          [class.bg-[var(--color-primary-soft)]]="activeTab() === tab.key"
-          [class.text-[var(--color-primary)]]="activeTab() === tab.key"
-          [class.bg-[var(--color-bg-muted)]]="activeTab() !== tab.key"
-          [class.text-[var(--color-text-muted)]]="activeTab() !== tab.key"
+          class="inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full text-[10px] font-bold"
+          [class.bg-primary]="activeTab() === tab.key"
+          [class.text-white]="activeTab() === tab.key"
+          [class.bg-bg-muted]="activeTab() !== tab.key"
+          [class.text-text-muted]="activeTab() !== tab.key"
         >
           {{ getTabCount(tab.key) }}
         </span>
@@ -29,11 +28,11 @@
   </div>
 
   <!-- ── Search ── -->
-  <div class="px-4 py-3 border-b border-[var(--color-border)] shrink-0">
+  <div class="px-6 py-4 border-b border-border shrink-0">
     <div class="relative">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] pointer-events-none"
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
            xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+           fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/>
         <path d="m21 21-4.3-4.3"/>
       </svg>
@@ -42,9 +41,9 @@
         [ngModel]="searchQuery()"
         (ngModelChange)="onSearch($event)"
         placeholder="Search users..."
-        class="w-full pl-9 pr-4 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
-               rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
-               focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] duration-[var(--transition-fast)]"
+        class="w-full pl-9 pr-4 py-2 text-sm bg-bg border border-border
+               rounded-lg text-text placeholder:text-text-muted shadow-[var(--shadow-sm)]
+               focus:border-primary focus:ring-1 focus:ring-primary/20 duration-200 outline-none"
       />
     </div>
   </div>
@@ -54,13 +53,13 @@
 
     <!-- Loading State -->
     @if (isLoading()) {
-      <div class="p-4 space-y-4">
+      <div class="p-6 space-y-5">
         @for (i of [1, 2, 3]; track i) {
-          <div class="flex items-center gap-3 animate-pulse">
-            <div class="w-9 h-9 rounded-full bg-[var(--color-bg-muted)] shrink-0"></div>
-            <div class="flex-1 space-y-2 py-1">
-              <div class="h-3 bg-[var(--color-bg-muted)] rounded w-3/4"></div>
-              <div class="h-2 bg-[var(--color-bg-muted)] rounded w-1/2"></div>
+          <div class="flex items-center gap-4 animate-pulse">
+            <div class="w-10 h-10 rounded-full bg-bg-muted shrink-0"></div>
+            <div class="flex-1 space-y-2.5 py-1">
+              <div class="h-2.5 bg-bg-muted rounded w-1/2"></div>
+              <div class="h-2 bg-bg-muted rounded w-1/3"></div>
             </div>
           </div>
         }
@@ -69,14 +68,14 @@
 
     <!-- Error State -->
     @else if (error()) {
-      <div class="p-6 text-center text-sm text-[var(--color-danger)]">
-        <svg class="mx-auto mb-2 text-[var(--color-danger)] opacity-60" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="p-8 text-center text-sm text-danger">
+        <svg class="mx-auto mb-3 text-danger opacity-60" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
           <line x1="12" x2="12" y1="8" y2="12"/>
           <line x1="12" x2="12.01" y1="16" y2="16"/>
         </svg>
-        <p class="font-medium">Failed to load users</p>
-        <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ error() }}</p>
+        <p class="font-semibold text-danger">Failed to load users</p>
+        <p class="text-xs text-text-muted mt-1">{{ error() }}</p>
       </div>
     }
 
@@ -85,37 +84,39 @@
       @for (user of filteredUsers(); track user.id) {
         <div
           (click)="selectUser(user)"
-          class="flex items-center justify-between gap-3 px-4 py-3 border-b border-[var(--color-border)]
-                 cursor-pointer duration-[var(--transition-fast)] hover:bg-[var(--color-bg-hover)]"
-          [class.bg-[var(--color-primary-soft)]]="selectedUser()?.id === user.id"
-          [class.hover:bg-[var(--color-primary-soft)]]="selectedUser()?.id === user.id"
+          class="flex items-center justify-between gap-3 px-6 py-3.5 border-b border-border
+                 cursor-pointer duration-200 hover:bg-bg-hover"
+          [class.bg-primary-soft]="selectedUser()?.id === user.id"
+          [class.border-l-2]="selectedUser()?.id === user.id"
+          [class.border-l-primary]="selectedUser()?.id === user.id"
+          [class.pl-[22px]]="selectedUser()?.id === user.id"
         >
           <!-- Avatar + Name -->
-          <div class="flex items-center gap-3 min-w-0">
+          <div class="flex items-center gap-3.5 min-w-0">
             <div
               [style.backgroundColor]="user.avatarColor"
-              class="relative w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 shadow-sm border border-[var(--color-border)]"
+              class="relative w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm border border-black/10"
             >
               {{ getInitials(user) }}
             </div>
-            <div class="min-w-0">
-              <p class="text-sm font-medium text-[var(--color-text)] truncate leading-tight">
+            <div class="min-w-0 flex flex-col justify-center">
+              <p class="text-sm font-semibold text-text-inverse truncate">
                 {{ user.firstName }} {{ user.lastName }}
               </p>
-              <p class="text-xs text-[var(--color-text-muted)] truncate">
+              <p class="text-[11px] text-text-muted truncate mt-0.5 font-medium">
                 {{ user.jobTitle || user.email }}
               </p>
             </div>
           </div>
 
           <!-- Role list snippet -->
-          <div class="flex items-center gap-1 shrink-0">
+          <div class="flex items-center gap-1.5 shrink-0">
             @if (user.roles.length > 0) {
-              <span class="text-xs text-[var(--color-text-muted)]">
-                {{ getRoleLabel(user.roles[0]).toLowerCase().charAt(0).toUpperCase() + getRoleLabel(user.roles[0]).toLowerCase().slice(1) }}
+              <span class="text-[10px] font-semibold text-text-muted bg-bg-muted px-2 py-0.5 rounded-md border border-border uppercase tracking-wider">
+                {{ getRoleLabel(user.roles[0]) }}
               </span>
               @if (user.roles.length > 1) {
-                <span class="text-[10px] px-1 bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-full text-[var(--color-text-muted)] font-medium">
+                <span class="text-[10px] px-1.5 py-0.5 bg-bg-muted border border-border rounded-md text-text-muted font-bold">
                   +{{ user.roles.length - 1 }}
                 </span>
               }

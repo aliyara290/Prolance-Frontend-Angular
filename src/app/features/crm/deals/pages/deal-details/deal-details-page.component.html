@@ -1,248 +1,289 @@
-<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm">
+<!-- Deal Details — Enterprise-grade redesign inspired by Jira, Linear, Notion -->
+<div class="h-full flex flex-col text-[var(--color-text)]">
 
-  <!-- Loading State: Skeleton -->
   @if (loading()) {
-    <app-details-skeleton />
-  } @else if (error()) {
-    <div class="m-md">
-      <app-error-message 
-        title="Deal Not Found" 
-        [message]="error() ?? 'An unexpected error occurred while fetching the deal details.'" 
+    <app-details-skeleton></app-details-skeleton>
+  }
+  @else if (error()) {
+    <div class="p-8">
+      <app-error-message
+        title="Something went wrong!"
+        [message]="error() ?? 'An unexpected error occurred while fetching the deal details.'"
         layout="full"
         [showRetry]="false">
       </app-error-message>
-      <div class="flex justify-center mt-4">
-        <a routerLink="/app/crm/deals" class="flex items-center gap-2 text-sm text-[var(--color-primary)] hover:underline">
+      <div class="flex justify-center mt-5">
+        <a routerLink="/app/crm/deals"
+           class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] hover:underline transition-colors">
           <lucide-icon [img]="ArrowLeft" [size]="14"></lucide-icon>
-          <span>Go back to deals</span>
+          Back to Deals
         </a>
       </div>
     </div>
-  } @else if (deal()) {
+  }
+  @else if (deal()) {
 
-    <div class="space-y-4">
-
-      <!-- Header -->
-      <div class="p-md sticky top-0 mb-0">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-bg rounded-lg p-5 border border-border-strong">
-          <div class="flex items-center gap-4">
-            <a routerLink="/app/crm/deals">
-              <div class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted hover:bg-primary hover:text-white border border-border-strong">
-                <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
-              </div>
-            </a>
-            <div>
-              <h1 class="text-lg font-bold text-[var(--color-text)] flex flex-wrap items-center gap-1.5 leading-tight">
-                <span>{{ deal()!.title }}</span>
-                @if (deal()!.stage) {
-                  <span class="text-sm font-normal text-text-muted border-l border-border-strong pl-2">
-                  {{ deal()!.stage }}
-                </span>
-                }
+    <!-- ────────── STICKY HEADER ────────── -->
+    <header class="sticky top-0 z-10 bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border-strong)]">
+      <div class="px-4 py-4 flex items-center justify-between gap-4">
+        <!-- Left: Back + Identity -->
+        <div class="flex items-center gap-4 min-w-0">
+          <!-- Back -->
+          <a routerLink="/app/crm/deals"
+             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
+            <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+          </a>
+          <!-- Avatar -->
+          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm"
+               [style.background]="getAvatarColor()">
+            {{ getInitials() }}
+          </div>
+          <!-- Name + Breadcrumb -->
+          <div class="min-w-0">
+            <div class="flex items-center gap-1 min-w-0">
+              <h1 class="text-lg font-bold text-[var(--color-text)] truncate leading-tight">
+                {{ deal()!.title }}
               </h1>
             </div>
           </div>
-
-          <div class="flex items-center flex-wrap gap-2.5">
-            <app-dropdown-menu
-              [items]="moreActions"
-              [iconOnly]="true"
-              (itemSelected)="onMoreAction($event)"
-            />
-          </div>
         </div>
-
-      </div>
-
-      <!-- Tabs + Quick Info -->
-      <div class="px-md">
-        <div class="flex pb-4 items-center justify-between flex-wrap gap-3 pr-4">
-          <div class="flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
-            <button (click)="activeTab.set('overview')"
-                    [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
-                    [class.bg-bg-active]="activeTab() === 'overview'"
-                    [class.!text-text]="activeTab() === 'overview'"
-                    [class.!border-border-strong]="activeTab() === 'overview'"
-                    class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
-              Overview
-            </button>
-            <button (click)="activeTab.set('timeline')"
-                    [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
-                    [class.bg-bg-active]="activeTab() === 'timeline'"
-                    [class.!border-border-strong]="activeTab() === 'timeline'"
-                    class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
-              Timeline
-            </button>
-          </div>
-
-          <div class="text-sm text-[var(--color-text-muted)] font-medium">
-            <span>Last Update : </span>
-            <span class="text-text-muted font-mono">{{ deal()!.updatedAt || deal()!.createdAt | date:'mediumDate' }}</span>
-          </div>
-        </div>
-
-        <!-- Quick Info Strip -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-5 bg-bg rounded-lg border border-border-strong">
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Title</label>
-            <span class="text-sm font-semibold text-[var(--color-text)]">{{ deal()!.title }}</span>
-          </div>
-
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Amount</label>
-            <span class="text-sm font-semibold text-[var(--color-text)]">
-              {{ deal()!.amount ? ('$' + (deal()!.amount | number)) : '-' }}
-            </span>
-          </div>
-
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Stage</label>
-            <div class="flex items-center mt-0.5">
-              <span class="px-2 py-0.5 text-[10px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)] rounded border border-[var(--color-primary-border)] uppercase tracking-wide">
-                {{ deal()!.stage }}
-              </span>
-            </div>
-          </div>
-
-          <div class="space-y-1">
-            <label class="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-wider">Priority</label>
-            <div class="flex items-center mt-0.5">
-              <span class="px-2 py-0.5 text-[10px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)] rounded border border-[var(--color-primary-border)] uppercase tracking-wide">
-                {{ deal()!.priority }}
-              </span>
-            </div>
-          </div>
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-2.5 flex-shrink-0">
+          <app-dropdown-menu
+            [items]="moreActions"
+            [iconOnly]="true"
+            (itemSelected)="onMoreAction($event)"
+          ></app-dropdown-menu>
         </div>
       </div>
+    </header>
 
+    <!-- ────────── PAGE BODY ────────── -->
+    <div class="flex-1 overflow-y-auto">
+      <div class="p-4">
+        <div class="flex flex-col lg:flex-row gap-4">
+          <!-- ═══════════ LEFT COLUMN: Primary Content ═══════════ -->
+          <div class="flex-1 min-w-0 flex flex-col gap-4">
+            <!-- ── Tabs ── -->
+            <div class="w-max flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
+              <button (click)="activeTab.set('overview')"
+                      [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
+                      [class.bg-bg-active]="activeTab() === 'overview'"
+                      [class.!text-text]="activeTab() === 'overview'"
+                      [class.!border-border-strong]="activeTab() === 'overview'"
+                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+                Overview
+              </button>
+              <button (click)="activeTab.set('timeline')"
+                      [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
+                      [class.bg-bg-active]="activeTab() === 'timeline'"
+                      [class.!border-border-strong]="activeTab() === 'timeline'"
+                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+                Timeline
+              </button>
+            </div>
+
+            <!-- ═══════════ OVERVIEW TAB ═══════════ -->
+            @if (activeTab() === 'overview') {
+              <div class="flex flex-col gap-5">
+                <!-- Description -->
+                @if (deal()!.description || deal()!.lostReason) {
+                  <div class="bg-bg border border-border-strong rounded-xl shadow-sm overflow-hidden">
+                    <div class="border-b border-border-strong py-4 px-5 bg-bg-muted/30">
+                      <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Details &amp; Description</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                      @if (deal()!.description) {
+                        <div>
+                          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Description</label>
+                          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ deal()!.description }}</p>
+                        </div>
+                      }
+                      @if (deal()!.lostReason) {
+                        <div>
+                          <label class="block text-xs font-bold text-[var(--color-text-danger)] uppercase tracking-wider mb-1">Lost Reason</label>
+                          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ deal()!.lostReason }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- Deal Value Information -->
+                <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
+                  <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    <h3 class="text-sm font-bold text-[var(--color-text)]">Deal Values</h3>
+                  </div>
+                  <div class="p-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
+                      <!-- Amount -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Amount</span>
+                        <span class="text-sm font-bold text-[var(--color-text)]">
+                          {{ deal()!.amount ? ('$' + (deal()!.amount | number)) : '-' }}
+                        </span>
+                      </div>
+                      <!-- Estimated Budget -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Estimated Budget</span>
+                        <span class="text-sm font-medium text-[var(--color-text)]">
+                          {{ deal()!.estimatedBudget ? ('$' + (deal()!.estimatedBudget | number)) : '-' }}
+                        </span>
+                      </div>
+                      <!-- Expected Revenue -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Expected Revenue</span>
+                        <span class="text-sm font-medium text-[var(--color-text)]">
+                          {{ deal()!.expectedRevenue ? ('$' + (deal()!.expectedRevenue | number)) : '-' }}
+                        </span>
+                      </div>
+                      <!-- Probability -->
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Probability</span>
+                        <span class="text-sm font-medium text-[var(--color-text)]">{{ deal()!.probability ? (deal()!.probability + '%') : '-' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            }
+
+            <!-- ═══════════ TIMELINE TAB ═══════════ -->
+            @if (activeTab() === 'timeline') {
+              <div class="flex flex-col gap-0">
+                <!-- Update event -->
+                @if (deal()!.updatedAt && deal()!.updatedAt !== deal()!.createdAt) {
+                  <div class="flex gap-4 py-5 border-b border-[var(--color-border-strong)]">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary-soft)] flex items-center justify-center">
+                      <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(deal()!.updatedBy, 'System') }}</span>
+                        <span class="text-sm text-[var(--color-text-muted)]">updated deal details</span>
+                      </div>
+                      <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ deal()!.updatedAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
+                    </div>
+                  </div>
+                }
+                <!-- Created event -->
+                <div class="flex gap-4 py-5">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-success-soft)] flex items-center justify-center">
+                    <svg class="w-4 h-4 text-[var(--color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 5v14"/><path d="M5 12h14"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(deal()!.createdBy, 'System') }}</span>
+                      <span class="text-sm text-[var(--color-text-muted)]">created this deal</span>
+                    </div>
+                    <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ deal()!.createdAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- ═══════════ RIGHT SIDEBAR ═══════════ -->
+          <aside class="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-5">
+            <!-- Properties Card -->
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Properties</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Stage</span>
+                  <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border"
+                        [ngClass]="getStageConfig(deal()!.stage).classes">
+                    {{ getStageConfig(deal()!.stage).label }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Priority</span>
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full" [ngClass]="getPriorityConfig(deal()!.priority).dotColor"></span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ getPriorityConfig(deal()!.priority).label }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Source</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ formatSource(deal()!.source) }}</span>
+                </div>
+                @if (deal()!.type) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Type</span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ deal()!.type }}</span>
+                  </div>
+                }
+                <hr class="border-[var(--color-border-strong)] my-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Owner</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-[9px] font-bold flex-shrink-0">
+                      {{ getOwnerInitials() }}
+                    </div>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ getUserName(deal()!.createdBy, 'Unassigned') }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Client</span>
+                  <a [routerLink]="'/app/crm/clients/' + deal()!.clientId" class="text-sm font-medium text-[var(--color-primary)] hover:underline truncate max-w-[160px]">
+                    {{ deal()!.clientId | slice:0:8 | uppercase }}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedule Card -->
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Schedule</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Start</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ (deal()!.expectedStartDate | date:'mediumDate') || '-' }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">End</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ (deal()!.expectedEndDate | date:'mediumDate') || '-' }}</span>
+                </div>
+                @if (deal()!.closingDate) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Closed</span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ deal()!.closingDate | date:'mediumDate' }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Dates Card -->
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Dates</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Created</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ deal()!.createdAt | date:'mediumDate' }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Updated</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ (deal()!.updatedAt || deal()!.createdAt) | date:'mediumDate' }}</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </div>
     </div>
-
-    <!-- OVERVIEW TAB -->
-    @if (activeTab() === 'overview') {
-      <div class="space-y-4 px-md pb-md">
-
-        <!-- Deal Information -->
-        <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-          <div class="border-b border-border-strong py-4 px-5">
-            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Deal Information</h2>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm p-5">
-            <!-- Column 1 -->
-            <div class="space-y-4">
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Title</span>
-                <span class="font-semibold text-[var(--color-text)]">{{ deal()!.title }}</span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Type</span>
-                <span class="font-medium text-[var(--color-text)]">{{ deal()!.type || '-' }}</span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Source</span>
-                <span class="font-medium text-[var(--color-text)]">{{ deal()!.source || '-' }}</span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Probability</span>
-                <span class="font-medium text-[var(--color-text)]">{{ deal()!.probability ? (deal()!.probability + '%') : '-' }}</span>
-              </div>
-            </div>
-
-            <!-- Column 2 -->
-            <div class="space-y-4">
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Estimated Budget</span>
-                <span class="font-semibold text-[var(--color-text)]">
-                  {{ deal()!.estimatedBudget ? ('$' + (deal()!.estimatedBudget | number)) : '-' }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Expected Revenue</span>
-                <span class="font-semibold text-[var(--color-text)]">
-                  {{ deal()!.expectedRevenue ? ('$' + (deal()!.expectedRevenue | number)) : '-' }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Expected Start Date</span>
-                <span class="font-medium text-[var(--color-text)]">{{ (deal()!.expectedStartDate | date:'mediumDate') || '-' }}</span>
-              </div>
-              <div class="flex justify-between items-center py-1">
-                <span class="text-[var(--color-text-muted)] font-medium">Expected End Date</span>
-                <span class="font-medium text-[var(--color-text)]">{{ (deal()!.expectedEndDate | date:'mediumDate') || '-' }}</span>
-              </div>
-              @if (deal()!.closingDate) {
-                <div class="flex justify-between items-center py-1">
-                  <span class="text-[var(--color-text-muted)] font-medium">Closing Date</span>
-                  <span class="font-medium text-[var(--color-text)]">{{ deal()!.closingDate | date:'mediumDate' }}</span>
-                </div>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- Description -->
-        @if (deal()!.description || deal()!.lostReason) {
-          <div class="bg-bg border border-border-strong rounded-lg shadow-sm">
-            <div class="border-b border-border-strong py-4 px-5">
-              <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Details &amp; Description</h2>
-            </div>
-            <div class="p-5 space-y-4">
-              @if (deal()!.description) {
-                <div>
-                  <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Description</label>
-                  <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ deal()!.description }}</p>
-                </div>
-              }
-              @if (deal()!.lostReason) {
-                <div>
-                  <label class="block text-xs font-bold text-[var(--color-text-danger)] uppercase tracking-wider mb-1">Lost Reason</label>
-                  <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ deal()!.lostReason }}</p>
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-      </div>
-    }
-
-    <!-- TIMELINE TAB -->
-    @if (activeTab() === 'timeline') {
-      <div class="bg-bg border border-border-strong rounded-lg shadow-sm mx-md mb-md">
-        <div class="border-b border-border-strong py-4 px-5">
-          <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">System Audit &amp; Timeline Logs</h2>
-        </div>
-
-        <div class="space-y-6 relative py-5 px-6">
-          <div class="relative pl-6 border-l border-border-strong">
-            <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-success)] border-4 border-bg shadow"></div>
-            <div class="text-sm space-y-1">
-              <h3 class="font-bold text-[var(--color-text)]">Deal Created successfully</h3>
-              <p class="text-[var(--color-text-muted)] text-[10px]">{{ deal()!.createdAt | date:'medium' }}</p>
-              <p class="text-text-muted">Deal record created via REST request. Record initialized.</p>
-              <div class="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wide">
-                Operator: {{ deal()!.createdBy || 'system' }}
-              </div>
-            </div>
-          </div>
-
-          @if (deal()!.updatedAt && deal()!.updatedAt !== deal()!.createdAt) {
-            <div class="relative pl-6 border-l border-border-strong">
-              <div class="absolute -left-[8px] top-0 w-4 h-4 rounded-full bg-[var(--color-primary)] border-4 border-bg shadow"></div>
-              <div class="text-sm space-y-1">
-                <h3 class="font-bold text-[var(--color-text)]">Deal Details updated</h3>
-                <p class="text-[var(--color-text-muted)] text-[10px]">{{ deal()!.updatedAt | date:'medium' }}</p>
-                <p class="text-text-muted">Deal fields successfully synchronized with backend aggregates database.</p>
-                <div class="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wide">
-                  Operator: {{ deal()!.updatedBy || 'system' }}
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    }
-
   }
-
 </div>

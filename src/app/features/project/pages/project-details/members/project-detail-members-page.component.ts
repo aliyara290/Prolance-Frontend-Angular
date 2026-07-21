@@ -17,11 +17,15 @@ import {
   MEMBER_STATUS_COLORS,
 } from '../../../types/project-member.model';
 import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
+import {ErrorMessageComponent} from '../../../../../shared/ui/error-message/error-message.component';
+
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-project-detail-members-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DropdownMenuComponent],
+  imports: [CommonModule, FormsModule, DropdownMenuComponent, ErrorMessageComponent, CustomSelectComponent],
   templateUrl: './project-detail-members-page.component.html',
   styleUrls: ['./project-detail-members-page.component.css'],
 })
@@ -29,6 +33,7 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
   readonly detailService = inject(ProjectDetailService);
   readonly membersService = inject(ProjectMembersService);
   private readonly usersStateService = inject(UsersStateService);
+  private readonly confirmService = inject(ConfirmModalService);
 
   // ── Add Member Modal ──
   readonly showAddModal = signal<boolean>(false);
@@ -57,6 +62,17 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
   readonly roleLabels = MEMBER_ROLE_LABELS;
   readonly roleColors = MEMBER_ROLE_COLORS;
   readonly statusColors = MEMBER_STATUS_COLORS;
+
+  readonly roleSelectOptions: CustomSelectOption[] = this.allRoles.map(r => ({ label: this.roleLabels[r], value: r }));
+  readonly statusSelectOptions: CustomSelectOption[] = [
+    { label: 'All Statuses', value: 'ALL' },
+    { label: 'Active', value: 'ACTIVE' },
+    { label: 'Inactive', value: 'INACTIVE' }
+  ];
+  readonly filterRoleSelectOptions: CustomSelectOption[] = [
+    { label: 'All Roles', value: 'ALL' },
+    ...this.roleSelectOptions
+  ];
 
   // ── Tenant Users ──
   readonly tenantUsers = this.usersStateService.usersList;
@@ -212,12 +228,22 @@ export class ProjectDetailMembersPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRemove(member: ProjectMember): void {
+  async onRemove(member: ProjectMember): Promise<void> {
     const project = this.detailService.project();
     const user = this.getUserForMember(member);
     const name = user ? `${user.firstName} ${user.lastName}` : member.userId;
 
-    if (!project || !confirm(`Remove "${name}" from this project?`)) return;
+    if (!project) return;
+    
+    const confirmed = await this.confirmService.confirm({
+      title: 'Remove Member',
+      message: `Are you sure you want to remove "${name}" from this project?`,
+      confirmText: 'Remove',
+      cancelText: 'Cancel',
+      danger: true
+    });
+    
+    if (!confirmed) return;
 
     this.membersService.removeMember(project.id, member.userId).subscribe({
       next: () => {

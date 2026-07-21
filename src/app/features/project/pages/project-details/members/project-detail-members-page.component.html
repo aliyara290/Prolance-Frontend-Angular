@@ -38,21 +38,21 @@
         <div class="toolbar-filters">
           <div class="toolbar-filter-group">
             <label class="toolbar-filter-label">Role</label>
-            <select class="toolbar-filter-select" [ngModel]="filterRole()" (ngModelChange)="filterRole.set($event)">
-              <option value="ALL">All Roles</option>
-              @for (role of allRoles; track role) {
-                <option [value]="role">{{ roleLabels[role] }}</option>
-              }
-            </select>
+            <app-custom-select
+              [ngModel]="filterRole()"
+              (ngModelChange)="filterRole.set($event)"
+              [options]="filterRoleSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
           <div class="toolbar-filter-group">
             <label class="toolbar-filter-label">Status</label>
-            <select class="toolbar-filter-select" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
-              <option value="ALL">All Status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="INACTIVE">Inactive</option>
-              <option value="REMOVED">Removed</option>
-            </select>
+            <app-custom-select
+              [ngModel]="filterStatus()"
+              (ngModelChange)="filterStatus.set($event)"
+              [options]="statusSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
         </div>
       </div>
@@ -68,13 +68,12 @@
     }
 
     @if (membersService.error()) {
-      <div class="members-error  !p-md !pt-0">
-        <svg class="members-error-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-        </svg>
-        <span>{{ membersService.error() }}</span>
-      </div>
+        <app-error-message
+          title="Something went wrong!"
+          [message]="'An unexpected error occurred while fetching the members list.'"
+          layout="inline"
+          [showRetry]="false">
+        </app-error-message>
     }
 
     @if (!membersService.loading() && !membersService.error()) {
@@ -121,11 +120,13 @@
                 <!-- Role -->
                 <td class="td-role">
                   @if (editingMemberId() === member.userId) {
-                    <select class="members-select" [ngModel]="editRole()" (ngModelChange)="editRole.set($event)" (click)="$event.stopPropagation()">
-                      @for (role of allRoles; track role) {
-                        <option [value]="role">{{ roleLabels[role] }}</option>
-                      }
-                    </select>
+                    <app-custom-select
+                      [ngModel]="editRole()"
+                      (ngModelChange)="editRole.set($event)"
+                      [options]="roleSelectOptions"
+                      [searchable]="false"
+                      (click)="$event.stopPropagation()"
+                    ></app-custom-select>
                   } @else {
                     <span class="role-badge" [style.color]="roleColors[member.role]"
                           [style.background]="getRoleBg(member.role)">
@@ -330,15 +331,12 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Role</label>
-            <select
-              class="form-select"
+            <app-custom-select
               [ngModel]="selectedRole()"
               (ngModelChange)="selectedRole.set($event)"
-            >
-              @for (role of allRoles; track role) {
-                <option [value]="role">{{ roleLabels[role] }}</option>
-              }
-            </select>
+              [options]="roleSelectOptions"
+              [searchable]="false"
+            ></app-custom-select>
           </div>
           <div class="form-group">
             <label class="form-label">Allocation (%)</label>

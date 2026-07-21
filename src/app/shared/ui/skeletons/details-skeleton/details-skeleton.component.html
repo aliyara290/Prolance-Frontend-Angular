@@ -1,127 +1,108 @@
-<div class="space-y-4 p-md">
+<div class="h-full flex flex-col pointer-events-none">
+  <!-- STICKY HEADER -->
+  <div class="px-4 py-4 flex items-center justify-between gap-4 border-b border-[var(--color-border-strong)]">
+    <!-- Left: Back + Avatar + Name -->
+    <div class="flex items-center gap-4 min-w-0">
+      <div class="skeleton w-8 h-8 rounded-lg flex-shrink-0"></div>
+      <div class="skeleton w-10 h-10 rounded-full flex-shrink-0"></div>
+      <div class="skeleton w-48 max-w-[50vw] h-6 rounded"></div>
+    </div>
+    <!-- Right -->
+    <div class="skeleton w-8 h-8 rounded-md flex-shrink-0"></div>
+  </div>
 
-  <!-- Header Card -->
-  <div
-    class="flex flex=col items-center bg-[var(--color-bg)] h-[76px] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]">
-    <div class="w-full flex items-center justify-between gap-3 px-4">
-      <div class="flex items-center gap-3 px-4">
-        <div class="skeleton w-7 h-7 rounded-[var(--radius-sm)]"></div>
-        <div class="skeleton w-24 h-4 rounded-[var(--radius-sm)]"></div>
-        <div class="w-px h-4 bg-[var(--color-border)]"></div>
-        <div class="skeleton w-20 h-3.5 rounded-[var(--radius-sm)]"></div>
+  <!-- BODY -->
+  <div class="flex-1 p-4">
+    <div class="flex flex-col lg:flex-row gap-4">
+
+      <!-- LEFT COLUMN -->
+      <div class="flex-1 min-w-0 flex flex-col gap-5">
+        <!-- Tabs -->
+        <div class="skeleton w-48 h-8 rounded-full border border-[var(--color-border-strong)]"></div>
+
+        <!-- Description Card -->
+        <div class="border border-[var(--color-border-strong)] bg-[var(--color-bg)] rounded-xl overflow-hidden shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5 bg-[var(--color-bg-muted)]/30">
+            <div class="skeleton w-32 h-4 rounded"></div>
+          </div>
+          <div class="p-5 space-y-4">
+            <div class="skeleton w-20 h-3 rounded mb-2"></div>
+            <div class="skeleton w-full h-3 rounded"></div>
+            <div class="skeleton w-5/6 h-3 rounded"></div>
+            <div class="skeleton w-4/6 h-3 rounded"></div>
+          </div>
+        </div>
+
+        <!-- Detail Card -->
+        <div class="border border-[var(--color-border-strong)] bg-[var(--color-bg)] rounded-xl overflow-hidden shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5 bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+            <div class="skeleton w-4 h-4 rounded-full"></div>
+            <div class="skeleton w-40 h-4 rounded"></div>
+          </div>
+          <div class="p-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+              <div class="flex flex-col gap-1.5" *ngFor="let _ of lines4">
+                <div class="skeleton w-20 h-2.5 rounded"></div>
+                <div class="skeleton w-32 h-3.5 rounded mt-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Additional Detail Card (e.g. Address) -->
+        <div class="border border-[var(--color-border-strong)] bg-[var(--color-bg)] rounded-xl overflow-hidden shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5 bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+            <div class="skeleton w-4 h-4 rounded-full"></div>
+            <div class="skeleton w-36 h-4 rounded"></div>
+          </div>
+          <div class="p-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+              <div class="flex flex-col gap-1.5" *ngFor="let _ of lines4">
+                <div class="skeleton w-24 h-2.5 rounded"></div>
+                <div class="skeleton w-28 h-3.5 rounded mt-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="flex items-center gap-3 px-4">
-        <div class="skeleton w-7 h-7 rounded-[var(--radius-sm)]"></div>
-        <div class="skeleton w-7 h-7 rounded-[var(--radius-sm)]"></div>
-        <div class="skeleton w-7 h-7 rounded-[var(--radius-sm)]"></div>
-      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <aside class="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-5">
+        <!-- Properties Card -->
+        <div class="border border-[var(--color-border-strong)] bg-[var(--color-bg)] rounded-xl overflow-hidden shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5 bg-[var(--color-bg-muted)]/30">
+            <div class="skeleton w-24 h-4 rounded"></div>
+          </div>
+          <div class="p-5 flex flex-col gap-5">
+            <div class="flex items-center justify-between" *ngFor="let _ of lines5">
+              <div class="skeleton w-20 h-3 rounded"></div>
+              <div class="skeleton w-28 h-4 rounded"></div>
+            </div>
+            <hr class="border-[var(--color-border-strong)] my-1">
+            <div class="flex items-center justify-between">
+              <div class="skeleton w-16 h-3 rounded"></div>
+              <div class="flex items-center gap-2">
+                <div class="skeleton w-5 h-5 rounded-full"></div>
+                <div class="skeleton w-20 h-4 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dates Card -->
+        <div class="border border-[var(--color-border-strong)] bg-[var(--color-bg)] rounded-xl overflow-hidden shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5 bg-[var(--color-bg-muted)]/30">
+            <div class="skeleton w-24 h-4 rounded"></div>
+          </div>
+          <div class="p-5 flex flex-col gap-5">
+            <div class="flex items-center justify-between" *ngFor="let _ of lines3">
+              <div class="skeleton w-16 h-3 rounded"></div>
+              <div class="skeleton w-24 h-3.5 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
 
     </div>
   </div>
-
-  <!-- Tabs + Last Update -->
-  <div class="flex items-center justify-between px-4 py-3
-                  bg-[var(--color-bg)] border border-[var(--color-border)]
-                  rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]">
-    <div class="flex gap-2">
-      <div class="skeleton w-20 h-8 rounded-[var(--radius-full)]"></div>
-      <div class="skeleton w-18 h-8 rounded-[var(--radius-full)] opacity-50"></div>
-    </div>
-    <div class="skeleton w-40 h-3 rounded"></div>
-  </div>
-
-  <!-- Top Meta Row -->
-  <div class="bg-[var(--color-bg)] border border-[var(--color-border)]
-                  rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] overflow-hidden">
-    <div class="grid grid-cols-4 divide-x divide-[var(--color-border)]">
-      <div class="px-5 py-3.5" *ngFor="let cell of metaCells">
-        <div class="skeleton h-2.5 rounded mb-2" [style.width]="cell.labelWidth"></div>
-        <div class="skeleton h-3.5 rounded" [style.width]="cell.valueWidth"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Client Information Section -->
-  <div class="bg-[var(--color-bg)] border border-[var(--color-border)]
-                  rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] overflow-hidden">
-
-    <!-- Section title -->
-    <div class="px-5 py-3.5 border-b border-[var(--color-border)]">
-      <div class="skeleton w-36 h-4 rounded"></div>
-    </div>
-
-    <!-- Two-column field grid -->
-    <div class="grid grid-cols-2 divide-x divide-[var(--color-border)]">
-      <div class="divide-y divide-[var(--color-border)]">
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5"
-             *ngFor="let row of clientRowsLeft">
-          <div class="skeleton h-3.5 rounded" [style.width]="row.label"></div>
-          <div class="skeleton h-3.5 rounded justify-self-end" [style.width]="row.value"></div>
-        </div>
-      </div>
-      <div class="divide-y divide-[var(--color-border)]">
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5"
-             *ngFor="let row of clientRowsRight">
-          <div class="skeleton h-3.5 rounded" [style.width]="row.label"></div>
-          <div class="skeleton h-3.5 rounded justify-self-end" [style.width]="row.value"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-[var(--color-bg)] border border-[var(--color-border)]
-                  rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] overflow-hidden">
-
-    <!-- Section title -->
-    <div class="px-5 py-3.5 border-b border-[var(--color-border)]">
-      <div class="skeleton w-36 h-4 rounded"></div>
-    </div>
-
-    <!-- Two-column field grid -->
-    <div class="grid grid-cols-2 divide-x divide-[var(--color-border)]">
-      <div class="divide-y divide-[var(--color-border)]">
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5"
-             *ngFor="let row of clientRowsLeft">
-          <div class="skeleton h-3.5 rounded" [style.width]="row.label"></div>
-          <div class="skeleton h-3.5 rounded justify-self-end" [style.width]="row.value"></div>
-        </div>
-      </div>
-      <div class="divide-y divide-[var(--color-border)]">
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5"
-             *ngFor="let row of clientRowsRight">
-          <div class="skeleton h-3.5 rounded" [style.width]="row.label"></div>
-          <div class="skeleton h-3.5 rounded justify-self-end" [style.width]="row.value"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Address Information Section -->
-  <div class="bg-[var(--color-bg)] border border-[var(--color-border)]
-                  rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] overflow-hidden">
-
-    <div class="px-5 py-3.5 border-b border-[var(--color-border)]">
-      <div class="skeleton w-40 h-4 rounded"></div>
-    </div>
-
-    <div class="grid grid-cols-2 divide-x divide-[var(--color-border)]">
-      <div>
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5">
-          <div class="skeleton w-9 h-3.5 rounded"></div>
-          <div class="skeleton w-16 h-3.5 rounded justify-self-end"></div>
-        </div>
-      </div>
-      <div class="divide-y divide-[var(--color-border)]">
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5">
-          <div class="skeleton w-14 h-3.5 rounded"></div>
-          <div class="skeleton w-18 h-3.5 rounded justify-self-end"></div>
-        </div>
-        <div class="grid grid-cols-[160px_1fr] gap-4 items-center px-5 py-3.5">
-          <div class="skeleton w-16 h-3.5 rounded"></div>
-          <div class="skeleton w-16 h-3.5 rounded justify-self-end"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>

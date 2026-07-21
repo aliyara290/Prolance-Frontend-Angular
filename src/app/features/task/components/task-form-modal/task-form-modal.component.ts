@@ -19,10 +19,12 @@ import {
   TASK_STATUS_LABELS,
 } from '../../types/task.model';
 
+import { CustomSelectComponent, CustomSelectOption } from '../../../../shared/ui/custom-select/custom-select.component';
+
 @Component({
   selector: 'app-task-form-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule, CustomSelectComponent],
   templateUrl: './task-form-modal.component.html',
   styleUrls: ['./task-form-modal.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +57,18 @@ export class TaskFormModalComponent implements OnInit, OnChanges {
   readonly typeLabels = TASK_TYPE_LABELS;
   readonly priorityLabels = TASK_PRIORITY_LABELS;
   readonly statusLabels = TASK_STATUS_LABELS;
+
+  readonly typeSelectOptions: CustomSelectOption[] = this.typeOptions.map(t => ({ label: this.typeLabels[t], value: t }));
+  readonly prioritySelectOptions: CustomSelectOption[] = this.priorityOptions.map(p => ({ label: this.priorityLabels[p], value: p }));
+  readonly statusSelectOptions: CustomSelectOption[] = this.statusOptions.map(s => ({ label: this.statusLabels[s], value: s }));
+
+  get reporterSelectOptions(): CustomSelectOption[] {
+    return this.tenantUsers().map(u => ({ label: `${u.firstName} ${u.lastName}`, value: u.keycloakUserId }));
+  }
+
+  get projectSelectOptions(): CustomSelectOption[] {
+    return this.projectNames().map(p => ({ label: `${p.name} (${p.prefix})`, value: p.id }));
+  }
 
   readonly icons = {
     search: Search,

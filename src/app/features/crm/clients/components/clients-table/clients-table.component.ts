@@ -31,6 +31,8 @@ interface SelectOption {
   value: string;
 }
 
+import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
+
 @Component({
   selector: 'app-clients-table',
   standalone: true,
@@ -56,6 +58,7 @@ interface SelectOption {
 })
 export class ClientsTableComponent {
   private readonly clientsService = inject(ClientsService);
+  private readonly confirmService = inject(ConfirmModalService);
   private readonly searchSubject = new Subject<string>();
 
   @Input({ required: true }) clients: Client[] = [];
@@ -142,11 +145,18 @@ export class ClientsTableComponent {
     { label: 'Delete Client', value: 'delete', danger: true, dividerBefore: true },
   ];
 
-  onMoreAction(item: DropdownMenuItem, client: Client): void {
+  async onMoreAction(item: DropdownMenuItem, client: Client): Promise<void> {
     if (item.value === 'edit') {
       this.editClient.emit(client);
     } else if (item.value === 'delete') {
-      if (confirm(`Are you sure you want to delete client "${client.name}"?`)) {
+      const confirmed = await this.confirmService.confirm({
+        title: 'Delete Client',
+        message: `Are you sure you want to delete client "${client.name}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        danger: true
+      });
+      if (confirmed) {
         this.clientsService.deleteClient(client.id).subscribe({
           next: () => console.log('Client deleted successfully'),
           error: (err) => console.error('Failed to delete client', err)
