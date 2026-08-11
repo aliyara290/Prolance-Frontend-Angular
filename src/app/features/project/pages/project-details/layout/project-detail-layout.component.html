@@ -22,31 +22,33 @@
 }
 
 @if (!detailService.error() && detailService.project()) {
-  <div class="detail-layout">
+  <div class="h-full flex flex-col text-[var(--color-text)]">
 
-    <div class="detail-header-sticky">
+    <header class="sticky top-0 z-10 bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border-strong)]">
+      <div class="px-4 py-4 flex items-center justify-between gap-4">
 
-      <div class="detail-header">
-        <div class="flex items-center gap-4">
-          <a routerLink="/app/projects/all">
-            <div class="back-btn">
-              <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
-            </div>
+        <div class="flex items-center gap-4 min-w-0">
+          <a routerLink="/app/projects/all"
+             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
+            <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
           </a>
+
           @if (detailService.loading()) {
-            <div class="skeleton-two w-[230px] h-[22px] rounded"></div>
+            <div class="skeleton-two w-[230px] h-[22.5px] rounded"></div>
           } @else {
-            <div>
-              <h1 class="detail-title">
-                <span>{{ detailService.project()!.name }}</span>
-                <span class="detail-prefix-badge">{{ detailService.project()!.prefix }}</span>
-              </h1>
+
+            <!-- Name -->
+            <div class="min-w-0">
+              <div class="flex items-center gap-1 min-w-0">
+                <h1 class="text-lg font-bold text-[var(--color-text)] truncate leading-tight">
+                  {{ detailService.project()!.name }}
+                </h1>
+              </div>
             </div>
           }
-
         </div>
 
-        <div class="flex items-center flex-wrap gap-2.5">
+        <div class="flex items-center gap-2.5 flex-shrink-0">
           <button
             class="flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--color-bg-muted)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
             title="Reload project data"
@@ -60,24 +62,28 @@
             [items]="moreActions"
             [iconOnly]="true"
             (itemSelected)="onMoreAction($event)"
-          />
+          ></app-dropdown-menu>
         </div>
       </div>
+    </header>
 
-      <div class="detail-tabs-row">
-        <div class="detail-tabs">
+    <div class="flex-1 overflow-y-auto">
+      <!-- Tabs Row -->
+      <div class="px-4 py-4 flex items-center justify-between flex-wrap gap-4">
+        <!-- ── Tabs ── -->
+        <div class="flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong w-max overflow-x-auto">
           @for (tab of tabs; track tab.id) {
             <a
               [routerLink]="tab.route"
-              routerLinkActive="detail-tab--active"
-              class="detail-tab"
+              routerLinkActive="!text-[var(--color-primary)] !bg-bg-active !border-border-strong"
+              class="text-text-muted px-4 py-1.5 rounded-full hover:text-text border border-transparent hover:border-border-strong cursor-pointer focus:outline-none transition-all whitespace-nowrap"
             >
               {{ tab.label }}
             </a>
           }
         </div>
 
-        <div class="detail-last-update">
+        <div class="text-xs font-medium text-[var(--color-text-muted)] flex-shrink-0">
           <span>Last Update : </span>
           <span class="font-mono">
             {{ detailService.project()!.updatedAt || detailService.project()!.createdAt | date:'mediumDate' }}
@@ -85,11 +91,8 @@
         </div>
       </div>
 
-    </div>
-
-
-    <div class="detail-content">
-      <router-outlet />
+      <!-- Content Area -->
+      <router-outlet></router-outlet>
     </div>
 
   </div>

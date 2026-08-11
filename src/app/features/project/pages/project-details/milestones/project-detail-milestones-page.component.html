@@ -205,9 +205,9 @@
     (closePanel)="closeCreateModal()"
     (milestoneSaved)="onMilestoneSaved()"
   />
-
   <app-milestone-detail-panel
     [milestone]="selectedMilestone()"
+    [projectId]="project.id"
     [isOpen]="showDetailDrawer()"
     (closePanel)="closeDetailDrawer()"
     (editMilestone)="startEdit($event)"

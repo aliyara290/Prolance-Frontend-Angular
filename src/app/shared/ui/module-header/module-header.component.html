@@ -5,12 +5,23 @@
     {{ title }}
   </h1>
 
+
   <!-- Actions -->
   <div class="flex items-center gap-[var(--spacing-md)]">
 
     <!-- View Toggles -->
     @if (showListView || showKanbanView) {
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-2">
+        <!-- Refresh Button -->
+        <button
+          type="button"
+          (click)="onRefresh()"
+          class="p-1.5 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-all duration-150 cursor-pointer border border-transparent"
+          title="Refresh data"
+        >
+          <lucide-icon [img]="icons.refresh" [size]="16"></lucide-icon>
+        </button>
+
         @if (showListView) {
           <button
             type="button"
@@ -38,18 +49,12 @@
             <lucide-icon [img]="icons.kanban" [size]="16"></lucide-icon>
           </button>
         }
+
+
       </div>
     }
 
-    <!-- Refresh Button -->
-    <button
-      type="button"
-      (click)="onRefresh()"
-      class="p-1.5 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-all duration-150 cursor-pointer border border-transparent"
-      title="Refresh data"
-    >
-      <lucide-icon [img]="icons.refresh" [size]="16"></lucide-icon>
-    </button>
+
 
 
 

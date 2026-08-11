@@ -39,7 +39,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-1 md:col-span-2">
             <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
-              Company Name <span class="text-[var(--color-danger)]">*</span>
+              Company Name <span class="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -101,6 +101,9 @@
               [options]="typeSelectOptions"
               [searchable]="false"
             ></app-custom-select>
+            @if (clientForm.get('type')?.touched && clientForm.get('type')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Type is required.</span>
+            }
           </div>
 
           <div>
@@ -112,6 +115,9 @@
               [options]="sourceSelectOptions"
               [searchable]="false"
             ></app-custom-select>
+            @if (clientForm.get('source')?.touched && clientForm.get('source')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Source is required.</span>
+            }
           </div>
 
           <div>
@@ -145,13 +151,16 @@
               />
             </div>
             <div class="col-span-1">
-              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">City</label>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">City <span class="text-[var(--color-danger)]">*</span></label>
               <input
                 type="text"
                 formControlName="city"
                 placeholder="Rabat"
                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
               />
+              @if (clientForm.get('city')?.touched && clientForm.get('city')?.invalid) {
+                <span class="text-xs text-[var(--color-danger)] mt-1 block">City is required.</span>
+              }
             </div>
             <div class="col-span-1">
               <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">State</label>
@@ -163,13 +172,16 @@
               />
             </div>
             <div class="col-span-1">
-              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Country</label>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Country <span class="text-[var(--color-danger)]">*</span></label>
               <input
                 type="text"
                 formControlName="country"
                 placeholder="Morocco"
                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
               />
+              @if (clientForm.get('country')?.touched && clientForm.get('country')?.invalid) {
+                <span class="text-xs text-[var(--color-danger)] mt-1 block">Country is required.</span>
+              }
             </div>
             <div class="col-span-1">
               <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Zip Code</label>

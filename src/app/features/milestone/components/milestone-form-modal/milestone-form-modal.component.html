@@ -1,45 +1,41 @@
 <div
-  class="fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-300"
+  class="fixed inset-0 z-[999000000000000009] flex items-center justify-center transition-all duration-300"
   [class.pointer-events-none]="!isOpen"
   [class.opacity-0]="!isOpen"
   [class.opacity-100]="isOpen"
 >
-  <!-- Backdrop -->
   <div
-    class="absolute inset-0 bg-black/40 backdrop-blur-sm panel-backdrop transition-opacity duration-300"
+    class="absolute inset-0 bg-black/40 panel-backdrop"
     (click)="onBackdropClick($event)"
   ></div>
 
   <!-- Modal Container -->
   <div
-    class="absolute right-0 top-0 bottom-0 w-full max-w-[600px] bg-[var(--color-bg)] shadow-[var(--shadow-2xl)] border-l border-[var(--color-border)] flex flex-col transform transition-transform duration-300 ease-in-out"
+    class="absolute right-0 top-0 bottom-0 w-full max-w-[540px] bg-[var(--color-bg)] shadow-[var(--shadow-2xl)] border-l border-[var(--color-border)] flex flex-col transform transition-transform duration-300 ease-in-out"
     [class.translate-x-full]="!isOpen"
     [class.translate-x-0]="isOpen"
   >
     <!-- Header -->
-    <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)] bg-[var(--color-bg-subtle)] flex-shrink-0">
+    <div class="flex items-center justify-between p-4 border-b border-[var(--color-border)] bg-[var(--color-bg-subtle)] flex-shrink-0">
       <div class="flex items-center gap-3">
         <div>
           <h2 class="text-lg font-semibold text-[var(--color-text)]">
             {{ editMilestoneId ? 'Edit Milestone' : 'Create Milestone' }}
           </h2>
-          <p class="text-sm text-[var(--color-text-muted)]">
-            {{ editMilestoneId ? 'Update milestone details' : 'Add a new milestone to a project' }}
-          </p>
         </div>
       </div>
 
       <button
         type="button"
         (click)="cancel()"
-        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors"
+        class="w-8 h-8 text-text-muted flex items-center justify-center rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors cursor-pointer border border-border-strong"
       >
         <lucide-icon [img]="icons.x" size="20"></lucide-icon>
       </button>
     </div>
 
     <!-- Body -->
-    <div class="flex-1 overflow-y-auto p-6 scrollbar-thin">
+    <div class="flex-1 overflow-y-auto p-4 scrollbar-thin">
       <form [formGroup]="milestoneForm" (ngSubmit)="submit()" class="space-y-6">
 
         <div class="grid grid-cols-2 gap-6">
@@ -154,7 +150,7 @@
       <button
         type="button"
         (click)="cancel()"
-        class="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1"
+        class="px-5 py-1.5 text-sm font-medium text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1 cursor-pointer"
         [disabled]="submitting()"
       >
         Cancel
@@ -163,7 +159,7 @@
       <button
         type="button"
         (click)="submit()"
-        class="px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] border border-transparent rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1 flex items-center gap-2"
+        class="px-5 py-1.5 text-sm font-medium text-white bg-[var(--color-primary)] border border-transparent rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1 flex items-center gap-2 cursor-pointer"
         [disabled]="milestoneForm.invalid || submitting()"
       >
         @if (submitting()) {

@@ -74,6 +74,9 @@
               [options]="sourceSelectOptions"
               [searchable]="false"
             ></app-custom-select>
+            @if (leadForm.get('source')?.touched && leadForm.get('source')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Lead source is required.</span>
+            }
           </div>
 
           <div>
@@ -85,6 +88,9 @@
               [options]="prioritySelectOptions"
               [searchable]="false"
             ></app-custom-select>
+            @if (leadForm.get('priority')?.touched && leadForm.get('priority')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Lead priority is required.</span>
+            }
           </div>
 
           <div>
@@ -96,6 +102,24 @@
               [options]="statusSelectOptions"
               [searchable]="false"
             ></app-custom-select>
+            @if (leadForm.get('status')?.touched && leadForm.get('status')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Lead status is required.</span>
+            }
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Assignee <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <app-custom-select
+              formControlName="assignedTo"
+              [options]="assigneeOptions()"
+              [searchable]="true"
+              placeholder="Select assignee..."
+            ></app-custom-select>
+            @if (leadForm.get('assignedTo')?.touched && leadForm.get('assignedTo')?.invalid) {
+              <span class="text-xs text-[var(--color-danger)] mt-1 block">Assignee is required.</span>
+            }
           </div>
         </div>
       </div>
@@ -216,10 +240,10 @@
             @if (clientMode() === 'select') {
               <div class="relative">
                 <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Select Client</label>
-                <app-custom-select 
-                  formControlName="clientId" 
-                  [options]="clientOptions()" 
-                  placeholder="Select client..." 
+                <app-custom-select
+                  formControlName="clientId"
+                  [options]="clientOptions()"
+                  placeholder="Select client..."
                   nullOptionLabel="-- No Client Associated --">
                 </app-custom-select>
               </div>
@@ -278,22 +302,28 @@
                   </div>
 
                   <div>
-                    <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Type</label>
+                    <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client Type <span class="text-[var(--color-danger)]">*</span></label>
                     <app-custom-select
                       formControlName="type"
                       [options]="clientTypeOptions"
                       [searchable]="false"
                     ></app-custom-select>
+                    @if (leadForm.get('type')?.touched && leadForm.get('type')?.invalid) {
+                      <span class="text-xs text-[var(--color-danger)] mt-1 block">Client type is required.</span>
+                    }
                   </div>
 
                   <div>
                     <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Client
-                      Source</label>
+                      Source <span class="text-[var(--color-danger)]">*</span></label>
                     <app-custom-select
                       formControlName="source"
                       [options]="sourceSelectOptions"
                       [searchable]="false"
                     ></app-custom-select>
+                    @if (leadForm.get('source')?.touched && leadForm.get('source')?.invalid) {
+                      <span class="text-xs text-[var(--color-danger)] mt-1 block">Client source is required.</span>
+                    }
                   </div>
                 </div>
               </div>
@@ -338,10 +368,10 @@
             @if (contactMode() === 'select') {
               <div class="relative">
                 <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Select Contact</label>
-                <app-custom-select 
-                  formControlName="contactId" 
-                  [options]="contactOptions()" 
-                  placeholder="Select contact..." 
+                <app-custom-select
+                  formControlName="contactId"
+                  [options]="contactOptions()"
+                  placeholder="Select contact..."
                   nullOptionLabel="-- No Contact Associated --">
                 </app-custom-select>
               </div>
@@ -422,12 +452,15 @@
 
                   <div>
                     <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Influence
-                      Level</label>
+                      Level <span class="text-[var(--color-danger)]">*</span></label>
                     <app-custom-select
                       formControlName="influenceLevel"
                       [options]="influenceLevelOptions"
                       [searchable]="false"
                     ></app-custom-select>
+                    @if (leadForm.get('influenceLevel')?.touched && leadForm.get('influenceLevel')?.invalid) {
+                      <span class="text-xs text-[var(--color-danger)] mt-1 block">Influence level is required.</span>
+                    }
                   </div>
                 </div>
               </div>
@@ -456,13 +489,16 @@
               />
             </div>
             <div class="col-span-1">
-              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">City</label>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">City <span class="text-[var(--color-danger)]">*</span></label>
               <input
                 type="text"
                 formControlName="city"
                 placeholder="Rabat"
                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
               />
+              @if (leadForm.get('city')?.touched && leadForm.get('city')?.invalid) {
+                <span class="text-xs text-[var(--color-danger)] mt-1 block">City is required.</span>
+              }
             </div>
             <div class="col-span-1">
               <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">State</label>
@@ -474,13 +510,16 @@
               />
             </div>
             <div class="col-span-1">
-              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Country</label>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Country <span class="text-[var(--color-danger)]">*</span></label>
               <input
                 type="text"
                 formControlName="country"
                 placeholder="Morocco"
                 class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none"
               />
+              @if (leadForm.get('country')?.touched && leadForm.get('country')?.invalid) {
+                <span class="text-xs text-[var(--color-danger)] mt-1 block">Country is required.</span>
+              }
             </div>
             <div class="col-span-1">
               <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Zip Code</label>

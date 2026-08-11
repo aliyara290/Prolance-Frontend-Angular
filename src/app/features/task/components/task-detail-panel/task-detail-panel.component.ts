@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
 import { DropdownMenuComponent, DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { TasksService, UserDisplay } from '../../services/tasks.service';
@@ -49,12 +50,13 @@ import {
 } from '../../types/task.model';
 
 import { CustomSelectComponent, CustomSelectOption } from '../../../../shared/ui/custom-select/custom-select.component';
+import { AttachmentsComponent } from '../../../../shared/ui/attachments/attachments.component';
 
 @Component({
   selector: 'app-task-detail-panel',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DropdownMenuComponent, CustomSelectComponent],
+  imports: [CommonModule, FormsModule, DropdownMenuComponent, CustomSelectComponent, AttachmentsComponent],
   templateUrl: './task-detail-panel.component.html',
   styleUrls: ['./task-detail-panel.component.css'],
 })
@@ -66,6 +68,8 @@ export class TaskDetailPanelComponent implements OnChanges {
   private readonly usersStateService = inject(UsersStateService);
   private readonly milestonesService = inject(ProjectMilestonesService, { optional: true });
   private readonly confirmService = inject(ConfirmModalService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   @Input() task: TaskResponse | null = null;
   @Input() isOpen = false;
@@ -79,7 +83,7 @@ export class TaskDetailPanelComponent implements OnChanges {
   private currentTaskId: string | null = null;
 
   // ── Panel sections ──
-  readonly activeSection = signal<'details' | 'assignments' | 'comments' | 'dependencies' | 'history'>('details');
+  readonly activeSection = signal<'details' | 'assignments' | 'comments' | 'dependencies' | 'history' | 'attachments'>('details');
 
   // ── Assignments ──
   readonly showAssignForm = signal(false);
@@ -170,6 +174,14 @@ export class TaskDetailPanelComponent implements OnChanges {
         this.resetState();
         this.currentTaskId = null;
         this.milestoneName.set(null);
+        
+        // Remove fragment when closing modal
+        this.router.navigate([], {
+          relativeTo: this.route,
+          fragment: undefined,
+          queryParamsHandling: 'preserve',
+          replaceUrl: true
+        });
       } else if (this.task) {
         this.initializeTaskData(this.task);
       }
@@ -184,7 +196,21 @@ export class TaskDetailPanelComponent implements OnChanges {
 
   private initializeTaskData(task: TaskResponse): void {
     this.currentTaskId = task.id;
-    this.activeSection.set('details');
+    
+    // Determine active tab from URL hash
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'comments') {
+      this.activeSection.set('comments');
+    } else if (hash === 'assignees' || hash === 'assignments') {
+      this.activeSection.set('assignments');
+    } else if (hash === 'dependencies') {
+      this.activeSection.set('dependencies');
+    } else if (hash === 'history') {
+      this.activeSection.set('history');
+    } else {
+      this.activeSection.set('details');
+    }
+
     this.resetForms();
     this.milestoneName.set(null);
 
@@ -240,8 +266,15 @@ export class TaskDetailPanelComponent implements OnChanges {
     }
   }
 
-  setSection(section: 'details' | 'assignments' | 'comments' | 'dependencies' | 'history'): void {
+  setSection(section: 'details' | 'assignments' | 'comments' | 'dependencies' | 'history' | 'attachments'): void {
     this.activeSection.set(section);
+    
+    this.router.navigate([], {
+      relativeTo: this.route,
+      fragment: section === 'details' ? undefined : section,
+      queryParamsHandling: 'preserve',
+      replaceUrl: true
+    });
   }
 
   // ── User Display Helpers ──

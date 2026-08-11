@@ -38,7 +38,7 @@ export class ContactFormPageComponent implements OnInit {
   ];
 
   readonly ArrowLeft = ArrowLeft;
-  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+  readonly clientOptions = computed<CustomSelectOption[]>(() =>
     this.clients().map(c => ({
       value: c.id,
       label: c.name,
@@ -61,25 +61,25 @@ export class ContactFormPageComponent implements OnInit {
 
   private initForm(): void {
     this.contactForm = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required]],
-      clientId: [''],
+      firstName: ['', [Validators.required, Validators.maxLength(100)]],
+      lastName: ['', [Validators.required, Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+      phone: ['', [Validators.required, Validators.maxLength(50)]],
+      clientId: ['', [Validators.required]],
       role: ['CEO', [Validators.required]],
       influenceLevel: ['MEDIUM', [Validators.required]],
       primary: [true],
       notes: [''],
-      department: [''],
+      department: ['', [Validators.maxLength(100)]],
       dateOfBirth: [''],
-      secondaryEmail: ['', [Validators.email]],
-      description: [''],
+      secondaryEmail: ['', [Validators.email], [Validators.maxLength(255)]],
+      description: ['', [Validators.maxLength(2000)]],
       address: this.fb.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: [''],
+        street: ['', [Validators.maxLength(255)]],
+        city: ['', [Validators.required, Validators.maxLength(100)]],
+        state: ['', [Validators.maxLength(100)]],
+        country: ['', [Validators.required, Validators.maxLength(100)]],
+        zipCode: ['', [Validators.maxLength(20)]],
       }),
     });
   }

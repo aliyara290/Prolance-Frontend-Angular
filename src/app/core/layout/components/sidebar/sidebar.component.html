@@ -6,7 +6,7 @@
 }
 
 <aside
-  [class]="'h-svh border-r border-border-strong fixed md:static inset-y-0 left-0 z-modal md:z-auto bg-sidebar text-text-inverse flex flex-col ' +
+  [class]="'h-full border-r border-border-strong fixed md:static inset-y-0 left-0 z-modal md:z-auto bg-sidebar text-text-inverse flex flex-col ' +
                (layoutState.sidebarCollapsed() ? 'w-[64px]' : 'w-[240px]') +
                (layoutState.mobileDrawerOpen() ? ' translate-x-0' : ' -translate-x-full md:translate-x-0')">
 
@@ -195,4 +195,58 @@
       }
     }
   </nav>
+
+  <!-- Settings Footer -->
+  <div class="mt-auto p-3 relative" id="sidebar-settings-container">
+
+    <!-- Dropdown Menu (Upwards) -->
+    @if (isSettingsMenuOpen()) {
+      <div class="absolute bottom-full left-3 right-3 mb-2 bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] overflow-hidden z-50">
+        <div class="">
+          <!-- Personal Settings -->
+          <a [routerLink]="['/app/settings/personal']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+            <lucide-icon [img]="icons.user" size="16"></lucide-icon>
+            Personal Settings
+          </a>
+          <!-- Workspace Settings -->
+          <a [routerLink]="['/app/settings/workspace']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+            <lucide-icon [img]="icons.briefcase" size="16"></lucide-icon>
+            Workspace Settings
+          </a>
+          <!-- Users -->
+          <a [routerLink]="['/app/settings/users']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+            <lucide-icon [img]="icons.users" size="16"></lucide-icon>
+            Users
+          </a>
+          <!-- Notifications -->
+          <a [routerLink]="['/app/settings/notifications']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer">
+            <lucide-icon [img]="icons.bell" size="16"></lucide-icon>
+            Notifications
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- General Settings Button -->
+    <button (click)="toggleSettingsMenu()"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted hover:text-white bg-bg-hover hover:bg-primary transition-colors cursor-pointer border border-border-strong"
+            [class.bg-primary]="isSettingsMenuOpen()"
+            [class.!text-white]="isSettingsMenuOpen()">
+      <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+        <lucide-icon [img]="icons.settings" [size]="18"></lucide-icon>
+      </span>
+      @if (!layoutState.sidebarCollapsed()) {
+        <span class="text-sm font-medium">General Settings</span>
+      }
+    </button>
+  </div>
+
 </aside>

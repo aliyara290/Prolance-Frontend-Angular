@@ -35,7 +35,7 @@ export class DealFormPageComponent implements OnInit {
   readonly sourceOptions: Source[] = ['WEBSITE', 'REFERRAL', 'SOCIAL_MEDIA', 'COLD_CALL', 'EVENT', 'OTHER'];
 
   readonly ArrowLeft = ArrowLeft;
-  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+  readonly clientOptions = computed<CustomSelectOption[]>(() =>
     this.clients().map(c => ({
       value: c.id,
       label: c.name,
@@ -43,6 +43,8 @@ export class DealFormPageComponent implements OnInit {
       avatarName: c.name
     }))
   );
+
+  today = new Date().toISOString().split('T')[0];
 
   readonly stageSelectOptions: CustomSelectOption[] = this.stageOptions.map(s => ({ label: s, value: s }));
   readonly prioritySelectOptions: CustomSelectOption[] = this.priorityOptions.map(p => ({ label: p, value: p }));
@@ -60,9 +62,9 @@ export class DealFormPageComponent implements OnInit {
   private initForm(): void {
     this.dealForm = this.fb.group({
       clientId: ['', [Validators.required]],
-      title: ['', [Validators.required]],
-      description: [''],
-      estimatedBudget: [null],
+      title: ['', [Validators.required, Validators.max(200)]],
+      description: ['', [Validators.max(1000)]],
+      estimatedBudget: [0, [Validators.min(0), Validators.required]],
       expectedRevenue: [null],
       probability: [null, [Validators.min(0), Validators.max(100)]],
       stage: ['PROSPECTING', [Validators.required]],
@@ -78,6 +80,7 @@ export class DealFormPageComponent implements OnInit {
       lostReason: [''],
     });
   }
+
 
   private loadClients(): void {
     this.clientsService.getClients().subscribe({

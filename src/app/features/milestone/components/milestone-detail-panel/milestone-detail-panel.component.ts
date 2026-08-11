@@ -24,6 +24,7 @@ export class MilestoneDetailPanelComponent implements OnChanges {
 
   @Input() milestone: Milestone | null = null;
   @Input() isOpen = false;
+  @Input() projectId?: string;
 
   @Output() closePanel = new EventEmitter<void>();
   @Output() editMilestone = new EventEmitter<Milestone>();
@@ -131,7 +132,13 @@ export class MilestoneDetailPanelComponent implements OnChanges {
     
     if (!confirmed) return;
 
-    this.milestoneService.deleteMilestone(this.milestone.projectId, this.milestone.id).subscribe({
+    const targetProjectId = this.projectId || this.milestone.projectId;
+    if (!targetProjectId) {
+      console.error('Cannot delete milestone: projectId is missing');
+      return;
+    }
+
+    this.milestoneService.deleteMilestone(targetProjectId, this.milestone.id).subscribe({
       next: () => {
         this.milestoneUpdated.emit();
         this.onClose();

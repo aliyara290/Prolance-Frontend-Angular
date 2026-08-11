@@ -16,6 +16,7 @@ import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angul
 import { CommonModule } from '@angular/common';
 
 import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
+import {ErrorMessageComponent} from '../../../../shared/ui/error-message/error-message.component';
 
 @Component({
   selector: 'app-milestones-page',
@@ -31,6 +32,7 @@ import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm
     MilestoneFiltersComponent,
     MilestoneFormModalComponent,
     MilestoneDetailPanelComponent,
+    ErrorMessageComponent,
   ],
   templateUrl: './milestones-page.component.html',
 })
@@ -128,7 +130,7 @@ export class MilestonesPageComponent implements OnInit {
   ngOnInit(): void {
     this.milestoneService.loadAllMilestones();
     this.projectsService.loadProjectNames();
-    
+
     this.route.queryParams.subscribe(params => {
       const view = params['view'];
       if (view === 'kanban') {
@@ -210,7 +212,7 @@ export class MilestonesPageComponent implements OnInit {
       this.milestoneService.getMilestone(currentMilestone.projectId, currentMilestone.id).subscribe({
         next: (res) => {
           this.selectedMilestone.set(res.data);
-          // The update in MilestoneService's load methods handles lists, 
+          // The update in MilestoneService's load methods handles lists,
           // but we might need to manually trigger change detection if needed.
         },
       });

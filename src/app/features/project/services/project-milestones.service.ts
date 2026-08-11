@@ -32,7 +32,7 @@ export class ProjectMilestonesService {
 
     let params = new HttpParams();
     if (page !== undefined) params = params.set('page', page.toString());
-    if (size !== undefined) params = params.set('size', size.toString());
+    params = params.set('size', size !== undefined ? size.toString() : '1000');
 
     this.http.get<ApiResponse<Milestone[]>>(this.apiUrl(projectId), { params }).subscribe({
       next: (res) => {

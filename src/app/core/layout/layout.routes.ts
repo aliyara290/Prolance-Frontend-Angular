@@ -62,6 +62,16 @@ export const LAYOUT_ROUTES: Routes = [
         loadChildren: () =>
           import('../../features/documents/documents.routes').then(m => m.DOCUMENTS_ROUTES),
       },
+      {
+        path: 'settings',
+        loadChildren: () =>
+          import('../../features/tenant/tenant.routes').then(m => m.TENANT_ROUTES),
+      },
+      {
+        path: 'billing',
+        loadChildren: () =>
+          import('../../features/billing/billing.routes').then(m => m.BILLING_ROUTES),
+      },
 
       {
         path: '',

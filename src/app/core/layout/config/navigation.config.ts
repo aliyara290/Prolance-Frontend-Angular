@@ -7,6 +7,8 @@ import {
   ContactRound,
   Files,
   ListChecks,
+  Clock,
+  ReceiptText
 } from 'lucide-angular';
 
 export interface CrmNavSection {
@@ -76,6 +78,23 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
         label: 'Tasks',
         icon: ListChecks,
         route: '/app/projects/tasks',
+      },
+    ],
+  },
+  {
+    title: 'BILLING & TIME',
+    items: [
+      {
+        id: 'time-tracking',
+        label: 'Time Tracker',
+        icon: Clock,
+        route: '/app/billing/time-tracking',
+      },
+      {
+        id: 'invoices',
+        label: 'Invoices',
+        icon: ReceiptText,
+        route: '/app/billing/invoices',
       },
     ],
   },

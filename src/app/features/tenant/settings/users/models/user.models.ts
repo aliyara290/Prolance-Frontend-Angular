@@ -13,6 +13,9 @@ export interface BackendUser {
   status: UserStatus;
   lastLoginAt: string | null;
   keycloakRoleGroupIds: string[];
+  educationLevel?: string;
+  seniorityLevel?: string;
+  baseHourlySalary?: number;
 }
 
 export interface WorkspaceUser {
@@ -28,6 +31,9 @@ export interface WorkspaceUser {
   avatarColor: string;
   lastLoginAt: string | null;
   keycloakRoleGroupIds: string[];
+  educationLevel?: string;
+  seniorityLevel?: string;
+  baseHourlySalary?: number;
 }
 
 export interface CreateUserPayload {
@@ -39,6 +45,9 @@ export interface CreateUserPayload {
   roles: UserRole[];
   jobTitle?: string;
   department?: string;
+  educationLevel?: string;
+  seniorityLevel?: string;
+  baseHourlySalary?: number;
 }
 
 export interface ApiResponse<T> {
@@ -68,4 +77,12 @@ export const ALL_DEPARTMENTS = [
 export const AVATAR_COLORS = [
   '#267af7', '#16a34a', '#f59e0b', '#dc2626', '#8b5cf6',
   '#0ea5e9', '#ec4899', '#14b8a6', '#f97316', '#6366f1'
+];
+
+export const EDUCATION_LEVELS = [
+  'BAC', 'BAC+2', 'BAC+3', 'BAC+5', 'BAC+7', 'OTHER'
+];
+
+export const SENIORITY_LEVELS = [
+  'JUNIOR', 'CONFIRM', 'SENIOR', 'EXPERT'
 ];

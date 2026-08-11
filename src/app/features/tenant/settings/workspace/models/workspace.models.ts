@@ -13,7 +13,7 @@ export interface WorkspaceSettings {
     city: string;
     state: string;
     country: string;
-    postalCode: string;
+    zipCode: string;
   };
 }
 

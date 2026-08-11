@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsersStateService } from '../../service/users-state.service';
-import { ALL_ROLES, ALL_DEPARTMENTS, UserRole, CreateUserPayload } from '../../models/user.models';
+import { ALL_ROLES, ALL_DEPARTMENTS, UserRole, CreateUserPayload, EDUCATION_LEVELS, SENIORITY_LEVELS } from '../../models/user.models';
 import { getRoleBadgeClass, getRoleLabel } from '../../util/user.utils';
 import { CustomSelectComponent, CustomSelectOption } from '../../../../../../shared/ui/custom-select/custom-select.component';
 
@@ -18,8 +18,12 @@ export class UserModalComponent {
 
   readonly allRoles       = ALL_ROLES;
   readonly allDepartments = ALL_DEPARTMENTS;
+  readonly educationLevels = EDUCATION_LEVELS;
+  readonly seniorityLevels = SENIORITY_LEVELS;
 
   readonly departmentSelectOptions: CustomSelectOption[] = this.allDepartments.map(d => ({ label: d, value: d }));
+  readonly educationSelectOptions: CustomSelectOption[] = this.educationLevels.map(e => ({ label: e, value: e }));
+  readonly senioritySelectOptions: CustomSelectOption[] = this.seniorityLevels.map(s => ({ label: s, value: s }));
 
   getRoleBadgeClass = getRoleBadgeClass;
   getRoleLabel      = getRoleLabel;
@@ -34,6 +38,9 @@ export class UserModalComponent {
   password   = '';
   jobTitle   = '';
   department = '';
+  educationLevel = '';
+  seniorityLevel = '';
+  baseHourlySalary: number | null = null;
 
   selectedRoles = signal<Set<UserRole>>(new Set(['MEMBER']));
 
@@ -86,6 +93,9 @@ export class UserModalComponent {
       roles:      Array.from(this.selectedRoles()),
       jobTitle:   this.jobTitle   || undefined,
       department: this.department || undefined,
+      educationLevel: this.educationLevel || undefined,
+      seniorityLevel: this.seniorityLevel || undefined,
+      baseHourlySalary: this.baseHourlySalary !== null ? this.baseHourlySalary : undefined,
     };
     this.state.createUser(payload);
     this.close();
@@ -100,6 +110,9 @@ export class UserModalComponent {
     this.password   = '';
     this.jobTitle   = '';
     this.department = '';
+    this.educationLevel = '';
+    this.seniorityLevel = '';
+    this.baseHourlySalary = null;
     this.selectedRoles.set(new Set(['MEMBER']));
   }
 }

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ContactsService } from '../../services/contacts.service';
 import { Contact, InfluenceLevel } from '../../types/contact.model';
+import { ClientsService } from '../../../clients/services/clients.service';
+import { Client } from '../../../clients/types/client.model';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 import { DetailsSkeletonComponent } from '../../../../../shared/ui/skeletons/details-skeleton/details-skeleton.component';
 import { DropdownMenuComponent, DropdownMenuItem } from '../../../../../shared/ui/dropdown-menu/dropdown-menu.component';
@@ -23,8 +25,10 @@ export class ContactDetailsPageComponent implements OnInit {
   private readonly contactsService = inject(ContactsService);
   private readonly confirmService = inject(ConfirmModalService);
   private readonly userApiService = inject(UserApiService);
+  private readonly clientsService = inject(ClientsService);
 
   readonly contact = signal<Contact | null>(null);
+  readonly client = signal<Client | null>(null);
   readonly loading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
   readonly activeTab = signal<'overview' | 'timeline'>('overview');
@@ -112,6 +116,14 @@ export class ContactDetailsPageComponent implements OnInit {
         this.contact.set(res.data);
         if (res.data.createdBy) this.loadUserDetails(res.data.createdBy);
         if (res.data.updatedBy) this.loadUserDetails(res.data.updatedBy);
+        
+        if (res.data.clientId) {
+          this.clientsService.getClient(res.data.clientId).subscribe({
+            next: (clientRes) => this.client.set(clientRes.data),
+            error: (err) => console.error('Failed to load client details', err)
+          });
+        }
+        
         this.loading.set(false);
       },
       error: (err) => {

@@ -1,12 +1,15 @@
 @if (loading()) {
   <app-entity-list-skeleton></app-entity-list-skeleton>
 } @else if (error()) {
-  <app-error-message
-    title="Something went wrong!"
-    [message]="error() ?? 'An unexpected error occurred while fetching the project details.'"
-    layout="full"
-    [showRetry]="false">
-  </app-error-message>
+  <div class="p-md">
+    <app-error-message
+      title="Something went wrong!"
+      [message]="error() ?? 'An unexpected error occurred while fetching the project details.'"
+      layout="full"
+      [showRetry]="false">
+    </app-error-message>
+  </div>
+
 } @else {
   <!-- Full-height layout wrapper -->
   <div class="h-full flex flex-col overflow-hidden">
@@ -68,7 +71,7 @@
 
         <div class="flex-1 overflow-auto">
           @if (activeView() === 'list') {
-            <div class="border border-[var(--color-border-strong)] rounded-md h-full">
+            <div class="border border-[var(--color-border-strong)] rounded-md h-full overflow-hidden">
               <app-projects-table [projects]="filteredProjects()" [totalCount]="filteredProjects().length" (editProject)="onEditProject($event)" />
             </div>
           } @else {

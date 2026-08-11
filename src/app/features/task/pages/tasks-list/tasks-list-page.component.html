@@ -1,12 +1,14 @@
 @if (loading()) {
   <app-kanban-skeleton></app-kanban-skeleton>
 } @else if (error()) {
-  <app-error-message
-    title="Something went wrong!"
-    [message]="error() ?? 'An unexpected error occurred while fetching the lead details.'"
-    layout="full"
-    [showRetry]="false">
-  </app-error-message>
+  <div class="p-md pt-0">
+    <app-error-message
+      title="Something went wrong!"
+      [message]="error() ?? 'An unexpected error occurred while fetching the lead details.'"
+      layout="full"
+      [showRetry]="false">
+    </app-error-message>
+  </div>
 } @else {
 
   <!-- ── Full-height layout wrapper ── -->
@@ -54,7 +56,7 @@
             class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors cursor-pointer">
             <lucide-icon [img]="sidebarVisible() ? icons.panelClose : icons.panelOpen" size="16"></lucide-icon>
           </button>
-          
+
           <button
             (click)="onRefresh()"
             title="Refresh tasks"

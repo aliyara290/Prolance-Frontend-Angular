@@ -5,11 +5,12 @@ import { DashboardService } from '../../services/dashboard.service';
 import { ChartModule } from 'primeng/chart';
 import { DashboardSkeletonComponent } from '../../../../shared/ui/skeletons/dashboard-skeleton/dashboard-skeleton.component';
 import {RouterLink} from '@angular/router';
+import {ErrorMessageComponent} from '../../../../shared/ui/error-message/error-message.component';
 
 @Component({
   selector: 'app-project-dashboard-page',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, ChartModule, DashboardSkeletonComponent, RouterLink],
+  imports: [CommonModule, LucideAngularModule, ChartModule, DashboardSkeletonComponent, RouterLink, ErrorMessageComponent],
   templateUrl: './project-dashboard-page.component.html'
 })
 export class ProjectDashboardPageComponent implements OnInit {
@@ -20,6 +21,7 @@ export class ProjectDashboardPageComponent implements OnInit {
   readonly taskKpis = this.dashboardService.taskKpis;
   readonly loadingProjects = this.dashboardService.loadingProjects;
   readonly loadingTasks = this.dashboardService.loadingTasks;
+  readonly error = this.dashboardService.error;
 
   icons = {
     target: Target,

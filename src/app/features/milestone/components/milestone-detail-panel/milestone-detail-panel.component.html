@@ -1,18 +1,18 @@
 <div
-  class="fixed inset-0 z-[9998] transition-all duration-300"
+  class="fixed inset-0 z-[9956789098765678998] transition-all duration-300"
   [class.pointer-events-none]="!isOpen"
   [class.opacity-0]="!isOpen"
   [class.opacity-100]="isOpen"
 >
   <!-- Backdrop -->
   <div
-    class="absolute inset-0 bg-black/40 backdrop-blur-sm panel-backdrop transition-opacity duration-300"
+    class="absolute inset-0 bg-black/40 panel-backdrop"
     (click)="onBackdropClick($event)"
   ></div>
 
   <!-- Panel -->
   <div
-    class="absolute right-0 top-0 bottom-0 w-full max-w-[600px] bg-[var(--color-bg)] shadow-[var(--shadow-2xl)] border-l border-[var(--color-border)] flex flex-col transform transition-transform duration-300 ease-in-out"
+    class="absolute right-0 top-0 bottom-0 w-full max-w-[540px] bg-[var(--color-bg)] shadow-[var(--shadow-2xl)] border-l border-[var(--color-border)] flex flex-col transform transition-transform duration-300 ease-in-out"
     [class.translate-x-full]="!isOpen"
     [class.translate-x-0]="isOpen"
   >
@@ -20,13 +20,13 @@
       <!-- Header -->
       <div class="flex flex-col border-b border-[var(--color-border)] bg-[var(--color-bg)] flex-shrink-0 relative z-10">
 
-        <div class="flex items-start justify-between px-6 pt-6 pb-2">
+        <div class="flex items-start justify-between p-4">
           <div class="flex flex-col gap-3">
 
             <h2 class="text-xl font-semibold text-[var(--color-text)] m-0 leading-tight">{{ milestone.title }}</h2>
           </div>
 
-          <div class="flex items-center gap-1.5 flex-shrink-0">
+          <div class="flex items-center gap-3 flex-shrink-0">
             <app-dropdown-menu
               [items]="panelMenuItems"
               [iconOnly]="true"
@@ -35,11 +35,9 @@
             <button
               type="button"
               (click)="onClose()"
-              class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors ml-1"
+              class="w-8 h-8 text-text-muted flex items-center justify-center rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors cursor-pointer border border-border-strong"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon [img]="icons.x" size="20"></lucide-icon>
             </button>
           </div>
         </div>
@@ -70,7 +68,7 @@
 
       <!-- Scrollable Content -->
       <div class="flex-1 overflow-y-auto bg-[var(--color-bg-subtle)] scrollbar-thin">
-        <div class="p-6">
+        <div class="p-4">
 
           @if (activeSection() === 'details') {
             <div class="space-y-6">

@@ -1,12 +1,10 @@
 import {Routes} from '@angular/router';
 import {authGuard} from '../../core/auth/guards/auth.guard';
-import {LayoutComponent} from './settings/layout/layout.component';
 import {tenantGuard} from '../../core/auth/guards/tenant.guard';
 
 export const TENANT_ROUTES: Routes = [
   {
     path: '',
-    component: LayoutComponent,
     canActivate: [authGuard, tenantGuard],
     children: [
       {

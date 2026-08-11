@@ -2,10 +2,11 @@ import {Component, inject, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {ConfigService} from './core/config/config.service';
 import { ConfirmModalComponent } from './shared/ui/confirm-modal/confirm-modal.component';
+import { TopLoadingBarComponent } from './core/layout/components/top-loading-bar/top-loading-bar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ConfirmModalComponent],
+  imports: [RouterOutlet, ConfirmModalComponent, TopLoadingBarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

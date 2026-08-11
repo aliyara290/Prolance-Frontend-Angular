@@ -106,13 +106,15 @@
             <!-- Card Footer -->
             <div class="kanban-card-footer">
               <div class="kanban-footer-left">
-                <!-- Avatar Stack -->
-                <div class="kanban-avatar-stack">
-                  @for (avatar of getAvatarInitials(milestone); track $index) {
-                    <div class="kanban-avatar" [style.background]="avatar.bg" [style.color]="avatar.color">
-                      {{ avatar.initials }}
-                    </div>
-                  }
+                <!-- Progress Bar -->
+                <div class="w-full flex-1 mr-4 flex flex-col gap-1.5 pt-1">
+                  <div class="flex items-center justify-between text-[11px] text-text-muted">
+                    <span>Progress</span>
+                    <span class="font-medium">{{ milestone.progressPercentage || 0 }}%</span>
+                  </div>
+                  <div class="h-1.5 w-full bg-border-strong rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all duration-300" [style.width.%]="milestone.progressPercentage || 0"></div>
+                  </div>
                 </div>
 
 

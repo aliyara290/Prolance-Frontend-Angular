@@ -125,22 +125,6 @@ export class TaskFormModalComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.initForm();
     this.projectsService.loadProjectNames();
-    
-    // Listen to project changes to reload milestones
-    this.taskForm.get('projectId')?.valueChanges.subscribe(newProjectId => {
-      if (newProjectId) {
-        this.milestonesService.loadMilestones(newProjectId);
-      } else {
-        this.milestonesService.clear();
-      }
-      
-      // Only reset milestoneId if it's not the initial load of edit mode
-      // If we're editing, we don't want to wipe the milestone when projectId is first patched.
-      const currentMilestoneId = this.taskForm.get('milestoneId')?.value;
-      if (currentMilestoneId && !this.editTaskId) {
-        this.taskForm.patchValue({ milestoneId: '' }, { emitEvent: false });
-      }
-    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -172,6 +156,22 @@ export class TaskFormModalComponent implements OnInit, OnChanges {
       dueDate: [''],
       milestoneId: [''],
       reporterId: [''],
+    });
+
+    // Listen to project changes to reload milestones
+    this.taskForm.get('projectId')?.valueChanges.subscribe(newProjectId => {
+      if (newProjectId) {
+        this.milestonesService.loadMilestones(newProjectId);
+      } else {
+        this.milestonesService.clear();
+      }
+      
+      // Only reset milestoneId if it's not the initial load of edit mode
+      // If we're editing, we don't want to wipe the milestone when projectId is first patched.
+      const currentMilestoneId = this.taskForm.get('milestoneId')?.value;
+      if (currentMilestoneId && !this.editTaskId) {
+        this.taskForm.patchValue({ milestoneId: '' }, { emitEvent: false });
+      }
     });
   }
 

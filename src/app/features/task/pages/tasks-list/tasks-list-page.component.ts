@@ -10,7 +10,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TasksService } from '../../services/tasks.service';
 import { ProjectsService } from '../../../project/services/projects.service';
 import { TasksKanbanComponent } from '../../components/tasks-kanban/tasks-kanban.component';
@@ -44,6 +44,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   private readonly tasksService = inject(TasksService);
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly confirmService = inject(ConfirmModalService);
 
   /** When provided (from project context), scopes tasks to a specific project. */
@@ -140,6 +141,28 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.loadTasks();
     this.projectsService.loadProjectNames();
+
+    this.route.queryParams.subscribe(params => {
+      const taskId = params['taskId'];
+      if (taskId) {
+        if (this.selectedTask()?.id !== taskId) {
+          this.tasksService.getTask(taskId).subscribe({
+            next: (res) => {
+              if (res.success && res.data) {
+                this.selectedTask.set(res.data);
+                this.panelOpen.set(true);
+              }
+            },
+            error: (err) => console.error('Failed to load task from URL', err)
+          });
+        }
+      } else {
+        if (this.panelOpen()) {
+          this.panelOpen.set(false);
+          this.selectedTask.set(null);
+        }
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -196,10 +219,12 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   onViewTask(task: TaskResponse): void {
     this.selectedTask.set(task);
     this.panelOpen.set(true);
+    this.router.navigate([], { relativeTo: this.route, queryParams: { taskId: task.id }, queryParamsHandling: 'merge' });
   }
 
   onEditTask(task: TaskResponse): void {
     this.panelOpen.set(false);
+    this.router.navigate([], { relativeTo: this.route, queryParams: { taskId: null }, queryParamsHandling: 'merge' });
     this.editTaskId.set(task.id);
     this.createPanelOpen.set(true);
   }
@@ -219,6 +244,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
       next: () => {
         this.panelOpen.set(false);
         this.selectedTask.set(null);
+        this.router.navigate([], { relativeTo: this.route, queryParams: { taskId: null }, queryParamsHandling: 'merge' });
       },
       error: (err) => {
         console.error('Failed to delete task', err);
@@ -240,6 +266,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   onClosePanel(): void {
     this.panelOpen.set(false);
     this.selectedTask.set(null);
+    this.router.navigate([], { relativeTo: this.route, queryParams: { taskId: null }, queryParamsHandling: 'merge' });
   }
 
   onTaskUpdated(): void {

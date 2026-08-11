@@ -1,0 +1,129 @@
+<div class="max-w-6xl mx-auto space-y-6">
+  <!-- Header & Actions -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-[var(--color-text)]">Invoices</h1>
+      <p class="text-sm text-[var(--color-text-muted)] mt-1">Manage and generate invoices for your clients.</p>
+    </div>
+    <button
+      (click)="openGenerateModal()"
+      class="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
+             text-white rounded-[var(--radius-md)] text-sm font-medium transition-colors shadow-[var(--shadow-sm)]"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"></path>
+        <path d="M12 5v14"></path>
+      </svg>
+      Generate Invoice
+    </button>
+  </div>
+
+  <!-- Invoices Table -->
+  <div class="bg-[var(--color-bg)] rounded-[var(--radius-xl)] shadow-[var(--shadow-sm)] border border-[var(--color-border)] overflow-hidden">
+    <table class="w-full text-left text-sm">
+      <thead class="bg-[var(--color-bg-muted)] border-b border-[var(--color-border)]">
+        <tr>
+          <th class="px-4 py-3 font-medium text-[var(--color-text-secondary)]">Invoice #</th>
+          <th class="px-4 py-3 font-medium text-[var(--color-text-secondary)]">Project</th>
+          <th class="px-4 py-3 font-medium text-[var(--color-text-secondary)]">Period</th>
+          <th class="px-4 py-3 font-medium text-[var(--color-text-secondary)]">Amount</th>
+          <th class="px-4 py-3 font-medium text-[var(--color-text-secondary)]">Status</th>
+          <th class="px-4 py-3 font-medium text-[var(--color-text-secondary)] text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[var(--color-border)]">
+        @if (invoices().length === 0) {
+          <tr>
+            <td colspan="6" class="px-4 py-8 text-center text-[var(--color-text-muted)]">
+              No invoices generated yet.
+            </td>
+          </tr>
+        } @else {
+          @for (inv of invoices(); track inv.id) {
+            <tr class="hover:bg-[var(--color-bg-hover)] transition-colors">
+              <td class="px-4 py-3 font-medium text-[var(--color-text)]">{{ inv.invoiceNumber || 'INV-DRAFT' }}</td>
+              <td class="px-4 py-3 text-[var(--color-text)]">{{ inv.projectId }}</td>
+              <td class="px-4 py-3 text-[var(--color-text-muted)]">{{ inv.billingPeriodStart | date:'mediumDate' }} - {{ inv.billingPeriodEnd | date:'mediumDate' }}</td>
+              <td class="px-4 py-3 font-medium text-[var(--color-text)]">{{ inv.totalAmount | currency:inv.currency }}</td>
+              <td class="px-4 py-3">
+                <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium"
+                      [class.bg-[var(--color-success-soft)]]="inv.status === 'PAID'"
+                      [class.text-[var(--color-success)]]="inv.status === 'PAID'"
+                      [class.bg-[var(--color-warning-soft)]]="inv.status === 'DRAFT'"
+                      [class.text-[var(--color-warning)]]="inv.status === 'DRAFT'"
+                      [class.bg-[var(--color-info-soft)]]="inv.status === 'SENT'"
+                      [class.text-[var(--color-info)]]="inv.status === 'SENT'">
+                  {{ inv.status }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <button
+                  (click)="downloadPdf(inv.attachmentId)"
+                  class="p-2 rounded-full text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] transition-colors"
+                  title="Download PDF"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Generate Invoice Modal -->
+@if (isModalOpen()) {
+  <div class="fixed inset-0 flex items-center justify-center p-4 bg-[var(--color-overlay)] z-50" (click)="closeModal()">
+    <div class="bg-[var(--color-bg)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] w-full max-w-lg overflow-hidden" (click)="$event.stopPropagation()">
+      <div class="px-6 py-4 border-b border-[var(--color-border)] flex justify-between items-center">
+        <h2 class="text-base font-semibold text-[var(--color-text)]">Generate Invoice</h2>
+        <button (click)="closeModal()" class="text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] p-1 rounded-md">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Project</label>
+          <app-custom-select [(ngModel)]="genProjectId" [options]="projectOptions" placeholder="Select Project"></app-custom-select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Client</label>
+          <app-custom-select [(ngModel)]="genClientId" [options]="clientOptions" placeholder="Select Client"></app-custom-select>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Start Date</label>
+            <input type="date" [(ngModel)]="genStartDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)]">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">End Date</label>
+            <input type="date" [(ngModel)]="genEndDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Tax Percentage (%)</label>
+          <input type="number" [(ngModel)]="genTaxPercentage" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)]">
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-[var(--color-border)] bg-[var(--color-bg-muted)] flex justify-end gap-3">
+        <button (click)="closeModal()" class="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)]">Cancel</button>
+        <button (click)="generateInvoice()" [disabled]="!isGenerateValid || isGenerating()" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)] disabled:opacity-50">
+          @if (isGenerating()) {
+            <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+          }
+          Generate
+        </button>
+      </div>
+    </div>
+  </div>
+}

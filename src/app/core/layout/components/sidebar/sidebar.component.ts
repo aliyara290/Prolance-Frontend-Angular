@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
@@ -14,6 +14,11 @@ import {
   LucideAngularModule,
   Plus,
   Search,
+  Settings,
+  User,
+  Bell,
+  Briefcase,
+  Users
 } from 'lucide-angular';
 import {
   PROJECT_OVERVIEW_NAV,
@@ -37,10 +42,23 @@ export class SidebarComponent implements OnInit {
 
   readonly activeTab = signal<'projects' | 'CRM'>('CRM');
 
-  constructor() {
+  readonly icons = {
+    plus: Plus,
+    search: Search,
+    settings: Settings,
+    user: User,
+    users: Users,
+    bell: Bell,
+    briefcase: Briefcase
+  };
+
+  isSettingsMenuOpen = signal(false);
+
+  constructor(private readonly elementRef: ElementRef) {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
+      this.isSettingsMenuOpen.set(false); // Close menu on navigation
       if (event.urlAfterRedirects.includes('/app/projects')) {
         this.activeTab.set('projects');
       } else {
@@ -71,10 +89,18 @@ export class SidebarComponent implements OnInit {
   
   readonly loadingProjects = this.projectsService.loadingNames;
 
-  readonly icons = {
-    plus: Plus,
-    search: Search,
-  };
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // If click is outside the settings button/menu, close it
+    const target = event.target as HTMLElement;
+    if (!target.closest('#sidebar-settings-container')) {
+      this.isSettingsMenuOpen.set(false);
+    }
+  }
+
+  toggleSettingsMenu(): void {
+    this.isSettingsMenuOpen.update(val => !val);
+  }
 
   toggleTab(): void {
     this.activeTab.set(this.activeTab() === 'projects' ? 'CRM' : 'projects');

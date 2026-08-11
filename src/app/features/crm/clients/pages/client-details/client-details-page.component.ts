@@ -10,11 +10,12 @@ import { ErrorMessageComponent } from '../../../../../shared/ui/error-message/er
 import { ConfirmModalService } from '../../../../../shared/ui/confirm-modal/confirm-modal.service';
 import { UserApiService } from '../../../../../core/auth/services/user-api.service';
 import { AuthUser } from '../../../../../core/auth/models/auth-user.model';
+import { AttachmentsComponent } from '../../../../../shared/ui/attachments/attachments.component';
 
 @Component({
   selector: 'app-client-details-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, DetailsSkeletonComponent, DropdownMenuComponent, ErrorMessageComponent],
+  imports: [CommonModule, RouterModule, LucideAngularModule, DetailsSkeletonComponent, DropdownMenuComponent, ErrorMessageComponent, AttachmentsComponent],
   templateUrl: './client-details-page.component.html',
 })
 export class ClientDetailsPageComponent implements OnInit {
@@ -27,12 +28,11 @@ export class ClientDetailsPageComponent implements OnInit {
   readonly client = signal<Client | null>(null);
   readonly loading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
-  readonly activeTab = signal<'overview' | 'timeline'>('overview');
+  readonly activeTab = signal<'overview' | 'timeline' | 'attachments'>('overview');
   readonly userCache = signal<Record<string, AuthUser>>({});
 
   protected readonly ArrowLeft = ArrowLeft;
 
-  // ─── Helpers ─────────────────────────────────────────────
 
   getInitials(): string {
     const name = this.client()?.name;

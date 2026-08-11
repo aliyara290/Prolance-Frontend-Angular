@@ -43,23 +43,23 @@ export class ClientFormPageComponent implements OnInit {
 
   private initForm(): void {
     this.clientForm = this.fb.group({
-      name: ['', [Validators.required]],
-      industry: [''],
-      website: [''],
-      phone: [''],
-      fax: [''],
+      name: ['', [Validators.required, Validators.maxLength(200)]],
+      industry: ['', [Validators.maxLength(200)]],
+      website: ['', [Validators.maxLength(200)]],
+      phone: ['', [Validators.maxLength(50)]],
+      fax: ['', [Validators.maxLength(50)]],
       type: ['ENTERPRISE', [Validators.required]],
       source: ['COLD_CALL', [Validators.required]],
       ownership: ['PRIVATE'],
-      annualRevenue: [null],
-      sicCode: [''],
-      description: [''],
+      annualRevenue: [null, [Validators.min(0)]],
+      sicCode: ['', [Validators.maxLength(20)]],
+      description: ['', [Validators.maxLength(2000)]],
       address: this.fb.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: [''],
+        street: ['', [Validators.maxLength(255)]],
+        city: ['', [Validators.maxLength(100), Validators.required]],
+        state: ['', [Validators.maxLength(100)]],
+        country: ['', [Validators.maxLength(100), Validators.required]],
+        zipCode: ['', [Validators.maxLength(20)]],
       }),
     });
   }

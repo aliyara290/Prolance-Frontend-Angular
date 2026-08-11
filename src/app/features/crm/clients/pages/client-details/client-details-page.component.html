@@ -5,7 +5,7 @@
     <app-details-skeleton></app-details-skeleton>
   }
   @else if (error()) {
-    <div class="p-8">
+    <div class="p-md">
       <app-error-message
         title="Something went wrong!"
         [message]="error() ?? 'An unexpected error occurred while fetching the client details.'"
@@ -23,22 +23,17 @@
   }
   @else if (client()) {
 
-    <!-- ────────── STICKY HEADER ────────── -->
     <header class="sticky top-0 z-10 bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border-strong)]">
       <div class="px-4 py-4 flex items-center justify-between gap-4">
-        <!-- Left: Back + Identity -->
         <div class="flex items-center gap-4 min-w-0">
-          <!-- Back -->
           <a routerLink="/app/crm/clients"
              class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
             <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
           </a>
-          <!-- Avatar -->
           <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm"
                [style.background]="getAvatarColor()">
             {{ getInitials() }}
           </div>
-          <!-- Name + Breadcrumb -->
           <div class="min-w-0">
             <div class="flex items-center gap-1 min-w-0">
               <h1 class="text-lg font-bold text-[var(--color-text)] truncate leading-tight">
@@ -77,9 +72,18 @@
               <button (click)="activeTab.set('timeline')"
                       [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
                       [class.bg-bg-active]="activeTab() === 'timeline'"
+                      [class.!text-text]="activeTab() === 'timeline'"
                       [class.!border-border-strong]="activeTab() === 'timeline'"
                       class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
                 Timeline
+              </button>
+              <button (click)="activeTab.set('attachments')"
+                      [class.text-[var(--color-primary)]]="activeTab() === 'attachments'"
+                      [class.bg-bg-active]="activeTab() === 'attachments'"
+                      [class.!text-text]="activeTab() === 'attachments'"
+                      [class.!border-border-strong]="activeTab() === 'attachments'"
+                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+                Attachments
               </button>
             </div>
 
@@ -104,9 +108,6 @@
                 <!-- Client Information -->
                 <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
                   <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                    </svg>
                     <h3 class="text-sm font-bold text-[var(--color-text)]">Company Information</h3>
                   </div>
                   <div class="p-5">
@@ -145,9 +146,6 @@
                 <!-- Address Information -->
                 <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
                   <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
-                    </svg>
                     <h3 class="text-sm font-bold text-[var(--color-text)]">Address Information</h3>
                   </div>
                   <div class="p-5">
@@ -219,6 +217,13 @@
                     <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ client()!.createdAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
                   </div>
                 </div>
+              </div>
+            }
+
+            <!-- ═══════════ ATTACHMENTS TAB ═══════════ -->
+            @if (activeTab() === 'attachments') {
+              <div class="flex flex-col gap-5">
+                <app-attachments entityType="CRM" [entityId]="client()!.id"></app-attachments>
               </div>
             }
           </div>

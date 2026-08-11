@@ -5,12 +5,6 @@ import { RouterModule } from '@angular/router';
 import { DropdownMenuComponent, DropdownMenuItem } from '../../../../shared/ui/dropdown-menu/dropdown-menu.component';
 import { Milestone, MilestoneStatus } from '../../types/milestone.model';
 
-interface AvatarData {
-  initials: string;
-  bg: string;
-  color: string;
-}
-
 interface KanbanColumn {
   status: MilestoneStatus;
   label: string;
@@ -142,32 +136,8 @@ export class MilestoneKanbanComponent {
 
   /**
    * Generates avatar data for a milestone card.
-   * Uses deterministic colors based on the milestone title.
+   * This was removed because we use a progress bar instead.
    */
-  getAvatarInitials(milestone: Milestone): AvatarData[] {
-    const avatarColors: { bg: string; color: string }[] = [
-      { bg: '#fef3c7', color: '#92400e' },
-      { bg: '#dbeafe', color: '#1e40af' },
-      { bg: '#f3e8ff', color: '#6b21a8' },
-      { bg: '#dcfce7', color: '#166534' },
-      { bg: '#fee2e2', color: '#991b1b' },
-    ];
-
-    const seed = milestone.title.charCodeAt(0) + (milestone.title.charCodeAt(1) || 0);
-    const count = 2 + (seed % 3); // 2–4 avatars
-    const avatars: AvatarData[] = [];
-
-    for (let i = 0; i < count; i++) {
-      const colorIndex = (seed + i) % avatarColors.length;
-      const charCode = 65 + ((seed + i * 7) % 26);
-      avatars.push({
-        initials: String.fromCharCode(charCode),
-        bg: avatarColors[colorIndex].bg,
-        color: avatarColors[colorIndex].color,
-      });
-    }
-    return avatars;
-  }
 
   /**
    * Returns a deterministic attachment count for display.

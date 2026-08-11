@@ -16,10 +16,8 @@
   border-radius: 50%;
   background-color: var(--color-primary-soft, #e8f1ff);
   color: var(--color-primary, #267af7);
-  border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 0;
   outline: none;
 }
 
@@ -33,7 +31,7 @@
 }
 
 .avatar-text {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.5px;
 }

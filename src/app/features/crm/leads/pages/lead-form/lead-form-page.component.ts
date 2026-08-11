@@ -10,6 +10,7 @@ import { Client } from '../../../clients/types/client.model';
 import { Contact } from '../../../contacts/types/contact.model';
 import { ArrowLeft, LucideAngularModule } from 'lucide-angular';
 import { CustomSelectComponent, CustomSelectOption } from '../../../../../shared/ui/custom-select/custom-select.component';
+import { UsersStateService } from '../../../../tenant/settings/users/service/users-state.service';
 
 @Component({
   selector: 'app-lead-form-page',
@@ -23,6 +24,7 @@ export class LeadFormPageComponent implements OnInit {
   private readonly leadsService = inject(LeadsService);
   private readonly clientsService = inject(ClientsService);
   private readonly contactsService = inject(ContactsService);
+  private readonly usersStateService = inject(UsersStateService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -38,18 +40,18 @@ export class LeadFormPageComponent implements OnInit {
   readonly priorityOptions: Priority[] = ['HIGH', 'MEDIUM', 'LOW'];
   readonly statusOptions: LeadStatus[] = ['NEW', 'CONTACTED', 'QUALIFIED', 'UNQUALIFIED'];
   readonly sourceOptions: Source[] = ['WEBSITE', 'REFERRAL', 'SOCIAL_MEDIA', 'COLD_CALL', 'EVENT', 'OTHER'];
-  
+
   readonly prioritySelectOptions: CustomSelectOption[] = this.priorityOptions.map(p => ({ label: p, value: p }));
   readonly statusSelectOptions: CustomSelectOption[] = this.statusOptions.map(s => ({ label: s, value: s }));
   readonly sourceSelectOptions: CustomSelectOption[] = this.sourceOptions.map(s => ({ label: s, value: s }));
-  
+
   readonly clientTypeOptions: CustomSelectOption[] = ['ENTERPRISE', 'STARTUP', 'B2B', 'B2C'].map(t => ({ label: t, value: t }));
   readonly roleOptions: CustomSelectOption[] = ['CEO', 'DIRECTOR', 'INFLUENCER', 'BUYER'].map(r => ({ label: r, value: r }));
   readonly influenceLevelOptions: CustomSelectOption[] = ['HIGH', 'MEDIUM', 'LOW'].map(l => ({ label: l, value: l }));
 
   readonly ArrowLeft = ArrowLeft;
 
-  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+  readonly clientOptions = computed<CustomSelectOption[]>(() =>
     this.clients().map(c => ({
       value: c.id,
       label: c.name,
@@ -58,12 +60,22 @@ export class LeadFormPageComponent implements OnInit {
     }))
   );
 
-  readonly contactOptions = computed<CustomSelectOption[]>(() => 
+  readonly contactOptions = computed<CustomSelectOption[]>(() =>
     this.contacts().map(c => ({
       value: c.id,
       label: `${c.firstName} ${c.lastName}`,
       subLabel: c.email,
       avatarName: `${c.firstName} ${c.lastName}`
+    }))
+  );
+
+  readonly assigneeOptions = computed<CustomSelectOption[]>(() =>
+    this.usersStateService.usersList().map(u => ({
+      value: u.keycloakUserId,
+      label: `${u.firstName} ${u.lastName}`,
+      subLabel: u.email,
+      avatarName: `${u.firstName} ${u.lastName}`,
+      avatarColor: u.avatarColor
     }))
   );
 
@@ -78,50 +90,50 @@ export class LeadFormPageComponent implements OnInit {
   private initForm(): void {
     this.leadForm = this.fb.group({
       title: ['', [Validators.required]],
-      description: [''],
+      description: ['', [Validators.maxLength(200)]],
       source: ['COLD_CALL', [Validators.required]],
       priority: ['MEDIUM', [Validators.required]],
       status: ['NEW', [Validators.required]],
-      assignedTo: ['cdde6e08-1e87-41e2-8df0-b4ff1b93b737'],
+      assignedTo: ['', [Validators.required]],
       phone: [''],
       industry: [''],
       annualRevenue: [null],
-      company: [''],
+      company: ['', [Validators.maxLength(200)]],
       email: ['', [Validators.email]],
-      website: [''],
+      website: ['', [Validators.maxLength(255)]],
       numberOfEmployees: [null],
       address: this.fb.group({
-        street: [''],
-        city: [''],
-        state: [''],
-        country: [''],
-        zipCode: [''],
+        street: ['', [Validators.maxLength(255)]],
+        city: ['', [Validators.required,Validators.maxLength(100)]],
+        state: ['', [Validators.maxLength(100)]],
+        country: ['', [Validators.required, Validators.maxLength(100)]],
+        zipCode: ['', [Validators.maxLength(20)]],
       }),
       clientId: [''],
       contactId: [''],
       client: this.fb.group({
-        name: [''],
-        industry: [''],
-        website: [''],
-        phone: [''],
-        type: ['ENTERPRISE'],
-        source: ['COLD_CALL'],
+        name: ['', [Validators.required, Validators.maxLength(100)]],
+        industry: ['', [Validators.maxLength(100)]],
+        website: ['', [Validators.maxLength(255)]],
+        phone: ['', [Validators.maxLength(50)]],
+        type: ['ENTERPRISE', [Validators.required]],
+        source: ['COLD_CALL', [Validators.required]],
         annualRevenue: [null],
         ownership: ['PRIVATE'],
-        description: [''],
+        description: ['', [Validators.maxLength(2000)]],
       }),
       contact: this.fb.group({
-        firstName: [''],
-        lastName: [''],
-        email: ['', [Validators.email]],
-        phone: [''],
+        firstName: ['', [Validators.required, Validators.maxLength(100)]],
+        lastName: ['', [Validators.required, Validators.maxLength(100)]],
+        email: ['', [Validators.email, Validators.required, Validators.maxLength(255)]],
+        phone: ['', [Validators.maxLength(50)]],
         role: ['CEO'],
-        influenceLevel: ['MEDIUM'],
+        influenceLevel: ['MEDIUM', [Validators.required]],
         primary: [true],
-        department: [''],
+        department: ['', [Validators.maxLength(100)]],
         dateOfBirth: [''],
-        secondaryEmail: ['', [Validators.email]],
-        description: [''],
+        secondaryEmail: ['', [Validators.email, Validators.maxLength(255)]],
+        description: ['', [Validators.maxLength(2000)]],
       }),
     });
 

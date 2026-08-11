@@ -5,7 +5,7 @@
     <app-details-skeleton></app-details-skeleton>
   }
   @else if (error()) {
-    <div class="p-8">
+    <div class="p-md">
       <app-error-message
         title="Something went wrong!"
         [message]="error() ?? 'An unexpected error occurred while fetching the deal details.'"
@@ -65,23 +65,23 @@
           <!-- ═══════════ LEFT COLUMN: Primary Content ═══════════ -->
           <div class="flex-1 min-w-0 flex flex-col gap-4">
             <!-- ── Tabs ── -->
-            <div class="w-max flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">
-              <button (click)="activeTab.set('overview')"
-                      [class.text-[var(--color-primary)]]="activeTab() === 'overview'"
-                      [class.bg-bg-active]="activeTab() === 'overview'"
-                      [class.!text-text]="activeTab() === 'overview'"
-                      [class.!border-border-strong]="activeTab() === 'overview'"
-                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
-                Overview
-              </button>
-              <button (click)="activeTab.set('timeline')"
-                      [class.text-[var(--color-primary)]]="activeTab() === 'timeline'"
-                      [class.bg-bg-active]="activeTab() === 'timeline'"
-                      [class.!border-border-strong]="activeTab() === 'timeline'"
-                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
-                Timeline
-              </button>
-            </div>
+<!--            <div class="w-max flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">-->
+<!--              <button (click)="activeTab.set('overview')"-->
+<!--                      [class.text-[var(&#45;&#45;color-primary)]]="activeTab() === 'overview'"-->
+<!--                      [class.bg-bg-active]="activeTab() === 'overview'"-->
+<!--                      [class.!text-text]="activeTab() === 'overview'"-->
+<!--                      [class.!border-border-strong]="activeTab() === 'overview'"-->
+<!--                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">-->
+<!--                Overview-->
+<!--              </button>-->
+<!--              <button (click)="activeTab.set('timeline')"-->
+<!--                      [class.text-[var(&#45;&#45;color-primary)]]="activeTab() === 'timeline'"-->
+<!--                      [class.bg-bg-active]="activeTab() === 'timeline'"-->
+<!--                      [class.!border-border-strong]="activeTab() === 'timeline'"-->
+<!--                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">-->
+<!--                Timeline-->
+<!--              </button>-->
+<!--            </div>-->
 
             <!-- ═══════════ OVERVIEW TAB ═══════════ -->
             @if (activeTab() === 'overview') {
@@ -112,9 +112,6 @@
                 <!-- Deal Value Information -->
                 <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
                   <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
                     <h3 class="text-sm font-bold text-[var(--color-text)]">Deal Values</h3>
                   </div>
                   <div class="p-5">
@@ -152,42 +149,42 @@
             }
 
             <!-- ═══════════ TIMELINE TAB ═══════════ -->
-            @if (activeTab() === 'timeline') {
-              <div class="flex flex-col gap-0">
-                <!-- Update event -->
-                @if (deal()!.updatedAt && deal()!.updatedAt !== deal()!.createdAt) {
-                  <div class="flex gap-4 py-5 border-b border-[var(--color-border-strong)]">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary-soft)] flex items-center justify-center">
-                      <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
-                      </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(deal()!.updatedBy, 'System') }}</span>
-                        <span class="text-sm text-[var(--color-text-muted)]">updated deal details</span>
-                      </div>
-                      <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ deal()!.updatedAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
-                    </div>
-                  </div>
-                }
-                <!-- Created event -->
-                <div class="flex gap-4 py-5">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-success-soft)] flex items-center justify-center">
-                    <svg class="w-4 h-4 text-[var(--color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 5v14"/><path d="M5 12h14"/>
-                    </svg>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 flex-wrap">
-                      <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(deal()!.createdBy, 'System') }}</span>
-                      <span class="text-sm text-[var(--color-text-muted)]">created this deal</span>
-                    </div>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ deal()!.createdAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
-                  </div>
-                </div>
-              </div>
-            }
+<!--            @if (activeTab() === 'timeline') {-->
+<!--              <div class="flex flex-col gap-0">-->
+<!--                &lt;!&ndash; Update event &ndash;&gt;-->
+<!--                @if (deal()!.updatedAt && deal()!.updatedAt !== deal()!.createdAt) {-->
+<!--                  <div class="flex gap-4 py-5 border-b border-[var(&#45;&#45;color-border-strong)]">-->
+<!--                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(&#45;&#45;color-primary-soft)] flex items-center justify-center">-->
+<!--                      <svg class="w-4 h-4 text-[var(&#45;&#45;color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>-->
+<!--                      </svg>-->
+<!--                    </div>-->
+<!--                    <div class="flex-1 min-w-0">-->
+<!--                      <div class="flex items-center gap-2 flex-wrap">-->
+<!--                        <span class="text-sm font-bold text-[var(&#45;&#45;color-text)]">{{ getUserName(deal()!.updatedBy, 'System') }}</span>-->
+<!--                        <span class="text-sm text-[var(&#45;&#45;color-text-muted)]">updated deal details</span>-->
+<!--                      </div>-->
+<!--                      <p class="text-xs text-[var(&#45;&#45;color-text-muted)] mt-1">{{ deal()!.updatedAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                }-->
+<!--                &lt;!&ndash; Created event &ndash;&gt;-->
+<!--                <div class="flex gap-4 py-5">-->
+<!--                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(&#45;&#45;color-success-soft)] flex items-center justify-center">-->
+<!--                    <svg class="w-4 h-4 text-[var(&#45;&#45;color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                      <path d="M12 5v14"/><path d="M5 12h14"/>-->
+<!--                    </svg>-->
+<!--                  </div>-->
+<!--                  <div class="flex-1 min-w-0">-->
+<!--                    <div class="flex items-center gap-2 flex-wrap">-->
+<!--                      <span class="text-sm font-bold text-[var(&#45;&#45;color-text)]">{{ getUserName(deal()!.createdBy, 'System') }}</span>-->
+<!--                      <span class="text-sm text-[var(&#45;&#45;color-text-muted)]">created this deal</span>-->
+<!--                    </div>-->
+<!--                    <p class="text-xs text-[var(&#45;&#45;color-text-muted)] mt-1">{{ deal()!.createdAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            }-->
           </div>
 
           <!-- ═══════════ RIGHT SIDEBAR ═══════════ -->

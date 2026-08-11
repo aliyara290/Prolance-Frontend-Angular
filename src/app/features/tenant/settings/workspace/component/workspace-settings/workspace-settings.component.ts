@@ -1,7 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkspaceSettings, TIMEZONES, LANGUAGES, INDUSTRIES } from '../../models/workspace.models';
+import { WorkspaceService } from '../../service/workspace.service';
+import { AuthService } from '../../../../../../core/auth/services/auth.service';
 
 import { CustomSelectComponent, CustomSelectOption } from '../../../../../../shared/ui/custom-select/custom-select.component';
 
@@ -11,7 +13,10 @@ import { CustomSelectComponent, CustomSelectOption } from '../../../../../../sha
   imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './workspace-settings.component.html',
 })
-export class WorkspaceSettingsComponent {
+export class WorkspaceSettingsComponent implements OnInit {
+  private readonly workspaceService = inject(WorkspaceService);
+  private readonly authService = inject(AuthService);
+
   readonly timezones  = TIMEZONES;
   readonly languages  = LANGUAGES;
   readonly industries = INDUSTRIES;
@@ -22,28 +27,69 @@ export class WorkspaceSettingsComponent {
 
   saving  = signal(false);
   saved   = signal(false);
+  loading = signal(true);
+
+  tenantId: string = '';
 
   form: WorkspaceSettings = {
-    name:        'InovSmart',
-    website:     'https://inovsmart.com',
-    description: 'A next-generation CRM platform for modern sales teams.',
+    name:        '',
+    website:     '',
+    description: '',
     logo:        '',
-    size:        30,
-    foundedDate: '2021-03-15',
-    industry:    'TECHNOLOGY',
+    size:        1,
+    foundedDate: '',
+    industry:    '',
     language:    'English',
     timezone:    'UTC+00:00 — London, Dublin',
     address: {
-      street:     '12 Rue Hassan II',
-      city:       'Casablanca',
-      state:      'Casablanca-Settat',
-      country:    'Morocco',
-      postalCode: '20000',
+      street:     '',
+      city:       '',
+      state:      '',
+      country:    '',
+      zipCode:    '',
     },
   };
 
+  ngOnInit(): void {
+    const payload = this.authService.getParsedToken();
+    if (payload && (payload.tenant_id || payload.tenantId)) {
+      this.tenantId = payload.tenant_id || payload.tenantId || '';
+      this.loadWorkspace();
+    } else {
+      this.loading.set(false);
+    }
+  }
+
+  loadWorkspace(): void {
+    this.workspaceService.getWorkspace(this.tenantId).subscribe({
+      next: (data) => {
+        this.form = {
+          ...this.form,
+          name: data.name || '',
+          website: data.website || '',
+          description: data.description || '',
+          logo: data.logo || '',
+          size: data.size || 1,
+          foundedDate: data.foundedDate || '',
+          industry: data.industry || '',
+          address: {
+            street: data.address?.street || '',
+            city: data.address?.city || '',
+            state: data.address?.state || '',
+            country: data.address?.country || '',
+            zipCode: data.address?.zipCode || '',
+          }
+        };
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      }
+    });
+  }
+
   getInitials(): string {
-    return this.form.name.slice(0, 2).toUpperCase();
+    return this.form.name ? this.form.name.slice(0, 2).toUpperCase() : '';
   }
 
   onLogoChange(event: Event): void {
@@ -54,12 +100,75 @@ export class WorkspaceSettingsComponent {
     reader.readAsDataURL(file);
   }
 
+
   saveChanges(): void {
     this.saving.set(true);
-    setTimeout(() => {
-      this.saving.set(false);
-      this.saved.set(true);
-      setTimeout(() => this.saved.set(false), 3000);
-    }, 800);
+
+    const request: any = {};
+
+    // Strings
+    if (this.form.name.trim()) {
+      request.name = this.form.name.trim();
+    }
+
+    if (this.form.website.trim()) {
+      request.website = this.form.website.trim();
+    }
+
+    if (this.form.description.trim()) {
+      request.description = this.form.description.trim();
+    }
+
+    if (this.form.logo.trim()) {
+      request.logo = this.form.logo.trim();
+    }
+
+    // Numbers
+    if (this.form.size > 0) {
+      request.size = this.form.size;
+    }
+
+    // Date
+    if (this.form.foundedDate) {
+      request.foundedDate = this.form.foundedDate;
+    }
+
+    // Address
+    const address: any = {};
+
+    if (this.form.address.street.trim()) {
+      address.street = this.form.address.street.trim();
+    }
+
+    if (this.form.address.city.trim()) {
+      address.city = this.form.address.city.trim();
+    }
+
+    if (this.form.address.state.trim()) {
+      address.state = this.form.address.state.trim();
+    }
+
+    if (this.form.address.country.trim()) {
+      address.country = this.form.address.country.trim();
+    }
+
+    if (this.form.address.zipCode.trim()) {
+      address.zipCode = this.form.address.zipCode.trim();
+    }
+
+    if (Object.keys(address).length > 0) {
+      request.address = address;
+    }
+
+    this.workspaceService.updateWorkspace(this.tenantId, request).subscribe({
+      next: () => {
+        this.saving.set(false);
+        this.saved.set(true);
+        setTimeout(() => this.saved.set(false), 3000);
+      },
+      error: () => {
+        this.saving.set(false);
+      }
+    });
   }
 }

@@ -50,16 +50,16 @@ export class ProjectFormPageComponent implements OnInit {
   readonly ArrowLeft = ArrowLeft;
   readonly users = this.usersState.usersList;
 
-  readonly projectManagerOptions = computed<CustomSelectOption[]>(() => 
+  readonly projectManagerOptions = computed<CustomSelectOption[]>(() =>
     this.users().map(u => ({
-      value: u.id,
+      value: u.keycloakUserId,
       label: `${u.firstName} ${u.lastName}`,
       subLabel: u.email,
       avatarName: `${u.firstName} ${u.lastName}`
     }))
   );
 
-  readonly clientOptions = computed<CustomSelectOption[]>(() => 
+  readonly clientOptions = computed<CustomSelectOption[]>(() =>
     this.clients().map(c => ({
       value: c.id,
       label: c.name,

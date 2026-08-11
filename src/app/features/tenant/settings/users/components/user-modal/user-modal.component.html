@@ -142,6 +142,39 @@
             </div>
           </div>
 
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Education Level</label>
+              <app-custom-select
+                [(ngModel)]="educationLevel"
+                [options]="educationSelectOptions"
+                [searchable]="false"
+                placeholder="e.g. BAC+5"
+              ></app-custom-select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Seniority Level</label>
+              <app-custom-select
+                [(ngModel)]="seniorityLevel"
+                [options]="senioritySelectOptions"
+                [searchable]="false"
+                placeholder="e.g. SENIOR"
+              ></app-custom-select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Base Hourly Salary (€)</label>
+            <input
+              type="number"
+              [(ngModel)]="baseHourlySalary"
+              placeholder="e.g. 50"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)]
+                     rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]
+                     focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
+            />
+          </div>
+
           <div class="flex justify-end pt-2">
             <button
               (click)="nextStep()"
