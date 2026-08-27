@@ -1,0 +1,97 @@
+<div class="user-menu-wrapper">
+  <!-- Trigger -->
+  <button
+    class="trigger-avatar"
+    [class.active]="isOpen()"
+    (click)="toggleMenu()"
+    aria-label="User menu"
+  >
+    @if (user$ | async; as user) {
+      <span class="avatar-text">
+        {{ user.firstName.charAt(0).toUpperCase() }}{{ user.lastName.charAt(0).toUpperCase() }}
+      </span>
+    } @else {
+      <span class="avatar-text">?</span>
+    }
+  </button>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div class="dropdown-menu">
+      @if (user$ | async; as user) {
+        <!-- Profile Header -->
+        <div class="dropdown-header">
+          <div class="header-avatar">
+            {{ user.firstName.charAt(0).toUpperCase() }}{{ user.lastName.charAt(0).toUpperCase() }}
+          </div>
+          <div class="header-info">
+            <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+            <span class="user-email">{{ user.email }}</span>
+          </div>
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <!-- Theme Switcher -->
+        <div class="dropdown-group">
+          <div class="theme-switcher">
+            <button
+              class="theme-btn"
+              [class.active]="currentMode() === 'light'"
+              (click)="setMode('light')"
+              title="Light mode"
+            >
+              <lucide-icon [img]="icons.sun" size="14"></lucide-icon>
+              <span>Light</span>
+            </button>
+            <button
+              class="theme-btn"
+              [class.active]="currentMode() === 'dark'"
+              (click)="setMode('dark')"
+              title="Dark mode"
+            >
+              <lucide-icon [img]="icons.moon" size="14"></lucide-icon>
+              <span>Dark</span>
+            </button>
+            <button
+              class="theme-btn"
+              [class.active]="currentMode() === 'system'"
+              (click)="setMode('system')"
+              title="System mode"
+            >
+              <lucide-icon [img]="icons.monitor" size="14"></lucide-icon>
+              <span>System</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <!-- Links -->
+        <div class="dropdown-group">
+<!--          <button class="menu-item">-->
+<!--            <lucide-icon [img]="icons.user" size="16" class="menu-icon"></lucide-icon>-->
+<!--            <span>My Account</span>-->
+<!--          </button>-->
+          <a [routerLink]="['/app/settings/personal']">
+
+            <button class="menu-item">
+              <lucide-icon [img]="icons.settings" size="16" class="menu-icon"></lucide-icon>
+              <span>Account Settings</span>
+            </button>
+          </a>
+        </div>
+
+        <div class="dropdown-divider"></div>
+
+        <!-- Actions -->
+        <div class="dropdown-group">
+          <button class="menu-item" (click)="logout()">
+            <lucide-icon [img]="icons.logOut" size="16" class="menu-icon"></lucide-icon>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

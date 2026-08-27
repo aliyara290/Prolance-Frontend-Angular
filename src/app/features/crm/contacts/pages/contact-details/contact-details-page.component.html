@@ -1,0 +1,344 @@
+<!-- Contact Details — Enterprise-grade redesign inspired by Jira, Linear, Notion -->
+<div class="h-full flex flex-col text-[var(--color-text)]">
+
+  @if (loading()) {
+    <app-details-skeleton></app-details-skeleton>
+  }
+  @else if (error()) {
+    <div class="p-md">
+      <app-error-message
+        title="Something went wrong!"
+        [message]="error() ?? 'An unexpected error occurred while fetching the contact details.'"
+        layout="full"
+        [showRetry]="false">
+      </app-error-message>
+      <div class="flex justify-center mt-5">
+        <a routerLink="/app/crm/contacts"
+           class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] hover:underline transition-colors">
+          <lucide-icon [img]="ArrowLeft" [size]="14"></lucide-icon>
+          Back to Contacts
+        </a>
+      </div>
+    </div>
+  }
+  @else if (contact()) {
+
+    <header class="sticky top-0 z-10 bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border-strong)]">
+      <div class="px-4 py-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-4 min-w-0">
+          <!-- Back -->
+          <a routerLink="/app/crm/contacts"
+             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
+            <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+          </a>
+          <!-- Avatar -->
+          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm"
+               [style.background]="getAvatarColor()">
+            {{ getInitials() }}
+          </div>
+          <!-- Name + Breadcrumb -->
+          <div class="min-w-0">
+            <div class="flex items-center gap-1 min-w-0">
+              <h1 class="text-lg font-bold text-[var(--color-text)] truncate leading-tight">
+                {{ getFullName() }}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-2.5 flex-shrink-0">
+          <app-dropdown-menu
+            [items]="moreActions"
+            [iconOnly]="true"
+            (itemSelected)="onMoreAction($event)"
+          ></app-dropdown-menu>
+        </div>
+      </div>
+    </header>
+
+    <!-- ────────── PAGE BODY ────────── -->
+    <div class="flex-1 overflow-y-auto">
+      <div class="p-4">
+        <div class="flex flex-col lg:flex-row gap-4">
+          <!-- ═══════════ LEFT COLUMN: Primary Content ═══════════ -->
+          <div class="flex-1 min-w-0 flex flex-col gap-4">
+            <!-- ── Tabs ── -->
+<!--            <div class="w-max flex items-center gap-1 text-sm font-semibold bg-bg p-1 rounded-full border border-border-strong">-->
+<!--              <button (click)="activeTab.set('overview')"-->
+<!--                      [class.text-[var(&#45;&#45;color-primary)]]="activeTab() === 'overview'"-->
+<!--                      [class.bg-bg-active]="activeTab() === 'overview'"-->
+<!--                      [class.!text-text]="activeTab() === 'overview'"-->
+<!--                      [class.!border-border-strong]="activeTab() === 'overview'"-->
+<!--                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">-->
+<!--                Overview-->
+<!--              </button>-->
+<!--              <button (click)="activeTab.set('timeline')"-->
+<!--                      [class.text-[var(&#45;&#45;color-primary)]]="activeTab() === 'timeline'"-->
+<!--                      [class.bg-bg-active]="activeTab() === 'timeline'"-->
+<!--                      [class.!border-border-strong]="activeTab() === 'timeline'"-->
+<!--                      class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">-->
+<!--                Timeline-->
+<!--              </button>-->
+<!--            </div>-->
+
+            <!-- ═══════════ OVERVIEW TAB ═══════════ -->
+            @if (activeTab() === 'overview') {
+              <div class="flex flex-col gap-5">
+                <!-- Description -->
+                @if (contact()!.description || contact()!.notes) {
+                  <div class="bg-bg border border-border-strong rounded-xl shadow-sm overflow-hidden">
+                    <div class="border-b border-border-strong py-4 px-5 bg-bg-muted/30">
+                      <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Details &amp; Notes</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                      @if (contact()!.description) {
+                        <div>
+                          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Description</label>
+                          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ contact()!.description }}</p>
+                        </div>
+                      }
+                      @if (contact()!.notes) {
+                        <div>
+                          <label class="block text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Notes</label>
+                          <p class="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{{ contact()!.notes }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- Contact Information -->
+                <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
+                  <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+
+                    <h3 class="text-sm font-bold text-[var(--color-text)]">Contact Information</h3>
+                  </div>
+                  <div class="p-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Email</span>
+                        <a [href]="'mailto:' + contact()!.email" class="text-sm font-semibold text-[var(--color-primary)] hover:underline truncate">
+                          {{ contact()!.email }}
+                        </a>
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Phone</span>
+                        <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.phone }}</span>
+                      </div>
+                      @if (contact()!.secondaryEmail) {
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Secondary Email</span>
+                          <a [href]="'mailto:' + contact()!.secondaryEmail" class="text-sm font-semibold text-[var(--color-primary)] hover:underline truncate">
+                            {{ contact()!.secondaryEmail }}
+                          </a>
+                        </div>
+                      }
+                      <div class="flex flex-col gap-1">
+                        <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Role</span>
+                        <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.role }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Address Information -->
+                <section class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] overflow-hidden shadow-sm">
+                  <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30 flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-[var(--color-text)]">Address Information</h3>
+                  </div>
+                  <div class="p-5">
+                    @if (contact()!.address?.street || contact()!.address?.city || contact()!.address?.country) {
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-5">
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Street</span>
+                          <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.address?.street || '-' }}</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">City</span>
+                          <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.address?.city || '-' }}</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">State/Region</span>
+                          <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.address?.state || '-' }}</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Postal Code</span>
+                          <span class="text-sm font-medium text-[var(--color-text)] font-mono">{{ contact()!.address?.zipCode || '-' }}</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Country</span>
+                          <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.address?.country || '-' }}</span>
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="p-6 flex flex-col items-center justify-center gap-2 text-center">
+                        <svg class="w-8 h-8 text-[var(--color-text-muted)] opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <p class="text-sm text-[var(--color-text-muted)]">No address information available</p>
+                      </div>
+                    }
+                  </div>
+                </section>
+              </div>
+            }
+
+            <!-- ═══════════ TIMELINE TAB ═══════════ -->
+            @if (activeTab() === 'timeline') {
+              <div class="flex flex-col gap-0">
+                <!-- Update event -->
+                @if (contact()!.updatedAt && contact()!.updatedAt !== contact()!.createdAt) {
+                  <div class="flex gap-4 py-5 border-b border-[var(--color-border-strong)]">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary-soft)] flex items-center justify-center">
+                      <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(contact()!.updatedBy, 'System') }}</span>
+                        <span class="text-sm text-[var(--color-text-muted)]">updated contact details</span>
+                      </div>
+                      <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ contact()!.updatedAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
+                    </div>
+                  </div>
+                }
+                <!-- Created event -->
+                <div class="flex gap-4 py-5">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-success-soft)] flex items-center justify-center">
+                    <svg class="w-4 h-4 text-[var(--color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 5v14"/><path d="M5 12h14"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-sm font-bold text-[var(--color-text)]">{{ getUserName(contact()!.createdBy, 'System') }}</span>
+                      <span class="text-sm text-[var(--color-text-muted)]">created this contact</span>
+                    </div>
+                    <p class="text-xs text-[var(--color-text-muted)] mt-1">{{ contact()!.createdAt | date:'MMM d, yyyy \'at\' h:mm a' }}</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- ═══════════ RIGHT SIDEBAR ═══════════ -->
+          <aside class="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-5">
+            <!-- Properties Card -->
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Properties</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Influence Level</span>
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full" [ngClass]="getInfluenceConfig(contact()!.influenceLevel).dotColor"></span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ getInfluenceConfig(contact()!.influenceLevel).label }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Primary</span>
+                  <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border border-[var(--color-border-strong)] text-[var(--color-text-muted)]">
+                    {{ contact()!.primary ? 'Yes' : 'No' }}
+                  </span>
+                </div>
+                @if (contact()!.department) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Department</span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.department }}</span>
+                  </div>
+                }
+                @if (contact()!.dateOfBirth) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Birthday</span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.dateOfBirth | date:'mediumDate' }}</span>
+                  </div>
+                }
+                <hr class="border-[var(--color-border-strong)] my-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Owner</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-[9px] font-bold flex-shrink-0">
+                      {{ getOwnerInitials() }}
+                    </div>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ getUserName(contact()!.createdBy, 'Unassigned') }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Client</span>
+                  <a [routerLink]="'/app/crm/clients/' + contact()!.clientId" class="text-sm font-medium text-[var(--color-primary)] hover:underline truncate max-w-[160px]">
+                    {{ client() ? client()!.name : (contact()!.clientId | slice:0:8 | uppercase) }}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Contact Card -->
+            @if (contact()!.email || contact()!.phone) {
+              <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                  <h3 class="text-sm font-bold text-[var(--color-text)]">Quick Contact</h3>
+                </div>
+                <div class="p-5 flex flex-col gap-3">
+                  @if (contact()!.email) {
+                    <a [href]="'mailto:' + contact()!.email"
+                       class="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border-strong)] hover:bg-[var(--color-bg-hover)] hover:border-[var(--color-border-strong)] transition-all cursor-pointer group">
+                      <div class="w-8 h-8 rounded-lg bg-[var(--color-primary-soft)] flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                        </svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors truncate">Email Contact</p>
+                        <p class="text-xs text-[var(--color-text-muted)] truncate">{{ contact()!.email }}</p>
+                      </div>
+                    </a>
+                  }
+                  @if (contact()!.phone) {
+                    <a [href]="'tel:' + contact()!.phone"
+                       class="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border-strong)] hover:bg-[var(--color-bg-hover)] hover:border-[var(--color-border-strong)] transition-all cursor-pointer group">
+                      <div class="w-8 h-8 rounded-lg bg-[var(--color-success-soft)] flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4 text-[var(--color-success)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-success)] transition-colors truncate">Call Mobile</p>
+                        <p class="text-xs text-[var(--color-text-muted)] truncate">{{ contact()!.phone }}</p>
+                      </div>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Dates Card -->
+            <div class="rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg)] shadow-sm overflow-hidden">
+              <div class="px-5 py-4 border-b border-[var(--color-border-strong)] bg-[var(--color-bg-muted)]/30">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">Dates</h3>
+              </div>
+              <div class="p-5 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Created</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.createdAt | date:'mediumDate' }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Updated</span>
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ (contact()!.updatedAt || contact()!.createdAt) | date:'mediumDate' }}</span>
+                </div>
+                @if (contact()!.lastContactedAt) {
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">Last Contact</span>
+                    <span class="text-sm font-medium text-[var(--color-text)]">{{ contact()!.lastContactedAt | date:'mediumDate' }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </div>
+  }
+</div>

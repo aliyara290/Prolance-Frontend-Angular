@@ -1,0 +1,575 @@
+@if (isOpen && task) {
+  <div class="panel-backdrop" (click)="onBackdropClick($event)">
+    <div class="panel-container">
+
+      <!-- Panel Header -->
+      <div class="panel-header">
+        <div class="panel-header-left">
+          <h2 class="panel-title">{{ task.title }}</h2>
+        </div>
+        <div class="panel-header-actions">
+          <app-dropdown-menu
+            [items]="panelMenuItems"
+            [iconOnly]="true"
+            (itemSelected)="onMenuItemClick($event)"
+          />
+          <button class="panel-close-btn" (click)="onClose()">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Change Form -->
+      @if (showStatusChange()) {
+        <div class="panel-inline-form">
+          <label class="panel-form-label">New Status</label>
+          <app-custom-select
+            [ngModel]="newStatus()"
+            (ngModelChange)="newStatus.set($event)"
+            [options]="statusSelectOptions"
+            [searchable]="false"
+          ></app-custom-select>
+          <label class="panel-form-label">Comment (optional)</label>
+          <input
+            type="text"
+            class="panel-input"
+            placeholder="Reason for status change..."
+            [ngModel]="statusComment()"
+            (ngModelChange)="statusComment.set($event)"
+            maxlength="500"
+          />
+          <div class="panel-form-actions">
+            <button class="panel-btn-primary" (click)="submitStatusChange()">Update Status</button>
+            <button class="panel-btn-secondary" (click)="showStatusChange.set(false)">Cancel</button>
+          </div>
+        </div>
+      }
+
+      <!-- Section Tabs -->
+      <div class="panel-tabs-wrapper">
+        <div class="panel-tabs">
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'details'"
+            (click)="setSection('details')"
+          >Details</button>
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'assignments'"
+            (click)="setSection('assignments')"
+          >
+            Assignees
+            @if (task.assignments && task.assignments.length > 0) {
+              <span class="panel-tab-count">{{ task.assignments.length }}</span>
+            }
+          </button>
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'comments'"
+            (click)="setSection('comments')"
+          >
+            Comments
+            @if (task.comments && task.comments.length > 0) {
+              <span class="panel-tab-count">{{ task.comments.length }}</span>
+            }
+          </button>
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'dependencies'"
+            (click)="setSection('dependencies')"
+          >
+            Dependencies
+            @if (task.dependencies && task.dependencies.length > 0) {
+              <span class="panel-tab-count">{{ task.dependencies.length }}</span>
+            }
+          </button>
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'history'"
+            (click)="setSection('history')"
+          >
+            History
+            @if (task.statusHistory && task.statusHistory.length > 0) {
+              <span class="panel-tab-count">{{ task.statusHistory.length }}</span>
+            }
+          </button>
+          
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'attachments'"
+            (click)="setSection('attachments')"
+          >
+            Attachments
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel Body -->
+      <div class="panel-body">
+
+        <!-- DETAILS Section -->
+        @if (activeSection() === 'details') {
+          <div class="h-full overflow-y-auto p-4">
+            <div class="detail-fields">
+
+            <!-- Type -->
+            <div class="detail-field">
+              <div class="detail-field-label">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"/>
+                </svg>
+                <span>Type</span>
+              </div>
+              <div class="detail-field-value">
+                <span class="detail-field-tag" [style.color]="getTypeColor(task.type)" [style.background]="getTypeColor(task.type) + '18'">
+                  {{ typeLabels[task.type] }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="detail-field">
+              <div class="detail-field-label">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Status</span>
+              </div>
+              <div class="detail-field-value">
+                <span
+                  class="detail-field-tag"
+                  [style.color]="getStatusColor(task.status)"
+                  [style.background]="getStatusBg(task.status)"
+                >
+                  {{ statusLabels[task.status] }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Priority -->
+            <div class="detail-field">
+              <div class="detail-field-label">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>
+                </svg>
+                <span>Priority</span>
+              </div>
+              <div class="detail-field-value">
+                <span class="detail-field-priority" [style.color]="getPriorityColor(task.priority)">
+                  <span class="priority-dot" [style.background]="getPriorityColor(task.priority)"></span>
+                  {{ priorityLabels[task.priority] }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Start Date -->
+            <div class="detail-field">
+              <div class="detail-field-label">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+                </svg>
+                <span>Start Date</span>
+              </div>
+              <div class="detail-field-value">
+                <span class="detail-field-text">{{ task.startDate | date:'MMM d, yyyy' }}</span>
+              </div>
+            </div>
+
+            <!-- Due Date -->
+            <div class="detail-field">
+              <div class="detail-field-label">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Due Date</span>
+              </div>
+              <div class="detail-field-value">
+                @if (task.dueDate) {
+                  <span class="detail-field-text">{{ task.dueDate | date:'MMM d, yyyy' }}</span>
+                } @else {
+                  <span class="detail-field-empty">Not set</span>
+                }
+              </div>
+            </div>
+
+            <!-- Completed At -->
+            @if (task.completedAt) {
+              <div class="detail-field">
+                <div class="detail-field-label">
+                  <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  <span>Completed At</span>
+                </div>
+                <div class="detail-field-value">
+                  <span class="detail-field-text">{{ task.completedAt | date:'MMM d, yyyy' }}</span>
+                </div>
+              </div>
+            }
+
+            <!-- Created By -->
+            <div class="detail-field">
+              <div class="detail-field-label">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>Created By</span>
+              </div>
+              <div class="detail-field-value">
+                <div class="detail-field-user">
+                  <div class="detail-field-user-avatar" [style.background]="getUserDisplay(task.createdBy).avatarColor">
+                    {{ getUserDisplay(task.createdBy).initials }}
+                  </div>
+                  <span>{{ getUserDisplay(task.createdBy).name }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reporter -->
+            @if (task.reporterId) {
+              <div class="detail-field">
+                <div class="detail-field-label">
+                  <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>
+                  </svg>
+                  <span>Reporter</span>
+                </div>
+                <div class="detail-field-value">
+                  <div class="detail-field-user">
+                    <div class="detail-field-user-avatar" [style.background]="getUserDisplay(task.reporterId).avatarColor">
+                      {{ getUserDisplay(task.reporterId).initials }}
+                    </div>
+                    <span>{{ getUserDisplay(task.reporterId).name }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Milestone -->
+          @if (task.milestoneId && milestoneName()) {
+            <div class="detail-field ">
+              <div class="detail-field-label">
+
+                <svg width="17" height="17" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award-icon lucide-award"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+                <span>Milestone</span>
+              </div>
+              <div class="detail-field-value">
+                <span class="detail-field-text font-medium">{{ milestoneName() }}</span>
+              </div>
+            </div>
+          }
+          </div>
+
+
+        <!-- </div> -->
+
+          <!-- Description -->
+          @if (task.description) {
+            <div class="detail-description-section">
+              <div class="detail-description-header">
+                <svg class="detail-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="17" x2="7" y1="10" y2="10"/><line x1="21" x2="3" y1="6" y2="6"/><line x1="21" x2="3" y1="14" y2="14"/><line x1="17" x2="7" y1="18" y2="18"/>
+                </svg>
+                <span>Description</span>
+              </div>
+              <p class="detail-description-text">{{ task.description }}</p>
+            </div>
+          }
+          </div>
+        }
+
+        <!-- ASSIGNMENTS Section -->
+        @if (activeSection() === 'assignments') {
+          <div class="assignments-section h-full overflow-y-auto p-4">
+            @if (showAssignForm()) {
+              <div class="panel-inline-form">
+                <label class="panel-form-label">User</label>
+                <app-custom-select
+                  [ngModel]="assignUserId()"
+                  (ngModelChange)="assignUserId.set($event)"
+                  [options]="assignUserOptions"
+                  [searchable]="true"
+                  placeholder="Select a user..."
+                ></app-custom-select>
+                <label class="panel-form-label">Role</label>
+                <app-custom-select
+                  [ngModel]="assignRole()"
+                  (ngModelChange)="assignRole.set($event)"
+                  [options]="assignRoleOptions"
+                  [searchable]="false"
+                ></app-custom-select>
+                <label class="panel-form-label">Allocation %</label>
+                <input
+                  type="number"
+                  class="panel-input"
+                  [ngModel]="assignAllocation()"
+                  (ngModelChange)="assignAllocation.set($event)"
+                  min="0"
+                  max="100"
+                />
+                <div class="panel-form-actions">
+                  <button
+                    class="panel-btn-primary"
+                    (click)="onAssignUser()"
+                    [disabled]="assigningUser() || !assignUserId()"
+                  >
+                    @if (assigningUser()) { Assigning... } @else { Assign }
+                  </button>
+                  <button class="panel-btn-secondary" (click)="showAssignForm.set(false)">Cancel</button>
+                </div>
+              </div>
+            } @else {
+              <button class="panel-add-btn" (click)="showAssignForm.set(true)">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Assignee
+              </button>
+            }
+            @if (task.assignments && task.assignments.length > 0) {
+              @for (assignment of task.assignments; track assignment.id) {
+                <div class="assignment-card">
+                  <div class="assignment-user">
+                    <div class="assignment-avatar" [style.background]="getUserDisplay(assignment.userId).avatarColor">
+                      {{ getUserDisplay(assignment.userId).initials }}
+                    </div>
+                    <div class="assignment-info">
+                      <span class="assignment-name">{{ getUserDisplay(assignment.userId).name }}</span>
+                      <span class="assignment-meta">
+                        {{ roleLabels[assignment.role] }} · {{ assignment.allocationPercentage }}%
+                      </span>
+                    </div>
+                  </div>
+                  <button class="assignment-remove-btn" (click)="onUnassignUser(assignment)" title="Remove">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              }
+            } @else {
+              <div class="empty-state">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>
+                </svg>
+                <span class="empty-state-title">No assignees yet</span>
+                <span class="empty-state-desc">Add team members to this task</span>
+              </div>
+            }
+
+
+          </div>
+        }
+
+        <!-- COMMENTS Section -->
+        @if (activeSection() === 'comments') {
+          <div class="comments-section flex flex-col h-full overflow-hidden pt-6">
+            <!-- Comment List -->
+            <div class="flex-1 overflow-y-auto p-4">
+            @if (task.comments && task.comments.length > 0) {
+              <div class="comments-list">
+                @for (comment of task.comments; track comment.id) {
+                  <div class="bg-[var(--color-bg)] flex flex-col gap-3 pb-5 group">
+                    <div class="flex items-center justify-between w-full">
+                      <div class="flex items-center gap-3">
+                        <div class="comment-avatar w-8 h-8 rounded-full text-xs shadow-sm shrink-0 flex items-center justify-center text-white" [style.background]="getUserDisplay(comment.userId).avatarColor">
+                          {{ getUserDisplay(comment.userId).initials }}
+                        </div>
+                        <div class="text-[14px]">
+                          <span class="font-semibold text-[var(--color-text)]">{{ getUserDisplay(comment.userId).name }}</span>
+                          <span class="text-[var(--color-text-muted)] ml-1">added a comment {{ comment.createdAt | date:'short' }}</span>
+                        </div>
+                      </div>
+                      <div class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <app-dropdown-menu
+                          [items]="commentMenuItems"
+                          [iconOnly]="true"
+                          (itemSelected)="onCommentMenuItemClick($event, comment)"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="w-full">
+                      @if (editingCommentId() === comment.id) {
+                        <div class="comment-edit-form w-full">
+                          <textarea
+                            class="comment-textarea w-full"
+                            [ngModel]="editCommentContent()"
+                            (ngModelChange)="editCommentContent.set($event)"
+                            maxlength="2000"
+                            rows="3"
+                          ></textarea>
+                          <div class="panel-form-actions mt-2">
+                            <button class="panel-btn-primary" (click)="saveEditComment(comment)">Save</button>
+                            <button class="panel-btn-secondary" (click)="cancelEditComment()">Cancel</button>
+                          </div>
+                        </div>
+                      } @else {
+                        <div class="bg-[var(--color-bg-muted)] text-[var(--color-text)] px-4 py-3 rounded-xl border border-[var(--color-border-strong)] text-[14px]">
+                          <p class="whitespace-pre-wrap m-0 leading-relaxed">{{ comment.content }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="empty-state">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span class="empty-state-title">No comments yet</span>
+                <span class="empty-state-desc">Be the first to comment on this task</span>
+              </div>
+            }
+
+            </div>
+
+            <!-- Add Comment -->
+             <div class="p-4 border-t border-border-strong bg-bg-muted">
+
+               <div class="comment-form shrink-0">
+                 <textarea
+                   class="comment-textarea"
+                   placeholder="Add a comment..."
+                   [ngModel]="newCommentContent()"
+                   (ngModelChange)="newCommentContent.set($event)"
+                   maxlength="2000"
+                   rows="3"
+                 ></textarea>
+                 <div class="comment-form-footer">
+                   <button
+                     class="text-white"
+                     (click)="onAddComment()"
+                     [disabled]="addingComment() || !newCommentContent().trim()"
+                   >
+                     @if (addingComment()) { <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-icon lucide-loader animate-spin"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg> } @else { <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-icon lucide-send"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg> }
+                   </button>
+                 </div>
+               </div>
+             </div>
+
+          </div>
+        }
+
+        <!-- DEPENDENCIES Section -->
+        @if (activeSection() === 'dependencies') {
+          <div class="dependencies-section h-full overflow-y-auto p-4">
+            @if (task.dependencies && task.dependencies.length > 0) {
+              @for (dep of task.dependencies; track dep.id) {
+                <div class="dependency-card">
+                  <div class="dependency-info">
+                    <span class="dependency-type-badge">{{ depTypeLabels[dep.type] }}</span>
+                    <span class="dependency-task-title">{{ getDepTaskTitle(dep.dependOnTaskId) }}</span>
+                  </div>
+                  <button class="assignment-remove-btn" (click)="onRemoveDependency(dep)" title="Remove">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              }
+            } @else {
+              <div class="empty-state">
+                <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/>
+                </svg>
+                <span class="empty-state-title">No dependencies</span>
+                <span class="empty-state-desc">Link related tasks to track blockers</span>
+              </div>
+            }
+
+            @if (showDepForm()) {
+              <div class="panel-inline-form">
+                <label class="panel-form-label">Dependency Type</label>
+                <app-custom-select
+                  [ngModel]="depType()"
+                  (ngModelChange)="depType.set($event)"
+                  [options]="depTypeSelectOptions"
+                  [searchable]="false"
+                ></app-custom-select>
+                <label class="panel-form-label">Task</label>
+                <app-custom-select
+                  [ngModel]="depTaskId()"
+                  (ngModelChange)="depTaskId.set($event)"
+                  [options]="depTaskOptions"
+                  [searchable]="true"
+                  placeholder="Select a task..."
+                ></app-custom-select>
+                <div class="panel-form-actions">
+                  <button
+                    class="panel-btn-primary"
+                    (click)="onAddDependency()"
+                    [disabled]="addingDependency() || !depTaskId()"
+                  >
+                    @if (addingDependency()) { Adding... } @else { Add }
+                  </button>
+                  <button class="panel-btn-secondary" (click)="showDepForm.set(false)">Cancel</button>
+                </div>
+              </div>
+            } @else {
+              <button class="panel-add-btn" (click)="showDepForm.set(true)">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Dependency
+              </button>
+            }
+          </div>
+        }
+        <!-- HISTORY Section -->
+        @if (activeSection() === 'history') {
+          <div class="history-section h-full overflow-y-auto p-4">
+            @if (task.statusHistory && task.statusHistory.length > 0) {
+              <div class="relative">
+                <div class="absolute left-[7px] top-2 bottom-2 w-0.5 bg-[var(--color-border-strong)]"></div>
+                
+                @for (history of task.statusHistory; track history.id) {
+                  <div class="relative flex gap-3 mb-6 last:mb-0">
+                    <div class="relative z-10 w-4 h-4 mt-1 rounded-full border-2 border-[var(--color-bg)]" [style.background]="getStatusColor(history.newStatus)"></div>
+                    <div class="flex-1">
+                      <div class="bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-md p-3">
+                        <div class="flex items-start justify-between gap-4">
+                          <p class="text-sm text-text mb-1">
+                          <span class="font-semibold">{{ getUserDisplay(history.changedBy).name }}</span>
+                          changed status
+                          @if (history.oldStatus) {
+                            from 
+                            <span class="font-medium" [style.color]="getStatusColor(history.oldStatus)">{{ statusLabels[history.oldStatus] }}</span>
+                          }
+                          to 
+                          <span class="font-medium" [style.color]="getStatusColor(history.newStatus)">{{ statusLabels[history.newStatus] }}</span>
+                        </p>
+                        <span class="text-xs text-text-muted whitespace-nowrap">{{ history.changedAt | date:'MMM d, h:mm a' }}</span>
+                        </div>
+                        
+                      @if (history.comment) {
+                        <p class="text-sm text-text-muted mt-2 italic bg-[var(--color-bg)] p-2 rounded border border-[var(--color-border)]">
+                          "{{ history.comment }}"
+                        </p>
+                      }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="empty-state">
+                <span class="empty-state-title">No history yet</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ATTACHMENTS Section -->
+        @if (activeSection() === 'attachments') {
+          <div class="attachments-section h-full overflow-y-auto p-4">
+            <app-attachments entityType="TASK" [entityId]="task.id"></app-attachments>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

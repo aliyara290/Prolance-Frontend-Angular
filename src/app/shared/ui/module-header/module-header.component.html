@@ -1,0 +1,74 @@
+<div class="flex items-center justify-between">
+
+  <!-- Title -->
+  <h1 class="text-xl text-text-muted tracking-tight">
+    {{ title }}
+  </h1>
+
+
+  <!-- Actions -->
+  <div class="flex items-center gap-[var(--spacing-md)]">
+
+    <!-- View Toggles -->
+    @if (showListView || showKanbanView) {
+      <div class="flex items-center gap-2">
+        <!-- Refresh Button -->
+        <button
+          type="button"
+          (click)="onRefresh()"
+          class="p-1.5 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-all duration-150 cursor-pointer border border-transparent"
+          title="Refresh data"
+        >
+          <lucide-icon [img]="icons.refresh" [size]="16"></lucide-icon>
+        </button>
+
+        @if (showListView) {
+          <button
+            type="button"
+            (click)="setView('list')"
+            class="p-1.5 rounded-[var(--radius-sm)] transition-all duration-150 cursor-pointer"
+            [class]="activeView() === 'list'
+              ? 'bg-[var(--color-bg-muted)] text-[var(--color-text)] shadow-sm border border-[var(--color-border-strong)]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] border border-transparent'"
+            title="List view"
+          >
+            <lucide-icon [img]="icons.list" [size]="16"></lucide-icon>
+          </button>
+        }
+
+        @if (showKanbanView) {
+          <button
+            type="button"
+            (click)="setView('kanban')"
+            class="p-1.5 rounded-[var(--radius-sm)] transition-all duration-150 cursor-pointer"
+            [class]="activeView() === 'kanban'
+              ? 'bg-[var(--color-bg-muted)] text-[var(--color-text)] shadow-sm border border-[var(--color-border-strong)]'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] border border-transparent'"
+            title="Kanban view"
+          >
+            <lucide-icon [img]="icons.kanban" [size]="16"></lucide-icon>
+          </button>
+        }
+
+
+      </div>
+    }
+
+
+
+
+
+    <div class="fixed bottom-12 right-5 z-[12345678934567]">
+      <button
+        type="button"
+        (click)="onPrimaryAction()"
+        class="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-primary)] text-white text-[var(--text-sm)] hover:bg-[var(--color-primary-hover)] shadow-md transition-colors duration-150 focus:outline-none cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-plus-icon lucide-badge-plus"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+      </button>
+    </div>
+
+
+
+  </div>
+</div>

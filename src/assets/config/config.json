@@ -1,8 +1,8 @@
 {
   "environment": "development",
   "apiGatewayUrl": "http://localhost:8080",
-  "keycloakUrl": "http://localhost:8180",
+  "keycloakUrl": "http://localhost:8079/",
   "keycloakRealm": "prolance",
-  "keycloakClientId": "prolance-frontend",
+  "keycloakClientId": "prolance-frontend-client",
   "enableDebug": true
 }

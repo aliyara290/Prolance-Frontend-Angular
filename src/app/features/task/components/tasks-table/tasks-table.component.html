@@ -1,0 +1,262 @@
+<p-table
+  #dt
+  [value]="tasks"
+  dataKey="id"
+  [rows]="20"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [paginator]="true"
+  [loading]="false"
+  [globalFilterFields]="['title', 'type', 'status', 'priority']"
+  selectionMode="multiple"
+  class="p-datatable-sm p-datatable-gridlines"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tasks"
+  [showCurrentPageReport]="true"
+>
+
+  <ng-template #caption>
+    <div class="flex items-center justify-between gap-3 px-3 py-2.5">
+      <div class="relative flex items-center">
+        <svg class="w-[14px] h-[14px] text-[var(--color-text-muted)] absolute left-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+          placeholder="Search tasks..."
+          class="search-input"
+        />
+      </div>
+
+      <button
+        type="button"
+        (click)="clearFilters()"
+        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--color-text)] border border-[var(--color-border-strong)] rounded-md bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-active)] duration-150 cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        Clear Filters
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox />
+      </th>
+      <th pSortableColumn="title" style="min-width: 14rem">
+        Title <p-sortIcon field="title" />
+      </th>
+      <th pSortableColumn="type" style="min-width: 7rem">
+        Type <p-sortIcon field="type" />
+      </th>
+      <th pSortableColumn="status" style="min-width: 9rem">
+        Status <p-sortIcon field="status" />
+      </th>
+      <th pSortableColumn="priority" style="min-width: 8rem">
+        Priority <p-sortIcon field="priority" />
+      </th>
+      <th style="min-width: 10rem">
+        Assignees
+      </th>
+      <th pSortableColumn="dueDate" style="min-width: 9rem">
+        Due Date <p-sortIcon field="dueDate" />
+      </th>
+      <th pSortableColumn="createdAt" style="min-width: 9rem">
+        Created <p-sortIcon field="createdAt" />
+      </th>
+      <th></th>
+    </tr>
+
+    <tr>
+      <th></th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="title"
+          placeholder="Search title"
+          filterOn="input"
+        />
+      </th>
+      <th>
+        <p-columnFilter field="type" matchMode="equals" [showMenu]="false">
+          <ng-template #filter let-filter="filterCallback">
+            <p-select
+              [(ngModel)]="filterType"
+              [options]="typeOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Any type"
+              [showClear]="true"
+              (onChange)="filter($event.value)"
+              style="min-width: 7rem; font-size: 0.8rem"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="status" matchMode="equals" [showMenu]="false">
+          <ng-template #filter let-filter="filterCallback">
+            <p-select
+              [(ngModel)]="filterStatus"
+              [options]="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Any status"
+              [showClear]="true"
+              (onChange)="filter($event.value)"
+              style="min-width: 8rem; font-size: 0.8rem"
+            >
+              <ng-template let-option #item>
+                <p-tag
+                  [value]="option.label"
+                  [severity]="getStatusSeverity(option.value)"
+                />
+              </ng-template>
+            </p-select>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="priority" matchMode="equals" [showMenu]="false">
+          <ng-template #filter let-filter="filterCallback">
+            <p-select
+              [(ngModel)]="filterPriority"
+              [options]="priorityOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Any priority"
+              [showClear]="true"
+              (onChange)="filter($event.value)"
+              style="min-width: 8rem; font-size: 0.8rem"
+            >
+              <ng-template let-option #item>
+                <p-tag
+                  [value]="option.label"
+                  [severity]="getPrioritySeverity(option.value)"
+                />
+              </ng-template>
+            </p-select>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-task>
+    <tr class="task-row">
+      <td>
+        <p-tableCheckbox [value]="task" />
+      </td>
+
+      <!-- Title -->
+      <td>
+        <button
+          type="button"
+          class="task-title-link"
+          (click)="viewTask.emit(task)"
+        >
+          {{ task.title }}
+        </button>
+      </td>
+
+      <!-- Type Badge -->
+      <td>
+        <span
+          class="task-type-badge"
+          [style.color]="getTypeColor(task.type)"
+          [style.border-color]="getTypeColor(task.type)"
+        >
+          {{ getTypeLabel(task.type) }}
+        </span>
+      </td>
+
+      <!-- Status -->
+      <td>
+        <p-tag
+          [value]="getStatusLabel(task.status)"
+          [severity]="getStatusSeverity(task.status)"
+        />
+      </td>
+
+      <!-- Priority -->
+      <td>
+        <p-tag
+          [value]="getPriorityLabel(task.priority)"
+          [severity]="getPrioritySeverity(task.priority)"
+        />
+      </td>
+
+      <!-- Assignees -->
+      <td>
+        @if (task.assignments && task.assignments.length > 0) {
+          <div class="assignee-stack">
+            @for (display of getAssigneeDisplays(task); track $index) {
+              <div
+                class="assignee-avatar"
+                [style.background]="display.avatarColor"
+                [title]="display.name"
+              >
+                {{ display.initials }}
+              </div>
+            }
+          </div>
+        } @else {
+          <span class="text-xs text-[var(--color-text-muted)]">—</span>
+        }
+      </td>
+
+      <!-- Due Date -->
+      <td class="text-sm text-[var(--color-text-secondary)]">
+        @if (task.dueDate) {
+          {{ task.dueDate | date:'mediumDate' }}
+        } @else {
+          <span class="text-[var(--color-text-muted)]">—</span>
+        }
+      </td>
+
+      <!-- Created At -->
+      <td class="text-sm text-[var(--color-text-secondary)]">
+        {{ task.createdAt | date:'shortDate' }}
+      </td>
+
+      <!-- Actions -->
+      <td>
+        <app-dropdown-menu
+          [items]="moreActions"
+          [iconOnly]="true"
+          (itemSelected)="onMoreAction($event, task)"
+        />
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="9">
+        <div class="flex flex-col items-center gap-3 py-16 text-[var(--color-text-muted)]">
+          <svg class="w-12 h-12 text-[var(--color-border)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-sm">No tasks found matching your filters.</span>
+          <button
+            pButton
+            type="button"
+            label="Clear Filters"
+            icon="pi pi-filter-slash"
+            (click)="clearFilters()"
+            severity="secondary"
+            outlined="true"
+            size="small"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>

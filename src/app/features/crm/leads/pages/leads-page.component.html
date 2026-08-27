@@ -1,0 +1,34 @@
+@if (loading()) {
+  <app-entity-list-skeleton></app-entity-list-skeleton>
+} @else if (error()) {
+  <div class="m-md">
+    <app-error-message 
+      title="Data Loading Failed" 
+      [message]="error() ?? 'An unexpected error occurred while fetching the data.'" 
+      layout="full"
+      [showRetry]="false">
+    </app-error-message>
+  </div>
+} @else {
+<div class="m-md">
+
+  <app-module-header
+    title="Leads"
+    primaryActionLabel="Create Lead"
+    [primaryActionItems]="primaryActionItems"
+    [moreActionItems]="moreActions"
+    (primaryAction)="onCreate()"
+    (primaryActionSelected)="onPrimaryActionSelected($event)"
+    (moreActionSelected)="onMoreAction($event)"
+    (refresh)="onRefresh()"
+  />
+</div>
+
+  <div class="m-md border border-border-strong rounded-md overflow-hidden bg-bg">
+    <app-leads-table
+      [leads]="leads()"
+      [totalCount]="totalCount()"
+      (editLead)="onEditLead($event)"
+    />
+  </div>
+}

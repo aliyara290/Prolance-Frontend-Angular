@@ -1,94 +1,139 @@
-<section id="features" class="py-[120px] bg-[var(--color-card)]">
+<section id="features" class="py-[140px] bg-[var(--color-bg)] relative">
   <div class="max-w-[var(--container-width)] mx-auto px-[var(--spacing-lg)]">
 
-    <div class="text-center max-w-[800px] mx-auto mb-[80px]">
-      <h2 class="text-3xl md:text-4xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-md)] tracking-tight">
-        Everything you need to ship faster
+    <div class="text-center max-w-[800px] mx-auto mb-[100px]">
+      <h2 class="text-3xl md:text-[56px] font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-md)] tracking-tighter leading-[1.1]">
+        Everything you need to <span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-info)]">ship faster</span>
       </h2>
-      <p class="text-[var(--text-lg)] text-[var(--color-text-secondary)] font-[var(--font-normal)] leading-relaxed">
+      <p class="text-[var(--text-lg)] text-[var(--color-text-secondary)] font-[var(--font-normal)] leading-relaxed mt-6">
         Prolance replaces your scattered tools with a single, powerful workspace designed for modern product development.
       </p>
     </div>
 
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-xl)]">
-      <!-- Feature 1 -->
-      <div class="p-[var(--spacing-xl)] rounded-[var(--radius-xl)] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary-soft)] hover:shadow-[var(--shadow-md)] transition-all duration-[var(--transition-normal)] group">
-        <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mb-[var(--spacing-lg)] group-hover:scale-110 transition-transform duration-[var(--transition-normal)]">
-          <svg class="w-6 h-6 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
+    <!-- Bento Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-md)] auto-rows-[minmax(300px,auto)]">
+      
+      <!-- Feature 1 (Spans 2 columns) -->
+      <div class="md:col-span-2 p-[var(--spacing-2xl)] rounded-[var(--radius-2xl)] bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-primary-soft)] hover:shadow-[var(--shadow-lg)] transition-all duration-[var(--transition-normal)] group relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-[var(--color-primary-soft)] opacity-20 rounded-full blur-[80px] group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 max-w-[400px]">
+          <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mb-[var(--spacing-lg)] shadow-sm">
+            <svg class="w-6 h-6 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Project Management</h3>
+          <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
+            Plan, track, and manage agile projects with customizable workflows, Kanban boards, and dynamic lists tailored to your team's needs.
+          </p>
         </div>
-        <h3 class="text-xl font-[var(--font-semibold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Project Management</h3>
-        <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
-          Plan, track, and manage agile projects with customizable workflows, Kanban boards, and lists.
-        </p>
+        <!-- Decorative UI Element -->
+        <div class="relative z-10 mt-8 -mx-4 -mb-8 h-[160px] bg-[var(--color-bg)] rounded-t-[var(--radius-xl)] border border-[var(--color-border)] border-b-0 shadow-inner overflow-hidden flex gap-4 p-4 transform group-hover:-translate-y-2 transition-transform duration-500">
+           <div class="flex-1 bg-[var(--color-card)] rounded-[var(--radius-md)] border border-[var(--color-border)] p-3 flex flex-col gap-2">
+             <div class="h-2 w-12 bg-[var(--color-primary)] rounded-full opacity-80"></div>
+             <div class="h-2 w-full bg-[var(--color-text)] rounded-full opacity-80 mt-2"></div>
+             <div class="h-2 w-2/3 bg-[var(--color-text-muted)] rounded-full opacity-60"></div>
+           </div>
+           <div class="flex-1 bg-[var(--color-card)] rounded-[var(--radius-md)] border border-[var(--color-border)] p-3 flex flex-col gap-2 opacity-50">
+             <div class="h-2 w-12 bg-[var(--color-warning)] rounded-full opacity-80"></div>
+             <div class="h-2 w-full bg-[var(--color-text)] rounded-full opacity-80 mt-2"></div>
+           </div>
+        </div>
       </div>
 
       <!-- Feature 2 -->
-      <div class="p-[var(--spacing-xl)] rounded-[var(--radius-xl)] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-success-soft)] hover:shadow-[var(--shadow-md)] transition-all duration-[var(--transition-normal)] group">
-        <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-success-soft)] flex items-center justify-center mb-[var(--spacing-lg)] group-hover:scale-110 transition-transform duration-[var(--transition-normal)]">
-          <svg class="w-6 h-6 text-[var(--color-success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
+      <div class="md:col-span-1 p-[var(--spacing-xl)] rounded-[var(--radius-2xl)] bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-success-soft)] hover:shadow-[var(--shadow-lg)] transition-all duration-[var(--transition-normal)] group relative overflow-hidden flex flex-col">
+        <div class="absolute bottom-0 right-0 w-[200px] h-[200px] bg-[var(--color-success-soft)] opacity-20 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 flex-1">
+          <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-success-soft)] flex items-center justify-center mb-[var(--spacing-lg)] shadow-sm">
+            <svg class="w-6 h-6 text-[var(--color-success)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Team Collaboration</h3>
+          <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
+            Keep everyone aligned with real-time updates, mentions, threaded comments, and shared docs.
+          </p>
         </div>
-        <h3 class="text-xl font-[var(--font-semibold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Team Collaboration</h3>
-        <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
-          Keep everyone aligned with real-time updates, mentions, threaded comments, and shared docs.
-        </p>
       </div>
 
       <!-- Feature 3 -->
-      <div class="p-[var(--spacing-xl)] rounded-[var(--radius-xl)] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-warning-soft)] hover:shadow-[var(--shadow-md)] transition-all duration-[var(--transition-normal)] group">
-        <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-warning-soft)] flex items-center justify-center mb-[var(--spacing-lg)] group-hover:scale-110 transition-transform duration-[var(--transition-normal)]">
-          <svg class="w-6 h-6 text-[var(--color-warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
+      <div class="md:col-span-1 p-[var(--spacing-xl)] rounded-[var(--radius-2xl)] bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-warning-soft)] hover:shadow-[var(--shadow-lg)] transition-all duration-[var(--transition-normal)] group relative overflow-hidden flex flex-col">
+        <div class="absolute bottom-0 right-0 w-[200px] h-[200px] bg-[var(--color-warning-soft)] opacity-20 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 flex-1">
+          <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-warning-soft)] flex items-center justify-center mb-[var(--spacing-lg)] shadow-sm">
+            <svg class="w-6 h-6 text-[var(--color-warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Advanced Analytics</h3>
+          <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
+            Gain deep insights into team velocity, project bottlenecks, and resource allocation with custom reports.
+          </p>
         </div>
-        <h3 class="text-xl font-[var(--font-semibold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Advanced Analytics</h3>
-        <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
-          Gain deep insights into team velocity, project bottlenecks, and resource allocation with custom reports.
-        </p>
       </div>
 
-      <!-- Feature 4 -->
-      <div class="p-[var(--spacing-xl)] rounded-[var(--radius-xl)] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-info-soft)] hover:shadow-[var(--shadow-md)] transition-all duration-[var(--transition-normal)] group">
-        <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-info-soft)] flex items-center justify-center mb-[var(--spacing-lg)] group-hover:scale-110 transition-transform duration-[var(--transition-normal)]">
-          <svg class="w-6 h-6 text-[var(--color-info)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
+      <!-- Feature 4 (Spans 2 columns) -->
+      <div class="md:col-span-2 p-[var(--spacing-2xl)] rounded-[var(--radius-2xl)] bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-info-soft)] hover:shadow-[var(--shadow-lg)] transition-all duration-[var(--transition-normal)] group relative overflow-hidden flex flex-col md:flex-row items-center gap-8 justify-between">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[var(--color-info-soft)] opacity-20 rounded-full blur-[80px] group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 max-w-[400px]">
+          <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-info-soft)] flex items-center justify-center mb-[var(--spacing-lg)] shadow-sm">
+            <svg class="w-6 h-6 text-[var(--color-info)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Built-in CRM</h3>
+          <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
+            Manage your sales pipeline, track leads, and close deals directly where you manage your product delivery.
+          </p>
         </div>
-        <h3 class="text-xl font-[var(--font-semibold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Built-in CRM</h3>
-        <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
-          Manage your sales pipeline, track leads, and close deals without leaving your workspace.
-        </p>
+        <div class="relative z-10 flex-1 w-full max-w-[300px] bg-[var(--color-bg)] rounded-[var(--radius-xl)] border border-[var(--color-border)] shadow-sm p-4 transform group-hover:scale-105 transition-transform duration-500">
+           <!-- Small CRM Mockup -->
+           <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-3 mb-3">
+             <div class="w-8 h-8 rounded-full bg-[var(--color-bg-muted)] flex items-center justify-center"><div class="w-4 h-4 bg-[var(--color-border-strong)] rounded-full"></div></div>
+             <div class="flex flex-col gap-1.5"><div class="h-2 w-20 bg-[var(--color-text)] rounded-full"></div><div class="h-1.5 w-12 bg-[var(--color-text-muted)] rounded-full"></div></div>
+             <div class="ml-auto h-5 w-16 bg-[var(--color-success-soft)] rounded-full border border-[var(--color-success)]/20 flex items-center justify-center"><div class="h-1.5 w-8 bg-[var(--color-success)] rounded-full"></div></div>
+           </div>
+           <div class="flex items-center gap-3">
+             <div class="w-8 h-8 rounded-full bg-[var(--color-bg-muted)] flex items-center justify-center"><div class="w-4 h-4 bg-[var(--color-border-strong)] rounded-full"></div></div>
+             <div class="flex flex-col gap-1.5"><div class="h-2 w-24 bg-[var(--color-text)] rounded-full"></div><div class="h-1.5 w-14 bg-[var(--color-text-muted)] rounded-full"></div></div>
+             <div class="ml-auto h-5 w-16 bg-[var(--color-warning-soft)] rounded-full border border-[var(--color-warning)]/20 flex items-center justify-center"><div class="h-1.5 w-8 bg-[var(--color-warning)] rounded-full"></div></div>
+           </div>
+        </div>
       </div>
 
       <!-- Feature 5 -->
-      <div class="p-[var(--spacing-xl)] rounded-[var(--radius-xl)] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-danger-soft)] hover:shadow-[var(--shadow-md)] transition-all duration-[var(--transition-normal)] group">
-        <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-danger-soft)] flex items-center justify-center mb-[var(--spacing-lg)] group-hover:scale-110 transition-transform duration-[var(--transition-normal)]">
-          <svg class="w-6 h-6 text-[var(--color-danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      <div class="md:col-span-1 p-[var(--spacing-xl)] rounded-[var(--radius-2xl)] bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-danger-soft)] hover:shadow-[var(--shadow-lg)] transition-all duration-[var(--transition-normal)] group relative overflow-hidden flex flex-col">
+        <div class="absolute bottom-0 left-0 w-[200px] h-[200px] bg-[var(--color-danger-soft)] opacity-20 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 flex-1">
+          <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-danger-soft)] flex items-center justify-center mb-[var(--spacing-lg)] shadow-sm">
+            <svg class="w-6 h-6 text-[var(--color-danger)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Time Tracking</h3>
+          <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
+            Log hours, monitor budgets, and generate accurate invoices directly from your tasks.
+          </p>
         </div>
-        <h3 class="text-xl font-[var(--font-semibold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Time Tracking</h3>
-        <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
-          Log hours, monitor budgets, and generate accurate invoices directly from your tasks.
-        </p>
       </div>
 
-      <!-- Feature 6 -->
-      <div class="p-[var(--spacing-xl)] rounded-[var(--radius-xl)] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary-soft)] hover:shadow-[var(--shadow-md)] transition-all duration-[var(--transition-normal)] group">
-        <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mb-[var(--spacing-lg)] group-hover:scale-110 transition-transform duration-[var(--transition-normal)]">
-          <svg class="w-6 h-6 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
+      <!-- Feature 6 (Spans 2 columns) -->
+      <div class="md:col-span-2 p-[var(--spacing-2xl)] rounded-[var(--radius-2xl)] bg-[var(--color-card)] border border-[var(--color-border)] hover:border-[var(--color-primary-soft)] hover:shadow-[var(--shadow-lg)] transition-all duration-[var(--transition-normal)] group relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-[var(--color-primary-soft)] opacity-20 rounded-full blur-[80px] group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 max-w-[500px]">
+          <div class="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mb-[var(--spacing-lg)] shadow-sm">
+            <svg class="w-6 h-6 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-[var(--font-bold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Enterprise Security</h3>
+          <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
+            Bank-grade encryption, SSO, granular RBAC, and multi-tenant isolation out of the box. Keep your sensitive data protected.
+          </p>
         </div>
-        <h3 class="text-xl font-[var(--font-semibold)] text-[var(--color-text)] mb-[var(--spacing-sm)] tracking-tight">Enterprise Security</h3>
-        <p class="text-[var(--text-md)] text-[var(--color-text-secondary)] leading-relaxed">
-          Bank-grade encryption, SSO, granular RBAC, and multi-tenant isolation out of the box.
-        </p>
       </div>
+
     </div>
 
   </div>

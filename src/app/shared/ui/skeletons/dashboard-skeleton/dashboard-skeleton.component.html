@@ -1,0 +1,89 @@
+<div class="w-full space-y-6">
+  
+  <!-- Top Metrics Skeleton -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (i of [1,2,3,4]; track i) {
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm flex flex-col h-[186px]">
+        <div class="p-6 flex flex-col h-full">
+          <div class="flex items-center justify-between mb-6">
+            <div class="animate-pulse bg-border-strong w-24 h-4 rounded-[var(--radius-sm)]"></div>
+            <div class="animate-pulse bg-border-strong w-8 h-8 rounded-[var(--radius-md)]"></div>
+          </div>
+          <div class="mt-auto">
+            <div class="animate-pulse bg-border-strong w-20 h-10 rounded-[var(--radius-sm)] mb-3"></div>
+            <div class="animate-pulse bg-border-strong w-32 h-3 rounded-[var(--radius-sm)]"></div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Mixed Charts Row Skeleton -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    
+    <!-- Doughnut Skeleton -->
+    <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
+      <div class="animate-pulse bg-border-strong w-32 h-4 rounded-[var(--radius-sm)] mb-8"></div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="animate-pulse bg-border-strong w-48 h-48 rounded-full border-[20px] border-bg-muted"></div>
+      </div>
+    </div>
+
+    <!-- Bar Chart Skeleton -->
+    <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
+      <div class="flex items-center justify-between mb-4">
+        <div class="animate-pulse bg-border-strong w-40 h-4 rounded-[var(--radius-sm)]"></div>
+        <div class="animate-pulse bg-border-strong w-20 h-4 rounded-[var(--radius-sm)]"></div>
+      </div>
+      <div class="flex-1 flex items-end justify-around pb-6 pt-10">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="animate-pulse bg-border-strong w-10 rounded-[var(--radius-md)]" [style.height.%]="30 + (i * 10)"></div>
+        }
+      </div>
+    </div>
+
+    <!-- Doughnut Skeleton -->
+    <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] p-5 shadow-sm flex flex-col h-[340px]">
+      <div class="animate-pulse bg-border-strong w-32 h-4 rounded-[var(--radius-sm)] mb-8"></div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="animate-pulse bg-border-strong w-48 h-48 rounded-full border-[20px] border-bg-muted"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tables Row Skeleton -->
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    @for (i of [1,2]; track i) {
+      <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] overflow-hidden shadow-sm">
+        <div class="px-5 py-4 border-b border-border-strong flex items-center justify-between bg-bg-muted/30">
+          <div class="animate-pulse bg-border-strong w-40 h-3 rounded-[var(--radius-sm)]"></div>
+          <div class="animate-pulse bg-border-strong w-16 h-3 rounded-[var(--radius-sm)]"></div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm whitespace-nowrap">
+            <thead class="bg-bg-muted border-b border-border-strong">
+              <tr>
+                <th class="px-5 py-3"><div class="animate-pulse bg-border-strong w-20 h-3 rounded-[var(--radius-sm)]"></div></th>
+                <th class="px-5 py-3"><div class="animate-pulse bg-border-strong w-16 h-3 rounded-[var(--radius-sm)]"></div></th>
+                <th class="px-5 py-3"><div class="animate-pulse bg-border-strong w-16 h-3 rounded-[var(--radius-sm)]"></div></th>
+                <th class="px-5 py-3 text-right"><div class="animate-pulse bg-border-strong w-12 h-3 rounded-[var(--radius-sm)] ml-auto"></div></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-strong">
+              @for (j of [1,2,3]; track j) {
+                <tr>
+                  <td class="px-5 py-4"><div class="animate-pulse bg-border-strong w-32 h-3.5 rounded-[var(--radius-sm)]"></div></td>
+                  <td class="px-5 py-4"><div class="animate-pulse bg-border-strong w-16 h-5 rounded-md"></div></td>
+                  <td class="px-5 py-4"><div class="animate-pulse bg-border-strong w-20 h-3 rounded-[var(--radius-sm)]"></div></td>
+                  <td class="px-5 py-4"><div class="animate-pulse bg-border-strong w-8 h-3 rounded-[var(--radius-sm)] ml-auto"></div></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</div>

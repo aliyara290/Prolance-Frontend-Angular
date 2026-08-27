@@ -1,0 +1,31 @@
+<aside class="sidebar">
+
+  <!-- Back to Dashboard -->
+  <a routerLink="/app/dashboard" class="back-btn">
+    <div class="back-btn-icon w-8 h-8 rounded-full flex items-center justify-center bg-bg-muted border border-border-strong">
+      <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
+    </div>
+    <span>Dashboard</span>
+  </a>
+
+  <!--  <div class="divider"></div>-->
+<div class="pt-4 pl-4">
+  <h2 class="text-md text-text">General Settings</h2>
+</div>
+
+  <div class="divider"></div>
+  <!-- Nav Items -->
+  <nav class="nav">
+    @for (item of navItems; track $index) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <lucide-icon [img]="item.icon" [size]="18"></lucide-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+</aside>

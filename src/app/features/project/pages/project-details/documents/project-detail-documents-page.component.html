@@ -1,0 +1,9 @@
+<div class="h-full flex flex-col p-4 pt-0 mx-auto w-full">
+  @if (detailService.project(); as project) {
+    <div class="">
+      <app-attachments entityType="PROJECT" [entityId]="project.id"></app-attachments>
+    </div>
+  } @else {
+    <div class="p-6 text-center text-text-muted">Loading...</div>
+  }
+</div>

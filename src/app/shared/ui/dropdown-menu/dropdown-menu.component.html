@@ -1,0 +1,91 @@
+<div class="relative flex items-center text-left h-8" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+
+  @if (iconOnly) {
+    <button
+      type="button"
+      (click)="toggle()"
+      class="flex items-center justify-center text-text-muted bg-bg px-2 py-0.5 rounded-md border shadow-sm border-border duration-150 focus:outline-none cursor-pointer hover:bg-bg-hover"
+      aria-haspopup="true"
+      [attr.aria-expanded]="isOpen()"
+    >
+      <!-- Three dots icon -->
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <circle cx="4" cy="10" r="1.5" />
+        <circle cx="10" cy="10" r="1.5" />
+        <circle cx="16" cy="10" r="1.5" />
+      </svg>
+    </button>
+  }
+  @else if (splitChevron) {
+    <button
+      type="button"
+      (click)="toggle()"
+      class="flex items-center justify-center w-9 h-full bg-primary text-white border-l border-l-bg  hover:bg-primary-hover  duration-150 focus:outline-none cursor-pointer"
+      aria-haspopup="true"
+      [attr.aria-expanded]="isOpen()"
+    >
+      <svg
+        class="h-4 w-4 transition-transform duration-150"
+        [class.rotate-180]="isOpen()"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  }
+
+
+  @else {
+    <button
+      type="button"
+      (click)="toggle()"
+      class="inline-flex items-center overflow-hidden rounded bg-primary text-white shadow-sm  duration-150 hover:bg-primary-hover focus:outline-none cursor-pointer"
+      aria-haspopup="true"
+      [attr.aria-expanded]="isOpen()"
+    >
+      <span class="px-4 py-1.5 text-sm font-semibold">
+        {{ buttonLabel }}
+      </span>
+      <span class="h-full border-l border-white/30 px-2 py-1.5 flex items-center">
+        <svg
+          class="h-4 w-4 transition-transform duration-150"
+          [class.rotate-180]="isOpen()"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+        </svg>
+      </span>
+    </button>
+  }
+
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen()"
+  (overlayOutsideClick)="close()"
+>
+  <div class="mt-1 min-w-[180px] rounded-lg border border-border-strong bg-bg shadow-xl p-1 overflow-hidden">
+    @for (item of items; track item.value) {
+      @if (item.dividerBefore) {
+        <div class="my-1 border-t border-border-strong"></div>
+      }
+      <button
+        type="button"
+        [disabled]="item.disabled ?? false"
+        (click)="selectItem(item)"
+        class="flex w-full items-center text-text-muted gap-2.5 px-4 py-2 text-left text-sm  duration-100 rounded-sm hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+        [class.text-danger]="item.danger"
+        [class.text-[#1a2942]]="!item.danger"
+      >
+<!--        @if (item.icon) {-->
+<!--          <span class="w-4 h-4 shrink-0 text-[#8492a6]" [innerHTML]="item.icon"></span>-->
+<!--        }-->
+        {{ item.label }}
+      </button>
+    }
+  </div>
+</ng-template>

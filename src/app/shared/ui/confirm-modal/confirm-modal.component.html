@@ -1,0 +1,58 @@
+@if (isOpen) {
+<div class="fixed inset-0 z-[100000000000000000000000000] flex items-center justify-center font-sans">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/60 transition-opacity" (click)="onCancel()"></div>
+
+  <!-- Modal -->
+  <div
+    class="relative bg-bg w-full max-w-[400px] rounded-2xl shadow-xl overflow-hidden flex flex-col transform transition-all border border-border"
+    role="dialog" aria-modal="true"
+  >
+    <div class="px-6 pt-6 pb-5 flex flex-col items-center text-center">
+      <!-- Icon -->
+      <div class="w-12 h-12 rounded-full mb-4 flex items-center justify-center shrink-0 border border-border-strong"
+           [class.bg-bg-muted]="options?.danger"
+           [class.text-text]="options?.danger"
+           [class.bg-primary-soft]="!options?.danger"
+           [class.text-primary]="!options?.danger"
+      >
+        @if (options?.danger) {
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" x2="12" y1="8" y2="12"/>
+            <line x1="12" x2="12.01" y1="16" y2="16"/>
+          </svg>
+        }
+      </div>
+
+      <h3 class="text-xl font-bold text-text-inverse tracking-tight mb-2">
+        {{ options?.title }}
+      </h3>
+      <p class="text-sm text-text-muted leading-relaxed">
+        {{ options?.message }}
+      </p>
+    </div>
+
+    <div class="px-6 py-4 bg-bg-muted border-t border-border flex justify-end gap-3 shrink-0">
+      <button
+        (click)="onCancel()"
+        class="px-5 py-2 text-sm font-semibold text-text border border-border rounded-lg bg-bg hover:bg-bg-hover hover:text-text-inverse transition-all cursor-pointer shadow-sm"
+      >
+        {{ options?.cancelText || 'Cancel' }}
+      </button>
+      <button
+        (click)="onConfirm()"
+        class="px-5 py-2 text-sm font-semibold rounded-lg text-white transition-all cursor-pointer shadow-sm border border-transparent"
+        [class.bg-danger]="options?.danger"
+        [class.hover:bg-danger-hover]="options?.danger"
+        [class.bg-[var(--color-primary)]]="!options?.danger"
+        [class.hover:bg-[var(--color-primary-hover)]]="!options?.danger"
+      >
+        {{ options?.confirmText || 'Confirm' }}
+      </button>
+    </div>
+  </div>
+</div>
+}

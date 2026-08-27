@@ -1,13 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-
-export interface AppConfig {
-  apiGatewayUrl: string;
-  keycloakUrl: string;
-  keycloakRealm: string;
-  keycloakClientId: string;
-}
+import { AppConfig } from './app-config.model';
 
 @Injectable({
   providedIn: 'root'

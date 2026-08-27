@@ -1,0 +1,97 @@
+/* =========================================
+   SEARCH INPUT
+========================================= */
+.search-input {
+  padding: 6px 10px 6px 30px;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  width: 240px;
+  transition: border-color var(--transition-fast);
+}
+
+.search-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* =========================================
+   TASK TITLE LINK
+========================================= */
+.task-title-link {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--transition-fast);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.task-title-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+/* =========================================
+   TYPE BADGE
+========================================= */
+.task-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* =========================================
+   ASSIGNEE AVATAR STACK
+========================================= */
+.assignee-stack {
+  display: flex;
+  align-items: center;
+}
+
+.assignee-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--color-bg);
+  color: #fff;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.assignee-avatar:not(:first-child) {
+  margin-left: -6px;
+}
+
+/* =========================================
+   TABLE ROW HOVER
+========================================= */
+.task-row {
+  transition: background-color var(--transition-fast);
+}
+
+.task-row:hover {
+  background-color: var(--color-bg-hover) !important;
+}

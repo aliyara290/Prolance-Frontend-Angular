@@ -1,0 +1,252 @@
+@if (layoutState.mobileDrawerOpen()) {
+  <div
+    (click)="layoutState.toggleMobileDrawer()"
+    class="fixed inset-0 bg-overlay z-modal-backdrop md:hidden transition-opacity">
+  </div>
+}
+
+<aside
+  [class]="'h-full border-r border-border-strong fixed md:static inset-y-0 left-0 z-modal md:z-auto bg-sidebar text-text-inverse flex flex-col ' +
+               (layoutState.sidebarCollapsed() ? 'w-[64px]' : 'w-[240px]') +
+               (layoutState.mobileDrawerOpen() ? ' translate-x-0' : ' -translate-x-full md:translate-x-0')">
+
+  <!-- Tab Switcher -->
+  <div class="flex justify-center w-full p-3 border-b-1 border-border">
+    <div class="grid grid-cols-2 w-full items-center gap-1 text-sm font-semibold bg-bg-muted p-1 rounded-full border border-border-strong">
+      <button (click)="toggleTab()"
+              [class.text-[var(--color-primary)]]="activeTab() === 'CRM'"
+              [class.bg-bg]="activeTab() === 'CRM'"
+              [class.!border-border-strong]="activeTab() === 'CRM'"
+              class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+        CRM
+      </button>
+      <button (click)="toggleTab()"
+              [class.text-[var(--color-primary)]]="activeTab() === 'projects'"
+              [class.bg-bg]="activeTab() === 'projects'"
+              [class.!text-text]="activeTab() === 'projects'"
+              [class.!border-border-strong]="activeTab() === 'projects'"
+              class="text-text-muted px-4 py-1 rounded-full hover:text-text border-1 hover:border-border-strong border-transparent cursor-pointer focus:outline-none">
+        Projects
+      </button>
+    </div>
+  </div>
+
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden pb-4 custom-scrollbar pt-2">
+
+    @if (activeTab() === 'CRM') {
+      @for (section of crmNavSections(); track section.title) {
+        <div class="px-4 py-2 mt-1 text-text-muted text-xs font-semibold uppercase tracking-wider">
+          @if (!layoutState.sidebarCollapsed()) {
+            <span>{{ section.title }}</span>
+          }
+        </div>
+
+        @for (item of section.items; track item.id) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="!bg-bg-active !text-primary !border-l-3 !border-primary"
+            [routerLinkActiveOptions]="{ exact: false }"
+            class="flex items-center gap-3 px-4 py-2.5 text-text-muted hover:text-text-inverse hover:bg-bg-hover relative cursor-pointer border-l-3 border-transparent">
+
+            <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+              <lucide-icon [img]="item.icon" [size]="18"></lucide-icon>
+            </span>
+
+            @if (!layoutState.sidebarCollapsed()) {
+              <span class="text-sm">{{ item.label }}</span>
+            }
+
+            @if (item.badge && !layoutState.sidebarCollapsed()) {
+              <span class="ml-auto text-xs font-semibold text-text-muted bg-bg-muted px-2 py-0.5 rounded-full">
+                {{ item.badge }}
+              </span>
+            }
+          </a>
+        }
+      }
+
+    <!-- ═══════════════════════════════════════
+         PROJECTS TAB
+         ═══════════════════════════════════════ -->
+
+    } @else {
+      <!-- OVERVIEW -->
+      <div class="px-4 py-2 mt-1 text-text-muted text-xs font-semibold uppercase tracking-wider">
+        @if (!layoutState.sidebarCollapsed()) {
+          <span>{{ overviewNav.title }}</span>
+        }
+      </div>
+
+      @for (item of overviewNav.items; track item.id) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="!bg-bg-active !text-primary !border-l-3 !border-primary"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="flex items-center gap-3 px-4 py-2.5 text-text-muted hover:text-text-inverse hover:bg-bg-hover relative cursor-pointer border-l-3 border-transparent">
+
+          <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+            @if (item.icon) {
+              <lucide-icon [img]="item.icon" [size]="18"></lucide-icon>
+            }
+          </span>
+
+          @if (!layoutState.sidebarCollapsed()) {
+            <span class="text-sm">{{ item.label }}</span>
+          }
+
+          @if (item.badge && !layoutState.sidebarCollapsed()) {
+            <span class="ml-auto text-xs font-semibold text-text-muted bg-bg-muted px-2 py-0.5 rounded-full">
+              {{ item.badge }}
+            </span>
+          }
+        </a>
+      }
+
+      <!-- CURRENT PROJECT -->
+      <div class="px-4 py-2 mt-3 text-text-muted text-xs font-semibold uppercase tracking-wider">
+        @if (!layoutState.sidebarCollapsed()) {
+          <span>{{ currentProjectNav.title }}</span>
+        }
+      </div>
+
+      @for (item of currentProjectNav.items; track item.id) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="!bg-bg-active !text-primary !border-l-3 !border-primary"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="flex items-center gap-3 px-4 py-2.5 text-text-muted hover:text-text-inverse hover:bg-bg-hover relative cursor-pointer border-l-3 border-transparent">
+
+          <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+            @if (item.icon) {
+              <lucide-icon [img]="item.icon" [size]="18"></lucide-icon>
+            }
+          </span>
+
+          @if (!layoutState.sidebarCollapsed()) {
+            <span class="text-sm">{{ item.label }}</span>
+          }
+
+          @if (item.badge && !layoutState.sidebarCollapsed()) {
+            <span [class]="item.badgeType === 'accent'
+              ? 'ml-auto text-xs font-semibold text-white bg-primary px-2 py-0.5 rounded-full'
+              : 'ml-auto text-xs font-semibold text-text-muted bg-bg-muted px-2 py-0.5 rounded-full'">
+              {{ item.badge }}
+            </span>
+          }
+        </a>
+      }
+
+      <!-- RECENT PROJECTS -->
+      @if (!layoutState.sidebarCollapsed()) {
+        <div class="px-4 py-2 mt-3 flex items-center justify-between">
+          <span class="text-text-muted text-xs font-semibold uppercase tracking-wider">
+            {{ projectSearchQuery() ? 'SEARCH RESULTS' : 'RECENT PROJECTS' }}
+          </span>
+        </div>
+
+        <div class="px-4 my-2">
+          <div class="relative">
+            <lucide-icon [img]="icons.search" [size]="14" class="absolute left-1.5 top-1/2 -translate-y-1/2 text-text-muted"></lucide-icon>
+            <input
+              type="text"
+              placeholder="Search projects..."
+              [ngModel]="projectSearchQuery()"
+              (ngModelChange)="projectSearchQuery.set($event)"
+              class="w-full pl-8 pr-3 py-[6px] text-xs bg-bg-hover border border-border-strong rounded-[var(--radius-md)] text-text placeholder:text-text-muted"
+            >
+          </div>
+        </div>
+
+        @if (loadingProjects()) {
+          <div class="flex flex-col gap-2 px-4 py-2">
+            <div class="h-6 rounded-md bg-bg-muted animate-pulse"></div>
+            <div class="h-6 rounded-md bg-bg-muted animate-pulse"></div>
+            <div class="h-6 rounded-md bg-bg-muted animate-pulse"></div>
+          </div>
+        } @else if (displayedProjects().length === 0) {
+          <div class="mx-4 my-3 p-4 rounded-xl bg-bg-muted border border-border-strong flex flex-col items-center justify-center text-center group">
+
+
+            <h4 class="text-sm font-semibold text-text-inverse">No projects found</h4>
+            @if (projectSearchQuery()) {
+              <p class="text-xs text-text-muted mt-1 mb-2 leading-relaxed">Try adjusting your search query.</p>
+            } @else {
+              <p class="text-xs text-text-muted mt-1 mb-4 leading-relaxed">Get started by creating your first project.</p>
+            }
+
+            <a [routerLink]="['/app/projects/all/create']" class="w-full block">
+              <button class="w-full py-2 px-3 bg-primary text-white text-xs font-semibold rounded-lg shadow-sm hover:bg-primary-hover flex items-center justify-center cursor-pointer">
+                Create Project
+              </button>
+            </a>
+          </div>
+        } @else {
+          @for (project of displayedProjects(); track project.id) {
+            <a class="flex items-center gap-3 px-4 pl-5 py-2 text-text-muted hover:text-text-inverse hover:bg-bg-hover relative cursor-pointer border-l-3 border-transparent"
+               [routerLink]="['/app/projects/all/', project.id]"
+               routerLinkActive="!bg-bg-active !text-primary"
+               [title]="project.name"
+            >
+              <span class="w-2 h-2 rounded-full flex-shrink-0 bg-primary"></span>
+              <span class="text-sm truncate">{{ project.name }}</span>
+            </a>
+          }
+        }
+      }
+    }
+  </nav>
+
+  <!-- Settings Footer -->
+  <div class="mt-auto p-3 relative" id="sidebar-settings-container">
+
+    <!-- Dropdown Menu (Upwards) -->
+    @if (isSettingsMenuOpen()) {
+      <div class="absolute bottom-full left-3 right-3 mb-2 bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] overflow-hidden z-50">
+        <div class="">
+          <!-- Personal Settings -->
+          <a [routerLink]="['/app/settings/personal']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+            <lucide-icon [img]="icons.user" size="16"></lucide-icon>
+            Personal Settings
+          </a>
+          <!-- Workspace Settings -->
+          <a [routerLink]="['/app/settings/workspace']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+            <lucide-icon [img]="icons.briefcase" size="16"></lucide-icon>
+            Workspace Settings
+          </a>
+          <!-- Users -->
+          <a [routerLink]="['/app/settings/users']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+            <lucide-icon [img]="icons.users" size="16"></lucide-icon>
+            Users
+          </a>
+          <!-- Notifications -->
+          <a [routerLink]="['/app/settings/notifications']"
+             routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer">
+            <lucide-icon [img]="icons.bell" size="16"></lucide-icon>
+            Notifications
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- General Settings Button -->
+    <button (click)="toggleSettingsMenu()"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted hover:text-white bg-bg-hover hover:bg-primary transition-colors cursor-pointer border border-border-strong"
+            [class.bg-primary]="isSettingsMenuOpen()"
+            [class.!text-white]="isSettingsMenuOpen()">
+      <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+        <lucide-icon [img]="icons.settings" [size]="18"></lucide-icon>
+      </span>
+      @if (!layoutState.sidebarCollapsed()) {
+        <span class="text-sm font-medium">General Settings</span>
+      }
+    </button>
+  </div>
+
+</aside>
