@@ -1,5 +1,5 @@
 <div
-  class="fixed inset-0 z-[9956789098765678998] transition-all duration-300"
+  class="fixed inset-0 z-[9956789098765678998]  duration-300"
   [class.pointer-events-none]="!isOpen"
   [class.opacity-0]="!isOpen"
   [class.opacity-100]="isOpen"
@@ -35,7 +35,7 @@
             <button
               type="button"
               (click)="onClose()"
-              class="w-8 h-8 text-text-muted flex items-center justify-center rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors cursor-pointer border border-border-strong"
+              class="w-8 h-8 text-text-muted flex items-center justify-center rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)]  cursor-pointer border border-border-strong"
             >
               <lucide-icon [img]="icons.x" size="20"></lucide-icon>
             </button>
@@ -120,7 +120,7 @@
                       <span class="detail-field-text w-10 font-medium">{{ milestone.progressPercentage }}%</span>
                       <div class="flex-1 h-2 bg-[var(--color-bg-muted)] rounded-full overflow-hidden max-w-[150px]">
                         <div
-                          class="h-full bg-[var(--color-primary)] transition-all duration-500"
+                          class="h-full bg-[var(--color-primary)]  duration-500"
                           [style.width.%]="milestone.progressPercentage"
                         ></div>
                       </div>
@@ -226,9 +226,9 @@
               } @else {
                 <div class="flex flex-col gap-3">
                   @for (task of tasks(); track task.id) {
-                    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4 hover:border-[var(--color-primary-soft)] transition-colors cursor-pointer group">
+                    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4 hover:border-[var(--color-primary-soft)]  cursor-pointer group">
                       <div class="flex items-start justify-between mb-2">
-                        <h4 class="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-1 flex-1 pr-4">
+                        <h4 class="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)]  line-clamp-1 flex-1 pr-4">
                           {{ task.title }}
                         </h4>
                         <span

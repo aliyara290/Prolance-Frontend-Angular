@@ -1,0 +1,168 @@
+<div class="p-6 max-w-7xl mx-auto space-y-5">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-semibold text-[var(--color-text)] tracking-tight">Time Tracker</h1>
+      <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Log and manage billable time entries.</p>
+    </div>
+    <button
+      type="button"
+      (click)="openLogTime()"
+      class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)] cursor-pointer  shadow-[var(--shadow-sm)]"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      Log Time
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap items-end gap-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-4">
+    <div class="flex-1 min-w-[200px]">
+      <label for="tt-project" class="block text-xs font-medium text-[var(--color-text-muted)] mb-1.5 uppercase tracking-wider">Project</label>
+      <select
+        id="tt-project"
+        [(ngModel)]="selectedProjectId"
+        (ngModelChange)="loadEntries()"
+        class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] cursor-pointer"
+      >
+        <option value="">Select a project...</option>
+        @for (p of projectOptions(); track p.value) {
+          <option [value]="p.value">{{ p.label }}</option>
+        }
+      </select>
+    </div>
+    <div>
+      <label for="tt-from" class="block text-xs font-medium text-[var(--color-text-muted)] mb-1.5 uppercase tracking-wider">From</label>
+      <input
+        id="tt-from"
+        type="date"
+        [(ngModel)]="dateFrom"
+        (ngModelChange)="loadEntries()"
+        class="px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)]"
+      />
+    </div>
+    <div>
+      <label for="tt-to" class="block text-xs font-medium text-[var(--color-text-muted)] mb-1.5 uppercase tracking-wider">To</label>
+      <input
+        id="tt-to"
+        type="date"
+        [(ngModel)]="dateTo"
+        (ngModelChange)="loadEntries()"
+        class="px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)]"
+      />
+    </div>
+    <button type="button" (click)="loadEntries()" class="px-3 py-2 text-sm font-medium text-[var(--color-primary)] bg-[var(--color-primary-soft)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] cursor-pointer">
+      Search
+    </button>
+  </div>
+
+  @if (!selectedProjectId) {
+    <!-- No project selected -->
+    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-8 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-3 opacity-50">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <p class="text-sm text-[var(--color-text-muted)]">Select a project to view time entries.</p>
+    </div>
+  } @else if (isLoading()) {
+    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-5 space-y-3">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="skeleton h-10 w-full rounded-[var(--radius-sm)]"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-8 text-center">
+      <p class="text-sm text-[var(--color-danger)] mb-3">{{ error() }}</p>
+      <button type="button" (click)="loadEntries()" class="text-sm font-medium text-[var(--color-primary)] cursor-pointer">Retry</button>
+    </div>
+  } @else {
+    <!-- Summary -->
+    @if (entries().length > 0) {
+      <div class="flex items-center gap-6 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-[var(--color-text-muted)]">Total:</span>
+          <span class="font-semibold text-[var(--color-text)]">{{ formatDuration(totalDuration()) }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[var(--color-text-muted)]">Entries:</span>
+          <span class="font-medium text-[var(--color-text)]">{{ entries().length }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[var(--color-text-muted)]">Billable:</span>
+          <span class="font-medium text-[var(--color-success)]">{{ billableCount() }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Table -->
+    <div class="bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border)] overflow-hidden">
+      @if (entries().length === 0) {
+        <div class="p-8 text-center">
+          <p class="text-sm text-[var(--color-text-muted)] mb-3">No time entries found for this period.</p>
+          <button type="button" (click)="openLogTime()" class="text-sm font-medium text-[var(--color-primary)] cursor-pointer">Log your first entry →</button>
+        </div>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-[var(--color-bg-muted)] border-b border-[var(--color-border)]">
+              <tr>
+                <th class="px-5 py-2.5 font-medium text-[var(--color-text-muted)] text-xs uppercase tracking-wider">Description</th>
+                <th class="px-5 py-2.5 font-medium text-[var(--color-text-muted)] text-xs uppercase tracking-wider">Start</th>
+                <th class="px-5 py-2.5 font-medium text-[var(--color-text-muted)] text-xs uppercase tracking-wider">End</th>
+                <th class="px-5 py-2.5 font-medium text-[var(--color-text-muted)] text-xs uppercase tracking-wider text-right">Duration</th>
+                <th class="px-5 py-2.5 font-medium text-[var(--color-text-muted)] text-xs uppercase tracking-wider text-center">Billable</th>
+                <th class="px-5 py-2.5 font-medium text-[var(--color-text-muted)] text-xs uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[var(--color-border)]">
+              @for (entry of entries(); track entry.id) {
+                <tr class="hover:bg-[var(--color-bg-hover)] ">
+                  <td class="px-5 py-3 text-[var(--color-text)] max-w-[300px]">
+                    <p class="truncate">{{ entry.description }}</p>
+                    @if (entry.taskId) {
+                      <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Task: {{ entry.taskId }}</p>
+                    }
+                  </td>
+                  <td class="px-5 py-3 text-[var(--color-text-muted)] whitespace-nowrap">{{ formatDateTime(entry.startTime) }}</td>
+                  <td class="px-5 py-3 text-[var(--color-text-muted)] whitespace-nowrap">{{ formatDateTime(entry.endTime) }}</td>
+                  <td class="px-5 py-3 text-right font-medium text-[var(--color-text)]">{{ formatDuration(entry.durationMinutes) }}</td>
+                  <td class="px-5 py-3 text-center">
+                    @if (entry.billable) {
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-[var(--radius-full)] text-xs font-medium bg-[var(--color-success-soft)] text-[var(--color-success)]">
+                        Billable
+                      </span>
+                    } @else {
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-[var(--radius-full)] text-xs font-medium bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]">
+                        Non-billable
+                      </span>
+                    }
+                  </td>
+                  <td class="px-5 py-3 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" (click)="openEditEntry(entry)" class="p-1 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] cursor-pointer" title="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                      </button>
+                      <button type="button" (click)="deleteEntry(entry)" class="p-1 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] cursor-pointer" title="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Time Entry Dialog -->
+<app-time-entry-dialog
+  [isOpen]="isDialogOpen()"
+  [editEntry]="editingEntry()"
+  [isSubmitting]="isSubmitting()"
+  [projectOptions]="projectOptions()"
+  (closed)="closeDialog()"
+  (submitted)="onSubmitted($event)"
+/>

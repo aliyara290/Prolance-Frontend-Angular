@@ -80,6 +80,13 @@ export const PROJECTS_ROUTES: Routes = [
           ),
       },
       {
+        path: 'rates',
+        loadComponent: () =>
+          import('../billing/pages/bill-rates/bill-rates.component').then(
+            m => m.BillRatesComponent
+          ),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

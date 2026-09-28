@@ -48,7 +48,7 @@
             type="text"
             formControlName="title"
             placeholder="Enter task title..."
-            class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)] transition-colors duration-150"
+            class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)]  "
           />
           @if (taskForm.get('title')?.touched && taskForm.get('title')?.hasError('required')) {
             <span class="text-xs text-[var(--color-danger)]">Title is required.</span>
@@ -70,7 +70,7 @@
             formControlName="description"
             placeholder="Describe the task..."
             rows="4"
-            class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)] transition-colors duration-150 resize-y font-[var(--font-sans)]"
+            class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)]   resize-y font-[var(--font-sans)]"
           ></textarea>
           @if (taskForm.get('description')?.touched && taskForm.get('description')?.hasError('maxlength')) {
             <span class="text-xs text-[var(--color-danger)]">Description cannot exceed 1000 characters.</span>
@@ -122,7 +122,7 @@
             <input
               type="datetime-local"
               formControlName="startDate"
-              class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)] transition-colors duration-150"
+              class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)]  "
             />
             @if (taskForm.get('startDate')?.touched && taskForm.get('startDate')?.hasError('required')) {
               <span class="text-xs text-[var(--color-danger)]">Start date is required.</span>
@@ -136,7 +136,7 @@
             <input
               type="datetime-local"
               formControlName="dueDate"
-              class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)] transition-colors duration-150"
+              class="w-full px-3 py-2.5 text-[var(--text-sm)] text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] focus:border-[var(--color-primary)]  "
             />
           </div>
         </div>
@@ -150,7 +150,7 @@
             <button
               type="button"
               (click)="toggleMilestoneDropdown($event)"
-              class="w-full flex items-center justify-between px-3 py-2.5 text-[var(--text-sm)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] text-[var(--color-text)] hover:border-[var(--color-primary)] transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full flex items-center justify-between px-3 py-2.5 text-[var(--text-sm)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] text-[var(--color-text)] hover:border-[var(--color-primary)]  focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               [disabled]="!taskForm.get('projectId')?.value"
             >
               @if (selectedMilestone) {
@@ -184,7 +184,7 @@
                   <button
                     type="button"
                     (click)="selectMilestone(null)"
-                    class="w-full flex items-center gap-2 px-2 py-2 text-sm text-left hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-sm)] transition-colors text-[var(--color-text-muted)] italic"
+                    class="w-full flex items-center gap-2 px-2 py-2 text-sm text-left hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-sm)]  text-[var(--color-text-muted)] italic"
                   >
                     No Milestone
                   </button>
@@ -193,7 +193,7 @@
                     <button
                       type="button"
                       (click)="selectMilestone(milestone)"
-                      class="w-full flex items-center justify-between px-2 py-2 text-sm text-left hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-sm)] transition-colors group"
+                      class="w-full flex items-center justify-between px-2 py-2 text-sm text-left hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-sm)]  group"
                       [class.bg-[var(--color-primary-soft)]]="taskForm.get('milestoneId')?.value === milestone.id"
                     >
                       <span class="truncate font-medium text-[var(--color-text)]">{{ milestone.title }}</span>
@@ -231,7 +231,7 @@
           <button
             type="submit"
             [disabled]="submitting()"
-            class="px-4 py-1.5 text-[var(--text-sm)]  text-white bg-[var(--color-primary)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)] transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-4 py-1.5 text-[var(--text-sm)]  text-white bg-[var(--color-primary)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)]   cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             @if (submitting()) {
               @if (editTaskId) { Updating... } @else { Creating... }
@@ -242,7 +242,7 @@
           <button
             type="button"
             (click)="cancel()"
-            class="px-4 py-1.5 text-[var(--text-sm)] font-[var(--font-medium)] text-[var(--color-text-muted)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)] transition-all duration-150 cursor-pointer"
+            class="px-4 py-1.5 text-[var(--text-sm)] font-[var(--font-medium)] text-[var(--color-text-muted)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text)]   cursor-pointer"
           >
             Cancel
           </button>

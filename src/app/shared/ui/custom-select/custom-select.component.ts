@@ -25,7 +25,14 @@ export interface CustomSelectOption {
   ]
 })
 export class CustomSelectComponent implements ControlValueAccessor {
-  @Input() options: CustomSelectOption[] = [];
+  private _options = signal<CustomSelectOption[]>([]);
+  @Input() set options(val: CustomSelectOption[]) {
+    this._options.set(val);
+  }
+  get options(): CustomSelectOption[] {
+    return this._options();
+  }
+
   @Input() placeholder = '— Select —';
   @Input() searchable = true;
   @Input() nullOptionLabel?: string;
@@ -79,15 +86,16 @@ export class CustomSelectComponent implements ControlValueAccessor {
 
   readonly filteredOptions = computed(() => {
     const q = this.searchQuery().toLowerCase();
-    if (!q) return this.options;
-    return this.options.filter(opt => 
+    const opts = this._options();
+    if (!q) return opts;
+    return opts.filter(opt => 
       opt.label.toLowerCase().includes(q) || 
       (opt.subLabel && opt.subLabel.toLowerCase().includes(q))
     );
   });
 
   get selectedOption(): CustomSelectOption | undefined {
-    return this.options.find(opt => opt.value === this.value);
+    return this._options().find(opt => opt.value === this.value);
   }
 
   @HostListener('document:click', ['$event'])

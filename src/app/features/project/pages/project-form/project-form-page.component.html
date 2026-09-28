@@ -44,7 +44,7 @@
               type="text"
               formControlName="name"
               placeholder="e.g. Maroc Telecom Project"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none "
             />
             @if (projectForm.get('name')?.touched && projectForm.get('name')?.invalid) {
               <span class="text-xs text-[var(--color-danger)] mt-1 block">Project name is required.</span>
@@ -222,7 +222,7 @@
           formControlName="description"
           placeholder="Describe the project scope, goals, and any relevant notes..."
           rows="4"
-          class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors resize-y"
+          class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none  resize-y"
         ></textarea>
       </div>
     </div>

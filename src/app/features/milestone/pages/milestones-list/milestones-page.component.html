@@ -1,6 +1,4 @@
-@if (loading()) {
-  <app-entity-list-skeleton></app-entity-list-skeleton>
-} @else if (error()) {
+@if (error()) {
   <div class="p-md">
     <app-error-message
       title="Something went wrong!"
@@ -32,7 +30,7 @@
     <div class="flex-1 flex overflow-hidden p-[var(--spacing-md)] pt-[var(--spacing-md)]">
 
       @if (sidebarVisible()) {
-        <aside class="w-56 flex-shrink-0 overflow-hidden transition-all duration-300 mr-md">
+        <aside class="w-56 flex-shrink-0 overflow-hidden  duration-300 mr-md">
           <app-milestone-filters
             [projects]="projects()"
             [selectedProjectId]="scopedProjectId()"
@@ -49,7 +47,7 @@
           <button
             (click)="toggleSidebar()"
             title="{{ sidebarVisible() ? 'Hide filters' : 'Show filters' }}"
-            class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] transition-colors cursor-pointer">
+            class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)]  cursor-pointer">
             <lucide-icon [img]="sidebarVisible() ? icons.panelClose : icons.panelOpen" size="16"></lucide-icon>
           </button>
 

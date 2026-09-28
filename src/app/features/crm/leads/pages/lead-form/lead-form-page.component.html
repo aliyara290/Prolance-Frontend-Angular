@@ -48,7 +48,7 @@
               type="text"
               formControlName="title"
               placeholder="e.g. Cegedim Project"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none "
             />
             @if (leadForm.get('title')?.touched && leadForm.get('title')?.invalid) {
               <span class="text-xs text-[var(--color-danger)] mt-1 block">Lead title is required.</span>
@@ -61,7 +61,7 @@
               formControlName="description"
               placeholder="Describe the lead or opportunity..."
               rows="3"
-              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none transition-colors resize-y"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)] outline-none  resize-y"
             ></textarea>
           </div>
 
@@ -213,7 +213,7 @@
               <button
                 type="button"
                 (click)="setClientMode('select')"
-                class="px-3 py-1 cursor-pointer transition-colors"
+                class="px-3 py-1 cursor-pointer "
                 [class.bg-[var(--color-primary)]]="clientMode() === 'select'"
                 [class.text-white]="clientMode() === 'select'"
                 [class.bg-[var(--color-bg-muted)]]="clientMode() !== 'select'"
@@ -224,7 +224,7 @@
               <button
                 type="button"
                 (click)="setClientMode('new')"
-                class="px-3 py-1 cursor-pointer transition-colors"
+                class="px-3 py-1 cursor-pointer "
                 [class.bg-[var(--color-primary)]]="clientMode() === 'new'"
                 [class.text-white]="clientMode() === 'new'"
                 [class.bg-[var(--color-bg-muted)]]="clientMode() !== 'new'"
@@ -341,7 +341,7 @@
               <button
                 type="button"
                 (click)="setContactMode('select')"
-                class="px-3 py-1 cursor-pointer transition-colors"
+                class="px-3 py-1 cursor-pointer "
                 [class.bg-[var(--color-primary)]]="contactMode() === 'select'"
                 [class.text-white]="contactMode() === 'select'"
                 [class.bg-[var(--color-bg-muted)]]="contactMode() !== 'select'"
@@ -352,7 +352,7 @@
               <button
                 type="button"
                 (click)="setContactMode('new')"
-                class="px-3 py-1 cursor-pointer transition-colors"
+                class="px-3 py-1 cursor-pointer "
                 [class.bg-[var(--color-primary)]]="contactMode() === 'new'"
                 [class.text-white]="contactMode() === 'new'"
                 [class.bg-[var(--color-bg-muted)]]="contactMode() !== 'new'"

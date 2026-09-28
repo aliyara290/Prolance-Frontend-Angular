@@ -14,7 +14,7 @@
       </app-error-message>
       <div class="flex justify-center mt-5">
         <a routerLink="/app/crm/deals"
-           class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] hover:underline transition-colors">
+           class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] hover:underline ">
           <lucide-icon [img]="ArrowLeft" [size]="14"></lucide-icon>
           Back to Deals
         </a>
@@ -30,7 +30,7 @@
         <div class="flex items-center gap-4 min-w-0">
           <!-- Back -->
           <a routerLink="/app/crm/deals"
-             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
+             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]  cursor-pointer">
             <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
           </a>
           <!-- Avatar -->
@@ -51,7 +51,8 @@
         <div class="flex items-center gap-2.5 flex-shrink-0">
           <app-dropdown-menu
             [items]="moreActions"
-            [iconOnly]="true"
+            buttonLabel="Deal actions"
+            
             (itemSelected)="onMoreAction($event)"
           ></app-dropdown-menu>
         </div>

@@ -87,22 +87,23 @@
           </button>
           <button
             class="panel-tab"
-            [class.active]="activeSection() === 'history'"
-            (click)="setSection('history')"
-          >
-            History
-            @if (task.statusHistory && task.statusHistory.length > 0) {
-              <span class="panel-tab-count">{{ task.statusHistory.length }}</span>
-            }
-          </button>
-          
-          <button
-            class="panel-tab"
             [class.active]="activeSection() === 'attachments'"
             (click)="setSection('attachments')"
           >
             Attachments
           </button>
+          <button
+            class="panel-tab"
+            [class.active]="activeSection() === 'history'"
+            (click)="setSection('history')"
+          >
+            History
+            <!-- @if (task.statusHistory && task.statusHistory.length > 0) {
+              <span class="panel-tab-count">{{ task.statusHistory.length }}</span>
+            } -->
+          </button>
+          
+          
         </div>
       </div>
 

@@ -22,7 +22,12 @@ export class UserModalComponent {
   readonly seniorityLevels = SENIORITY_LEVELS;
 
   readonly departmentSelectOptions: CustomSelectOption[] = this.allDepartments.map(d => ({ label: d, value: d }));
-  readonly educationSelectOptions: CustomSelectOption[] = this.educationLevels.map(e => ({ label: e, value: e }));
+  readonly educationSelectOptions: CustomSelectOption[] = [
+    { label: 'Bac+2', value: 'BAC_PLUS_2' },
+    { label: 'Bac+3', value: 'BAC_PLUS_3' },
+    { label: 'Bac+5', value: 'BAC_PLUS_5' },
+    { label: 'Bac+7', value: 'BAC_PLUS_7' }
+  ];
   readonly senioritySelectOptions: CustomSelectOption[] = this.seniorityLevels.map(s => ({ label: s, value: s }));
 
   getRoleBadgeClass = getRoleBadgeClass;

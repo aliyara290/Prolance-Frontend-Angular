@@ -1,33 +1,32 @@
 <div class="text-text font-sans w-full ">
 
   <div class="flex overflow-hidden">
-    <div class="flex flex-col w-full gap-6">
+    <div class="flex flex-col w-full gap-4">
 
-      <div class="flex items-center justify-between shrink-0 px-2">
-        <div>
-          <h1 class="text-2xl font-bold text-text-inverse tracking-tight">Users</h1>
-          <p class="text-sm text-text-muted mt-1.5">
-            Manage workspace members and their access
-          </p>
-        </div>
+      <div class="sticky top-0 z-10 bg-[var(--color-bg)]/80 backdrop-blur-lg border-b border-[var(--color-border-strong)]">
+        <div class="px-4 py-4 flex items-center justify-between gap-4">
 
-        <div class="flex items-center gap-3">
-          <!-- Invite button -->
-          <button
-            (click)="openInviteModal()"
-            class="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
-                   text-white rounded-[var(--radius-md)] text-sm font-semibold
-                    duration-[var(--transition-fast)] cursor-pointer shadow-[var(--shadow-sm)] hover:shadow-md transition-all"
-          >
-          
-            Invite User
-          </button>
+          <div class="">
+              <h1 class="text-lg font-bold text-[var(--color-text)] truncate leading-tight">Users</h1>
+              <p class="text-xs text-[var(--color-text-muted)] mt-0.5 truncate">Manage workspace members and their access</p>
+            </div>
+  
+          <div class="flex items-center gap-3">
+            <!-- Invite button -->
+            <button
+              (click)="openInviteModal()"
+              class="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-60 text-white rounded-lg text-sm font-bold cursor-pointer shadow-sm "
+            >
+            
+              Invite User
+            </button>
+          </div>
         </div>
       </div>
 
 
       <!-- ── Main Split Panel ── -->
-      <div class="flex min-h-[calc(100vh-194px)] bg-bg rounded-xl border border-border shadow-sm overflow-hidden">
+      <div class="flex min-h-[calc(100vh-194px)] mx-4 bg-bg rounded-xl border border-border-strong shadow-sm overflow-hidden">
         <app-user-list class="flex overflow-hidden z-10"/>
         @if (selectedUser()) {
           <app-user-detail class="flex flex-1 overflow-hidden"/>
@@ -49,6 +48,7 @@
     </div>
   </div>
 
+  
   <app-user-modal style="display:contents"/>
 
 </div>

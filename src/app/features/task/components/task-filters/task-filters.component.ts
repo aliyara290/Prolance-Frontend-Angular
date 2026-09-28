@@ -9,6 +9,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, ChevronDown, ChevronRight, X, SlidersHorizontal } from 'lucide-angular';
 import {
   TaskStatus,
@@ -36,7 +37,7 @@ export interface TaskFilters {
 @Component({
   selector: 'app-task-filters',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './task-filters.component.html',
 })
 export class TaskFiltersComponent implements OnChanges {
@@ -57,6 +58,15 @@ export class TaskFiltersComponent implements OnChanges {
   readonly priorityOpen = signal(false);
   readonly typeOpen = signal(false);
   readonly dueDateOpen = signal(true);
+
+  readonly projectSearch = signal('');
+
+  readonly filteredProjects = computed(() => {
+    const search = this.projectSearch().toLowerCase();
+    return this.projects
+      .filter(p => p.name.toLowerCase().includes(search))
+      .slice(0, 5);
+  });
 
   // Filter selections
   readonly selectedStatuses = signal<Set<TaskStatus>>(new Set());

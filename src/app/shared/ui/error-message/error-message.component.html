@@ -13,7 +13,7 @@
     @if (showRetry) {
       <button
         (click)="onRetry()"
-        class="group inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-text hover:bg-text/90 text-bg rounded-[var(--radius-md)] text-sm font-[var(--font-semibold)] transition-all shadow-sm hover:shadow-md active:scale-95 cursor-pointer">
+        class="group inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-text hover:bg-text/90 text-bg rounded-[var(--radius-md)] text-sm font-[var(--font-semibold)]  shadow-sm hover:shadow-md active:scale-95 cursor-pointer">
         <lucide-icon [img]="icons.refreshCw" size="16" class="transition-transform duration-500 group-hover:rotate-180"></lucide-icon>
         <span>Try Again</span>
       </button>
@@ -31,7 +31,7 @@
     @if (showRetry) {
       <button
         (click)="onRetry()"
-        class="group flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg/60 hover:bg-bg text-danger text-xs font-[var(--font-semibold)] rounded-[var(--radius-sm)] transition-all border border-danger-border shadow-sm hover:shadow active:scale-95 cursor-pointer">
+        class="group flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg/60 hover:bg-bg text-danger text-xs font-[var(--font-semibold)] rounded-[var(--radius-sm)]  border border-danger-border shadow-sm hover:shadow active:scale-95 cursor-pointer">
         <lucide-icon [img]="icons.refreshCw" size="13" class="transition-transform duration-500 group-hover:rotate-180"></lucide-icon>
         <span>Retry</span>
       </button>

@@ -80,7 +80,7 @@ export const AVATAR_COLORS = [
 ];
 
 export const EDUCATION_LEVELS = [
-  'BAC', 'BAC+2', 'BAC+3', 'BAC+5', 'BAC+7', 'OTHER'
+  'BAC_PLUS_2', 'BAC_PLUS_3', 'BAC_PLUS_5', 'BAC_PLUS_7'
 ];
 
 export const SENIORITY_LEVELS = [

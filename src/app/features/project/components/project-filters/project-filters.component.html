@@ -36,7 +36,7 @@
           @for (status of allStatuses; track status) {
             <button
               (click)="toggleStatus(status)"
-              class="w-full flex items-center gap-2.5 py-1.5 rounded text-left transition-colors cursor-pointer"
+              class="w-full flex items-center gap-2.5 py-1.5 rounded text-left  cursor-pointer"
             >
               <span class="text-xs text-[var(--color-text-muted)] flex-1">{{ statusLabels[status] }}</span>
               @if (selectedStatuses().has(status)) {
@@ -66,7 +66,7 @@
           @for (priority of allPriorities; track priority) {
             <button
               (click)="togglePriority(priority)"
-              class="text-[10px] font-semibold px-2 py-1 rounded-full border transition-all cursor-pointer"
+              class="text-[10px] font-semibold px-2 py-1 rounded-full border  cursor-pointer"
               [style.border-color]="selectedPriorities().has(priority) ? priorityColors[priority] : 'var(--color-border)'"
               [style.color]="priorityColors[priority]"
               [style.background]="selectedPriorities().has(priority) ? priorityColors[priority] + '22' : 'transparent'">
@@ -94,7 +94,7 @@
             opt of [['all', 'All Projects'], ['overdue', 'Overdue'], ['today', 'Due Today'], ['week', 'Due This Week']]; track opt[0]) {
             <button
               (click)="setDueDate($any(opt[0]))"
-              class="w-full text-left text-xs px-2 py-1.5 rounded transition-colors cursor-pointer"
+              class="w-full text-left text-xs px-2 py-1.5 rounded  cursor-pointer"
               [class.text-[var(--color-primary)]]="dueDateFilter() === opt[0]"
               [class.font-semibold]="dueDateFilter() === opt[0]"
               [class.text-[var(--color-text-muted)]]="dueDateFilter() !== opt[0]"

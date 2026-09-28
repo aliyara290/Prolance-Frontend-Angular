@@ -1,0 +1,268 @@
+@if (isLoading() && rates().length === 0) {
+  <app-entity-list-skeleton></app-entity-list-skeleton>
+} @else if (error()) {
+  <div class="m-md">
+    <app-error-message
+      title="Data Loading Failed"
+      [message]="error() ?? 'An unexpected error occurred while fetching the data.'"
+      layout="full"
+      [showRetry]="false">
+    </app-error-message>
+  </div>
+} @else {
+
+   <!-- Top Action Bar -->
+    <div class="fixed bottom-12 right-5 z-[12345678934567]">
+      <button
+        type="button"
+        (click)="openCreateRate()"
+        class="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-primary)] text-white text-[var(--text-sm)] hover:bg-[var(--color-primary-hover)] shadow-md   focus:outline-none cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             class="lucide lucide-badge-plus-icon lucide-badge-plus">
+          <path
+            d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/>
+          <line x1="12" x2="12" y1="8" y2="16"/>
+          <line x1="8" x2="16" y1="12" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+  <div class="mx-4 rounded-md overflow-hidden border-1 border-border-strong">
+    <p-table
+      #dt
+      [value]="rates()"
+      dataKey="id"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [paginator]="true"
+      [loading]="isLoading()"
+      [globalFilterFields]="['userId', 'seniorityLevel', 'educationLevel', 'hourlyRate']"
+      selectionMode="multiple"
+      class="p-datatable-sm p-datatable-gridlines"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} rates"
+      [showCurrentPageReport]="true"
+    >
+
+      <ng-template #caption>
+        <div class="flex items-center justify-between gap-3 px-3 py-2.5">
+          <div class="flex items-center gap-3">
+            <div class="relative flex items-center">
+              <svg class="w-[14px] h-[14px] text-[#a3afc4] absolute left-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Search rates..."
+                class="search-input"
+              />
+            </div>
+
+
+          </div>
+
+          <button
+            type="button"
+            (click)="clearFilters()"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text border border-border-strong rounded-md bg-bg-muted hover:bg-bg-active  cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Clear Filters
+          </button>
+
+            
+
+        </div>
+      </ng-template>
+
+      <ng-template #header>
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox />
+          </th>
+          <th pSortableColumn="userId" style="min-width: 14rem">
+            User <p-sortIcon field="userId" />
+          </th>
+          <th pSortableColumn="seniorityLevel" style="min-width: 10rem">
+            Seniority <p-sortIcon field="seniorityLevel" />
+          </th>
+          <th pSortableColumn="educationLevel" style="min-width: 10rem">
+            Education <p-sortIcon field="educationLevel" />
+          </th>
+          <th pSortableColumn="hourlyRate" style="min-width: 9rem">
+            Hourly <p-sortIcon field="hourlyRate" />
+          </th>
+          <th pSortableColumn="dailyRate" style="min-width: 9rem">
+            Daily <p-sortIcon field="dailyRate" />
+          </th>
+          <th pSortableColumn="effectiveFrom" style="min-width: 11rem">
+            Effective <p-sortIcon field="effectiveFrom" />
+          </th>
+          <th style="width: 4rem"></th>
+        </tr>
+
+        <tr>
+          <th></th>
+          <th>
+            <p-columnFilter
+              type="text"
+              field="userId"
+              placeholder="Search user"
+              filterOn="input"
+            />
+          </th>
+          <th>
+            <p-columnFilter field="seniorityLevel" matchMode="equals" [showMenu]="false">
+              <ng-template #filter let-filter="filterCallback">
+                <p-select
+                  [(ngModel)]="filterSeniority"
+                  [options]="seniorityOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Any seniority"
+                  [showClear]="true"
+                  (onChange)="filter($event.value)"
+                  style="min-width: 9rem; font-size: 0.8rem"
+                />
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter field="educationLevel" matchMode="equals" [showMenu]="false">
+              <ng-template #filter let-filter="filterCallback">
+                <p-select
+                  [(ngModel)]="filterEducation"
+                  [options]="educationOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Any education"
+                  [showClear]="true"
+                  (onChange)="filter($event.value)"
+                  style="min-width: 9rem; font-size: 0.8rem"
+                />
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter
+              type="text"
+              field="hourlyRate"
+              placeholder="Search rate"
+              filterOn="input"
+            />
+          </th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-rate>
+        <tr class="hover:bg-[#f8f9fd] ">
+          <td>
+            <p-tableCheckbox [value]="rate" />
+          </td>
+
+          <td>
+            @if (getUserInfo(rate.userId); as user) {
+              <div class="flex items-center gap-3 cursor-pointer group" (click)="openDetailsSidebar(rate)">
+                <div
+                  class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase shrink-0 shadow-sm transition-transform group-hover:scale-105"
+                  [style.backgroundColor]="user.avatarColor"
+                >
+                  {{ user.firstName[0] }}{{ user.lastName[0] }}
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium text-[var(--color-text)] group-hover:text-[var(--color-primary)]  line-clamp-1">
+                    {{ user.firstName }} {{ user.lastName }}
+                  </span>
+                  <span class="text-xs text-[var(--color-text-muted)] line-clamp-1">{{ user.email }}</span>
+                </div>
+              </div>
+            } @else {
+              <span class="text-primary font-medium cursor-pointer text-sm" (click)="openDetailsSidebar(rate)">
+                {{ rate.userId }}
+              </span>
+            }
+          </td>
+
+          <td class="text-sm text-[#1a2942]">{{ getSeniorityLabel(rate.seniorityLevel) }}</td>
+          <td class="text-sm text-[#1a2942]">{{ getEducationLabel(rate.educationLevel) }}</td>
+
+          <td class="text-sm text-[#1a2942] font-medium">
+            {{ formatCurrency(rate.hourlyRate, rate.currency) }}<span class="text-xs text-[#8492a6] font-normal">/h</span>
+          </td>
+
+          <td class="text-sm text-[#1a2942] font-medium">
+            @if (rate.dailyRate) {
+              {{ formatCurrency(rate.dailyRate, rate.currency) }}<span class="text-xs text-[#8492a6] font-normal">/d</span>
+            } @else {
+              <span class="text-[#8492a6] font-normal">-</span>
+            }
+          </td>
+
+          <td class="text-sm text-[#5e6d82]">
+            {{ formatDate(rate.effectiveFrom) }}
+            @if (rate.effectiveTo) {
+              → {{ formatDate(rate.effectiveTo) }}
+            }
+          </td>
+
+          <td>
+            <app-dropdown-menu
+              [items]="moreActions"
+              [iconOnly]="true"
+              (itemSelected)="onMoreAction($event, rate)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="8">
+            <div class="flex flex-col items-center justify-center gap-3 py-16 text-[#8492a6]">
+              <i class="pi pi-inbox text-5xl text-[#d9dde8]"></i>
+              @if (!selectedProjectId) {
+                <span class="text-sm">Please select a project to view bill rates.</span>
+              } @else {
+                <span class="text-sm">No bill rates found matching your filters.</span>
+                <button
+                  type="button"
+                  (click)="clearFilters()"
+                  class="text-sm font-medium text-primary hover:underline cursor-pointer mt-2"
+                >
+                  Clear Filters
+                </button>
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+}
+
+<app-bill-rate-dialog
+  [isOpen]="isDialogOpen()"
+  [editRate]="editingRate()"
+  [isSubmitting]="isSubmitting()"
+  [selectedProjectId]="selectedProjectId"
+  [userOptions]="userOptions()"
+  (closed)="closeDialog()"
+  (submitted)="onSubmitted($event)"
+/>
+
+<app-bill-rate-details-panel
+  [isOpen]="isDetailsPanelOpen()"
+  [rate]="selectedRateForDetails()"
+  [user]="selectedRateForDetails() ? getUserInfo(selectedRateForDetails()!.userId) || null : null"
+  (closed)="closeDetailsSidebar()"
+  (editRequested)="onMoreAction({ label: 'Edit', value: 'edit' }, $event)"
+  (deleteRequested)="onMoreAction({ label: 'Delete', value: 'delete', danger: true }, $event)"
+/>

@@ -3,6 +3,15 @@
   <h1 class="text-xl text-text-muted tracking-tight">
     Tasks
   </h1>
+
+  <button
+            type="button"
+            class="p-1.5 rounded-[var(--radius-sm)] bg-[var(--color-bg-muted)] text-[var(--color-text)] shadow-sm border border-[var(--color-border-strong)] cursor-pointer"
+            
+            title="Kanban view"
+          >
+            <lucide-icon [img]="icons.kanban" [size]="16"></lucide-icon>
+          </button>
 </div>
 
 <app-tasks-list-page></app-tasks-list-page>

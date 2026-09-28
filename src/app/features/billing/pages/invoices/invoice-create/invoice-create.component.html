@@ -1,0 +1,226 @@
+<div class="flex flex-col gap-4 text-[var(--color-text)] text-sm p-md">
+  
+  <!-- Header Card -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-[var(--color-bg)] rounded-lg p-5 border border-[var(--color-border-strong)]">
+    <div class="flex items-center gap-4">
+      <button type="button" (click)="goBack()" class="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--color-bg-muted)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border-strong)] cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div>
+        <h1 class="text-lg font-bold text-[var(--color-text)] leading-tight">Create Invoice</h1>
+        <p class="text-sm font-normal text-[var(--color-text-muted)] mt-0.5">Create a new invoice manually or generate from tracked time.</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center flex-wrap gap-4">
+      <!-- Tabs as pill switch -->
+      
+      
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button type="button" (click)="goBack()" class="px-4 py-2 bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] border border-[var(--color-border-strong)] text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+          Cancel
+        </button>
+        
+        @if (activeTab === 'manual') {
+          <button type="button" (click)="submitManual()" [disabled]="manualForm.invalid || isSubmitting()" class="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+            @if (isSubmitting()) {
+              <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+            }
+            Create Invoice
+          </button>
+        } @else {
+          <button type="button" (click)="submitGenerate()" [disabled]="generateForm.invalid || isSubmitting()" class="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-[var(--radius-md)] cursor-pointer">
+            @if (isSubmitting()) {
+              <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+            }
+            Generate Invoice
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-1 p-1 bg-[var(--color-bg)] rounded-full border border-[var(--color-border-strong)] w-fit">
+        <button
+          type="button"
+          (click)="setTab('manual')"
+          class="px-5 py-1.5 text-sm font-medium rounded-full border-1 border-transparent cursor-pointer"
+          [class]="activeTab === 'manual' ? 'bg-[var(--color-bg-hover)] text-[var(--color-text)] shadow-sm !border-border-strong' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'"
+        >
+          Manual Invoice
+        </button>
+        <button
+          type="button"
+          (click)="setTab('generate')"
+          class="px-5 py-1.5 text-sm font-medium rounded-full border-1 border-transparent cursor-pointer"
+          [class]="activeTab === 'generate' ? 'bg-[var(--color-bg-hover)] text-[var(--color-text)] shadow-sm !border-border-strong' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'"
+        >
+          Generate from Time
+        </button>
+      </div>
+
+  <!-- Manual Invoice Form -->
+  @if (activeTab === 'manual') {
+    <form [formGroup]="manualForm" (ngSubmit)="submitManual()" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      
+      <!-- Left Column -->
+      <div class="flex flex-col gap-4">
+        <!-- Project & Client Section -->
+        <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Project</h2>
+          </div>
+          <div class="p-5 space-y-4">
+
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Project <span class="text-[var(--color-danger)]">*</span></label>
+              <app-custom-select formControlName="projectId" [options]="projectOptions()" [searchable]="true" placeholder="Select project"></app-custom-select>
+              @if (manualForm.get('projectId')?.touched && manualForm.get('projectId')?.hasError('required')) {
+                <p class="text-xs text-[var(--color-danger)] mt-1">Project is required.</p>
+              }
+            </div>
+          </div>
+        </div>
+        
+        <!-- Billing Details Section -->
+        <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Billing Details</h2>
+          </div>
+          <div class="p-5 space-y-4">
+            <div>
+              <label for="manual-billing-type" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Billing Type <span class="text-[var(--color-danger)]">*</span></label>
+              <select id="manual-billing-type" formControlName="billingType" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none">
+                @for (bt of billingTypes; track bt) {
+                  <option [value]="bt">{{ billingTypeLabels[bt] }}</option>
+                }
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="manual-issue" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Issue Date <span class="text-[var(--color-danger)]">*</span></label>
+                <input id="manual-issue" type="date" formControlName="issueDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+              <div>
+                <label for="manual-due" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Due Date <span class="text-[var(--color-danger)]">*</span></label>
+                <input id="manual-due" type="date" formControlName="dueDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column -->
+      <div class="flex flex-col gap-4">
+        <!-- Period & Tax Section -->
+        <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Period & Tax</h2>
+          </div>
+          <div class="p-5 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="manual-period-start" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Period Start</label>
+                <input id="manual-period-start" type="date" formControlName="periodStartDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+              <div>
+                <label for="manual-period-end" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Period End</label>
+                <input id="manual-period-end" type="date" formControlName="periodEndDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+            </div>
+            <div>
+              <label for="manual-tax" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Tax Rate (%)</label>
+              <input id="manual-tax" type="number" formControlName="taxRate" min="0" max="100" step="0.01" placeholder="e.g. 20" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Additional Information</h2>
+          </div>
+          <div class="p-5 space-y-4">
+            <div>
+              <label for="manual-notes" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Notes</label>
+              <textarea id="manual-notes" formControlName="notes" rows="4" placeholder="Optional notes for this invoice" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] outline-none resize-y"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </form>
+  }
+  
+  <!-- Generate from Time Form -->
+  @if (activeTab === 'generate') {
+    <form [formGroup]="generateForm" (ngSubmit)="submitGenerate()" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      
+      <!-- Left Column -->
+      <div class="flex flex-col gap-4">
+        <!-- Info Banner -->
+        <div class="p-4 rounded-lg bg-bg-active border border-border-strong flex gap-3 items-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="text-text-muted shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            <strong class="text-[var(--color-text)]">Automated Invoice Generation:</strong> Select a project and define your billing period. The system will automatically scan all approved, billable time entries recorded within this timeframe. It will then calculate the totals based on the configured project bill rates and generate a comprehensive invoice, saving you from manual data entry.
+          </p>
+        </div>
+
+        <!-- Project & Client Section -->
+        <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Project</h2>
+          </div>
+          <div class="p-5 space-y-4">
+
+            <div>
+              <label class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Project <span class="text-[var(--color-danger)]">*</span></label>
+              <app-custom-select formControlName="projectId" [options]="projectOptions()" [searchable]="true" placeholder="Select project"></app-custom-select>
+              @if (generateForm.get('projectId')?.touched && generateForm.get('projectId')?.hasError('required')) {
+                <p class="text-xs text-[var(--color-danger)] mt-1">Project is required.</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column -->
+      <div class="flex flex-col gap-4">
+        <!-- Billing Details Section -->
+        <div class="bg-[var(--color-bg)] border border-[var(--color-border-strong)] rounded-lg shadow-sm">
+          <div class="border-b border-[var(--color-border-strong)] py-4 px-5">
+            <h2 class="text-md font-bold text-[var(--color-text)] tracking-tight">Billing Parameters</h2>
+          </div>
+          <div class="p-5 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="gen-start" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Period Start <span class="text-[var(--color-danger)]">*</span></label>
+                <input id="gen-start" type="date" formControlName="periodStartDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+              <div>
+                <label for="gen-end" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Period End <span class="text-[var(--color-danger)]">*</span></label>
+                <input id="gen-end" type="date" formControlName="periodEndDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="gen-due" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Due Date <span class="text-[var(--color-danger)]">*</span></label>
+                <input id="gen-due" type="date" formControlName="dueDate" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+              <div>
+                <label for="gen-tax" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Tax Rate (%)</label>
+                <input id="gen-tax" type="number" formControlName="taxRate" min="0" max="100" step="0.01" placeholder="e.g. 20" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] outline-none" />
+              </div>
+            </div>
+            <div>
+              <label for="gen-notes" class="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Notes</label>
+              <textarea id="gen-notes" formControlName="notes" rows="2" placeholder="Optional notes" class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] outline-none resize-y"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </form>
+  }
+</div>

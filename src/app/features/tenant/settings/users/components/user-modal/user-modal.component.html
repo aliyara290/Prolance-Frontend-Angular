@@ -181,7 +181,7 @@
               [disabled]="!isStep1Valid"
               class="flex items-center gap-2 px-5 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
                      disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-[var(--radius-md)]
-                     text-sm font-medium cursor-pointer transition-colors"
+                     text-sm font-medium cursor-pointer "
             >
               Next
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -206,7 +206,7 @@
               <button
                 (click)="toggleRole(role)"
                 class="flex items-center gap-3 px-4 py-3 rounded-[var(--radius-md)] border text-left
-                       transition-all duration-[var(--transition-fast)] cursor-pointer"
+                        duration-[var(--transition-fast)] cursor-pointer"
                 [class.border-[var(--color-primary)]]="hasRole(role)"
                 [class.bg-[var(--color-primary-soft)]]="hasRole(role)"
                 [class.border-[var(--color-border)]]="!hasRole(role)"
@@ -237,7 +237,7 @@
               (click)="goToStep(1)"
               class="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-muted)]
                      hover:text-[var(--color-text)] border border-[var(--color-border)] rounded-[var(--radius-md)]
-                     hover:bg-[var(--color-bg-hover)] cursor-pointer transition-colors"
+                     hover:bg-[var(--color-bg-hover)] cursor-pointer "
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -250,7 +250,7 @@
               [disabled]="!isStep2Valid"
               class="flex items-center gap-2 px-5 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)]
                      disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-[var(--radius-md)]
-                     text-sm font-medium cursor-pointer transition-colors shadow-[var(--shadow-sm)]"
+                     text-sm font-medium cursor-pointer  shadow-[var(--shadow-sm)]"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

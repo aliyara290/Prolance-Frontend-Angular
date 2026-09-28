@@ -29,7 +29,7 @@
 
         <div class="flex items-center gap-4 min-w-0">
           <a routerLink="/app/projects/all"
-             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-all cursor-pointer">
+             class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-bg)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text)]  cursor-pointer">
             <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
           </a>
 
@@ -50,7 +50,7 @@
 
         <div class="flex items-center gap-2.5 flex-shrink-0">
           <button
-            class="flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--color-bg-muted)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+            class="flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--color-bg-muted)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] "
             title="Reload project data"
             (click)="reloadProject()"
             [disabled]="detailService.loading()"
@@ -60,7 +60,7 @@
 
           <app-dropdown-menu
             [items]="moreActions"
-            [iconOnly]="true"
+            buttonLabel="Actions"
             (itemSelected)="onMoreAction($event)"
           ></app-dropdown-menu>
         </div>
@@ -76,7 +76,7 @@
             <a
               [routerLink]="tab.route"
               routerLinkActive="!text-[var(--color-primary)] !bg-bg-active !border-border-strong"
-              class="text-text-muted px-4 py-1.5 rounded-full hover:text-text border border-transparent hover:border-border-strong cursor-pointer focus:outline-none transition-all whitespace-nowrap"
+              class="text-text-muted px-4 py-1.5 rounded-full hover:text-text border border-transparent hover:border-border-strong cursor-pointer focus:outline-none  whitespace-nowrap"
             >
               {{ tab.label }}
             </a>

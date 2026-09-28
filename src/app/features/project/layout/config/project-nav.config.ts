@@ -70,13 +70,7 @@ export const PROJECT_CURRENT_NAV: ProjectNavSection = {
       label: 'Milestones',
       icon: Flag,
       route: '/app/projects/milestones',
-    },
-    {
-      id: 'docs',
-      label: 'Documents',
-      icon: FileText,
-      route: '/app/projects/docs',
-    },
+    }
   ],
 };
 
