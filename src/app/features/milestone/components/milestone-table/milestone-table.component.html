@@ -30,7 +30,7 @@
       <button
         type="button"
         (click)="clearFilters()"
-        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text border border-border-strong rounded-md bg-bg-muted hover:bg-bg-active duration-150 cursor-pointer"
+        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text border border-border-strong rounded-md bg-bg-muted hover:bg-bg-active  cursor-pointer"
       >
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -108,7 +108,7 @@
   </ng-template>
 
   <ng-template #body let-milestone>
-    <tr class="hover:bg-[var(--color-bg-hover)] duration-100">
+    <tr class="hover:bg-[var(--color-bg-hover)] ">
       <td>
         <p-tableCheckbox [value]="milestone" />
       </td>
@@ -132,7 +132,7 @@
         <div class="flex items-center gap-2">
           <div class="flex-1 h-1.5 bg-[var(--color-bg-muted)] rounded-full overflow-hidden">
             <div
-              class="h-full rounded-full transition-all duration-300"
+              class="h-full rounded-full  duration-300"
               [style.width.%]="milestone.progressPercentage"
               [style.backgroundColor]="milestone.progressPercentage >= 100 ? 'var(--color-success)' : milestone.progressPercentage >= 50 ? 'var(--color-warning)' : 'var(--color-primary)'"
             ></div>

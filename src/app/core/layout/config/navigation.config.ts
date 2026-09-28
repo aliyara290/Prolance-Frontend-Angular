@@ -1,4 +1,4 @@
-import { LucideIconData } from 'lucide-angular';
+import { FolderKanban, LucideIconData } from 'lucide-angular';
 import {
   LayoutDashboard,
   Goal,
@@ -8,7 +8,9 @@ import {
   Files,
   ListChecks,
   Clock,
-  ReceiptText
+  ReceiptText,
+  BadgeDollarSign,
+  WalletCards
 } from 'lucide-angular';
 
 export interface CrmNavSection {
@@ -74,6 +76,12 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
     title: 'PROJECT MANAGEMENT',
     items: [
       {
+        id: 'projects',
+        label: 'Projects',
+        icon: FolderKanban,
+        route: '/app/projects/all',
+      },
+      {
         id: 'tasks',
         label: 'Tasks',
         icon: ListChecks,
@@ -85,10 +93,10 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
     title: 'BILLING & TIME',
     items: [
       {
-        id: 'time-tracking',
-        label: 'Time Tracker',
-        icon: Clock,
-        route: '/app/billing/time-tracking',
+        id: 'billing-overview',
+        label: 'Overview',
+        icon: WalletCards,
+        route: '/app/billing',
       },
       {
         id: 'invoices',
@@ -96,6 +104,7 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
         icon: ReceiptText,
         route: '/app/billing/invoices',
       },
+      
     ],
   },
   {

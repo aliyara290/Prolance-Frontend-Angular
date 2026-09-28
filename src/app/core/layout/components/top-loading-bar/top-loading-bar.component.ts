@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   template: `
     @if (visible()) {
       <div class="fixed top-0 left-0 w-full h-1.5 z-[999999839893] bg-transparent pointer-events-none">
-        <div class="h-full bg-gradient-to-r from-[#5B92E5] via-[#F68F55] to-[#5B92E5] transition-all duration-300 ease-out"
+        <div class="h-full bg-gradient-to-r from-[#5B92E5] via-[#F68F55] to-[#5B92E5]  duration-300 ease-out"
              [style.width.%]="progress()"></div>
       </div>
     }

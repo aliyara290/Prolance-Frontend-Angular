@@ -3,7 +3,7 @@ import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../config/config.service';
 
-  export type EntityType = 'TASK' | 'PROJECT' | 'CRM';
+  export type EntityType = 'TASK' | 'PROJECT' | 'CRM' | 'INVOICE';
 
 export interface AttachmentResponse {
   id: string;

@@ -7,6 +7,7 @@ import {
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, ChevronDown, ChevronRight, X, SlidersHorizontal } from 'lucide-angular';
 import { MilestoneStatus } from '../../types/milestone.model';
 import { ProjectsNames } from '../../../project/types/project.model';
@@ -20,7 +21,7 @@ export interface MilestoneFilters {
 @Component({
   selector: 'app-milestone-filters',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './milestone-filters.component.html',
 })
 export class MilestoneFiltersComponent {
@@ -39,6 +40,15 @@ export class MilestoneFiltersComponent {
   readonly statusOpen = signal(false);
   readonly dueDateOpen = signal(true);
   readonly projectsOpen = signal(true);
+
+  readonly projectSearch = signal('');
+
+  readonly filteredProjects = computed(() => {
+    const search = this.projectSearch().toLowerCase();
+    return this.projects
+      .filter(p => p.name.toLowerCase().includes(search))
+      .slice(0, 5);
+  });
 
   readonly selectedStatuses = signal<Set<MilestoneStatus>>(new Set());
   readonly dueDateFilter = signal<'all' | 'overdue' | 'today' | 'week'>('all');

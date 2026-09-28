@@ -3,20 +3,7 @@
 
     <!-- ── Banner & Header ── -->
     <div class="relative shrink-0">
-      <!-- Gradient Banner -->
-      <div class="h-16 bg-primary relative">
-        <!-- Close button floating -->
-        <button
-          (click)="close()"
-          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full
-                 bg-bg/50 hover:bg-bg backdrop-blur-sm shadow-sm border border-border/50 text-text-muted hover:text-text cursor-pointer transition-all z-20"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 6 6 18M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
+    
 
       <!-- Avatar & Basic Info Container -->
       <div class="px-8 py-6 bg-bg border-b border-border shadow-sm">
@@ -39,9 +26,19 @@
               }
             </div>
           </div>
+
+          <!-- <button
+          (click)="close()"
+          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full
+                 bg-bg/50 hover:bg-bg backdrop-blur-sm shadow-sm border border-border/50 text-text-muted hover:text-text cursor-pointer  z-20"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button> -->
           
           <div class="mb-1">
-             <!-- Status dot in header -->
              <span
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border"
               [class.bg-[var(--color-success-soft)]]="u.status === 'ACTIVE'"
@@ -148,7 +145,7 @@
                     @if (u.roles.length > 1) {
                       <button
                         (click)="removeRole(role)"
-                        class="w-5 h-5 flex items-center justify-center rounded-full text-text-muted hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] cursor-pointer transition-all ml-1 border border-transparent hover:border-[var(--color-danger)]/20"
+                        class="w-5 h-5 flex items-center justify-center rounded-full text-text-muted hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-soft)] cursor-pointer  ml-1 border border-transparent hover:border-[var(--color-danger)]/20"
                         title="Remove role"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -176,7 +173,7 @@
                   <button
                     (click)="addRole(selectedRoleToAdd)"
                     class="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-bold bg-bg hover:bg-bg-hover
-                           border border-border text-text-inverse rounded-lg transition-all cursor-pointer shadow-sm"
+                           border border-border text-text-inverse rounded-lg  cursor-pointer shadow-sm"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M5 12h14M12 5v14"/>
@@ -200,7 +197,7 @@
           (click)="deactivate()"
           class="px-5 py-2.5 text-xs font-bold border border-border rounded-lg shadow-sm
                  text-text hover:border-[var(--color-danger)] hover:text-[var(--color-danger)]
-                 hover:bg-[var(--color-danger-soft)] transition-all cursor-pointer bg-bg"
+                 hover:bg-[var(--color-danger-soft)]  cursor-pointer bg-bg"
         >
           Deactivate Member
         </button>
@@ -210,7 +207,7 @@
           (click)="reactivate()"
           class="px-5 py-2.5 text-xs font-bold border border-border rounded-lg shadow-sm
                  text-text hover:border-[var(--color-success)] hover:text-[var(--color-success)]
-                 hover:bg-[var(--color-success-soft)] transition-all cursor-pointer bg-bg"
+                 hover:bg-[var(--color-success-soft)]  cursor-pointer bg-bg"
         >
           Reactivate Member
         </button>

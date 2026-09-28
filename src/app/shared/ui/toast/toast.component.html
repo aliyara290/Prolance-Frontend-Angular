@@ -1,0 +1,48 @@
+@if (toasts.length > 0) {
+  <div class="fixed top-4 right-4 z-[999999] flex flex-col gap-3 pointer-events-none" style="max-width: 400px;">
+    @for (toast of toasts; track toast.id) {
+      <div
+        class="pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] border border-[var(--color-border)] bg-[var(--color-bg)] "
+        role="alert"
+        [attr.aria-live]="toast.severity === 'error' ? 'assertive' : 'polite'"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="shrink-0 mt-0.5"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [style.color]="toast.severity === 'success' ? 'var(--color-success)'
+            : toast.severity === 'error' ? 'var(--color-danger)'
+            : toast.severity === 'warning' ? 'var(--color-warning)'
+            : 'var(--color-info)'"
+        >
+          <path [attr.d]="getIcon(toast.severity)" />
+        </svg>
+
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-[var(--color-text)]">{{ toast.summary }}</p>
+          @if (toast.detail) {
+            <p class="text-xs text-[var(--color-text-muted)] mt-0.5">{{ toast.detail }}</p>
+          }
+        </div>
+
+        <button
+          type="button"
+          (click)="dismiss(toast.id)"
+          class="shrink-0 p-0.5 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)]  cursor-pointer"
+          aria-label="Dismiss notification"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+}

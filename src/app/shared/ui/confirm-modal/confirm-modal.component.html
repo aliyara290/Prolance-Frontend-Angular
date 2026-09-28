@@ -5,7 +5,7 @@
 
   <!-- Modal -->
   <div
-    class="relative bg-bg w-full max-w-[400px] rounded-2xl shadow-xl overflow-hidden flex flex-col transform transition-all border border-border"
+    class="relative bg-bg w-full max-w-[400px] rounded-2xl shadow-xl overflow-hidden flex flex-col transform  border border-border"
     role="dialog" aria-modal="true"
   >
     <div class="px-6 pt-6 pb-5 flex flex-col items-center text-center">
@@ -38,13 +38,13 @@
     <div class="px-6 py-4 bg-bg-muted border-t border-border flex justify-end gap-3 shrink-0">
       <button
         (click)="onCancel()"
-        class="px-5 py-2 text-sm font-semibold text-text border border-border rounded-lg bg-bg hover:bg-bg-hover hover:text-text-inverse transition-all cursor-pointer shadow-sm"
+        class="px-5 py-2 text-sm font-semibold text-text border border-border rounded-lg bg-bg hover:bg-bg-hover hover:text-text-inverse  cursor-pointer shadow-sm"
       >
         {{ options?.cancelText || 'Cancel' }}
       </button>
       <button
         (click)="onConfirm()"
-        class="px-5 py-2 text-sm font-semibold rounded-lg text-white transition-all cursor-pointer shadow-sm border border-transparent"
+        class="px-5 py-2 text-sm font-semibold rounded-lg text-white  cursor-pointer shadow-sm border border-transparent"
         [class.bg-danger]="options?.danger"
         [class.hover:bg-danger-hover]="options?.danger"
         [class.bg-[var(--color-primary)]]="!options?.danger"

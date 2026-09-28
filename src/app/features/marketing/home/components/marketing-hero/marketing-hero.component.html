@@ -19,13 +19,13 @@
     <!-- CTAs -->
     @if (!(isAuthenticated$ | async)) {
       <div class="flex flex-col sm:flex-row items-center justify-center gap-[var(--spacing-md)] w-full sm:w-auto">
-        <a (click)="register()" class="cursor-pointer w-full sm:w-auto bg-primary hover:bg-primary-hover text-white font-[var(--font-semibold)] text-[var(--text-md)] px-[var(--spacing-xl)] py-[16px] rounded-full transition-all duration-[var(--transition-fast)] shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
+        <a (click)="register()" class="cursor-pointer w-full sm:w-auto bg-primary hover:bg-primary-hover text-white font-[var(--font-semibold)] text-[var(--text-md)] px-[var(--spacing-xl)] py-[16px] rounded-full  duration-[var(--transition-fast)] shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
           Start for free
           <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </a>
-        <a href="#" class="w-full sm:w-auto bg-[var(--color-card)]/50 backdrop-blur-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] border border-[var(--color-border)] font-[var(--font-medium)] text-[var(--text-md)] px-[var(--spacing-xl)] py-[16px] rounded-full transition-all duration-[var(--transition-fast)] shadow-sm hover:shadow-md flex items-center justify-center gap-[var(--spacing-sm)]">
+        <a href="#" class="w-full sm:w-auto bg-[var(--color-card)]/50 backdrop-blur-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] border border-[var(--color-border)] font-[var(--font-medium)] text-[var(--text-md)] px-[var(--spacing-xl)] py-[16px] rounded-full  duration-[var(--transition-fast)] shadow-sm hover:shadow-md flex items-center justify-center gap-[var(--spacing-sm)]">
           <svg class="w-5 h-5 text-[var(--color-text-secondary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -38,7 +38,7 @@
         No credit card required <span class="mx-2 opacity-30">•</span> 14-day free trial <span class="mx-2 opacity-30">•</span> Cancel anytime
       </p>
     } @else {
-      <a routerLink="/app/projects/dashboard" class="w-full sm:w-auto bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-[var(--font-semibold)] text-[var(--text-md)] px-[var(--spacing-2xl)] py-[16px] rounded-full transition-all duration-[var(--transition-fast)] shadow-[0_8px_20px_rgba(38,122,247,0.3)] hover:shadow-[0_12px_28px_rgba(38,122,247,0.4)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
+      <a routerLink="/app/projects/dashboard" class="w-full sm:w-auto bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-[var(--font-semibold)] text-[var(--text-md)] px-[var(--spacing-2xl)] py-[16px] rounded-full  duration-[var(--transition-fast)] shadow-[0_8px_20px_rgba(38,122,247,0.3)] hover:shadow-[0_12px_28px_rgba(38,122,247,0.4)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
         Go to Application
         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

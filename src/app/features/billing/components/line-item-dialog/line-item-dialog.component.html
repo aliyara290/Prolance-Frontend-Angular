@@ -1,0 +1,118 @@
+@if (isOpen) {
+  <div class="fixed inset-0 flex items-center justify-center p-4 z-[var(--z-modal-backdrop)]" (click)="close()">
+    <div class="absolute inset-0 bg-[var(--color-overlay)]"></div>
+    <div
+      class="relative bg-[var(--color-bg)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] w-full max-w-[600px] overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="isEditing ? 'Edit Line Item' : 'Add Line Item'"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-[var(--color-border)] flex justify-between items-center">
+        <h2 class="text-base font-semibold text-[var(--color-text)]">
+          {{ isEditing ? 'Edit Line Item' : 'Add Line Item' }}
+        </h2>
+        <button type="button" (click)="close()" class="p-1 rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] cursor-pointer" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+        <!-- Description -->
+        <div>
+          <label for="li-desc" class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
+            Description <span class="text-[var(--color-danger)]">*</span>
+          </label>
+          <textarea
+            id="li-desc"
+            formControlName="description"
+            rows="2"
+            placeholder="Line item description"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)]"
+          ></textarea>
+          @if (form.get('description')?.touched && form.get('description')?.hasError('required')) {
+            <p class="text-xs text-[var(--color-danger)] mt-1">Description is required.</p>
+          }
+        </div>
+
+        <!-- Quantity + Unit -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="li-qty" class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Quantity <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <input
+              id="li-qty"
+              type="number"
+              formControlName="quantity"
+              step="0.01"
+              min="0.01"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)]"
+            />
+            @if (form.get('quantity')?.touched && form.get('quantity')?.hasError('min')) {
+              <p class="text-xs text-[var(--color-danger)] mt-1">Must be greater than 0.</p>
+            }
+          </div>
+          <div>
+            <label for="li-unit" class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
+              Unit <span class="text-[var(--color-danger)]">*</span>
+            </label>
+            <select
+              id="li-unit"
+              formControlName="unit"
+              class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)] cursor-pointer"
+            >
+              @for (u of unitOptions; track u) {
+                <option [value]="u">{{ unitLabels[u] }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- Unit Price -->
+        <div>
+          <label for="li-price" class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
+            Unit Price <span class="text-[var(--color-danger)]">*</span>
+          </label>
+          <input
+            id="li-price"
+            type="number"
+            formControlName="unitPrice"
+            step="0.01"
+            min="0"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] focus:border-[var(--color-primary)]"
+          />
+          @if (form.get('unitPrice')?.touched && form.get('unitPrice')?.hasError('min')) {
+            <p class="text-xs text-[var(--color-danger)] mt-1">Must be 0 or greater.</p>
+          }
+        </div>
+
+        <!-- Computed total -->
+        <div class="flex items-center justify-between pt-2 border-t border-[var(--color-border)]">
+          <span class="text-sm text-[var(--color-text-secondary)]">Line Total</span>
+          <span class="text-sm font-semibold text-[var(--color-text)]">{{ computedLineTotal | number:'1.2-2' }}</span>
+        </div>
+      </form>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-[var(--color-border)] bg-[var(--color-bg-muted)] flex justify-end gap-3">
+        <button type="button" (click)="close()" class="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] cursor-pointer">
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="onSubmit()"
+          [disabled]="form.invalid || isSubmitting"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-[var(--radius-md)] hover:bg-[var(--color-primary-hover)] disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+        >
+          @if (isSubmitting) {
+            <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+          }
+          {{ isEditing ? 'Save Changes' : 'Add Item' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

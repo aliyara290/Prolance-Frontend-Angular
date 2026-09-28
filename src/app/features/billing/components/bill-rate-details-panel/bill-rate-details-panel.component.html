@@ -1,0 +1,152 @@
+@if (isOpen) {
+
+<div
+  class="fixed inset-0 z-[9956789098765678998]  duration-300"
+  [class.pointer-events-none]="!isOpen"
+>
+
+  <!-- Backdrop -->
+  <div
+    class="absolute inset-0 bg-black/10 panel-backdrop"
+    (click)="onBackdropClick($event)"
+  ></div>
+
+  <!-- Panel -->
+  <div
+    class="absolute right-0 top-0 bottom-0 w-full max-w-[540px] bg-[var(--color-bg)] shadow-[var(--shadow-2xl)] border-l border-[var(--color-border)] flex flex-col transform transition-transform duration-300 ease-in-out"
+    [class.translate-x-full]="!isOpen"
+    [class.translate-x-0]="isOpen"
+  >
+    @if (rate) {
+      <!-- Header -->
+      <div class="flex flex-col border-b border-[var(--color-border)] bg-[var(--color-bg)] flex-shrink-0 relative z-10 p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            @if (user) {
+              <div
+                class="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold text-white uppercase shrink-0 shadow-sm"
+                [style.backgroundColor]="user.avatarColor"
+              >
+                {{ getAvatarInitials(user.firstName + ' ' + user.lastName) }}
+              </div>
+              <div class="flex flex-col">
+                <h2 class="text-lg font-semibold text-[var(--color-text)] m-0 leading-tight">
+                  {{ user.firstName }} {{ user.lastName }}
+                </h2>
+                <span class="text-sm text-[var(--color-text-muted)]">{{ user.email }}</span>
+              </div>
+            } @else {
+              <div class="w-12 h-12 rounded-full bg-[var(--color-bg-muted)] flex items-center justify-center text-[var(--color-text-muted)]">
+                <lucide-icon [img]="icons.x" size="24"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <h2 class="text-lg font-semibold text-[var(--color-text)] m-0 leading-tight">Unknown User</h2>
+                <span class="text-sm text-[var(--color-text-muted)]">{{ rate.userId }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <app-dropdown-menu
+              [items]="panelMenuItems"
+              [iconOnly]="true"
+              (itemSelected)="onMenuItemClick($event)"
+            />
+            <button
+              type="button"
+              (click)="onClose()"
+              class="w-8 h-8 text-[var(--color-text-muted)] flex items-center justify-center rounded-md hover:bg-[var(--color-bg-hover)]  cursor-pointer border border-[var(--color-border-strong)]"
+            >
+              <lucide-icon [img]="icons.x" size="18"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="flex-1 overflow-y-auto bg-[var(--color-bg-subtle)] scrollbar-thin p-4">
+        <div class="space-y-4">
+
+          <!-- Rates Group -->
+          <div class="bg-[var(--color-bg)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div class="bg-[var(--color-bg-muted)]/50 px-4 py-3 border-b border-[var(--color-border)]">
+              <h3 class="text-sm font-semibold text-[var(--color-text)]">Rate Information</h3>
+            </div>
+            <div class="p-4 grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Hourly Rate</span>
+                <span class="text-lg font-semibold text-[var(--color-text)]">
+                  {{ formatCurrency(rate.hourlyRate, rate.currency) }}<span class="text-sm font-normal text-[var(--color-text-muted)]">/h</span>
+                </span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Daily Rate</span>
+                @if (rate.dailyRate) {
+                  <span class="text-lg font-semibold text-[var(--color-text)]">
+                    {{ formatCurrency(rate.dailyRate, rate.currency) }}<span class="text-sm font-normal text-[var(--color-text-muted)]">/d</span>
+                  </span>
+                } @else {
+                  <span class="text-sm text-[var(--color-text-muted)] mt-1">Not configured</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Level Group -->
+          <div class="bg-[var(--color-bg)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div class="bg-[var(--color-bg-muted)]/50 px-4 py-3 border-b border-[var(--color-border)]">
+              <h3 class="text-sm font-semibold text-[var(--color-text)]">Professional Level</h3>
+            </div>
+            <div class="p-4 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-[var(--color-text-secondary)]">Seniority</span>
+                <span class="text-sm font-medium text-[var(--color-text)]">{{ getSeniorityLabel(rate.seniorityLevel) }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-[var(--color-text-secondary)]">Education</span>
+                <span class="text-sm font-medium text-[var(--color-text)]">{{ getEducationLabel(rate.educationLevel) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Validity Period Group -->
+          <div class="bg-[var(--color-bg)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div class="bg-[var(--color-bg-muted)]/50 px-4 py-3 border-b border-[var(--color-border)]">
+              <h3 class="text-sm font-semibold text-[var(--color-text)]">Validity Period</h3>
+            </div>
+            <div class="p-4 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-[var(--color-text-secondary)]">Effective From</span>
+                <span class="text-sm font-medium text-[var(--color-text)]">{{ formatDate(rate.effectiveFrom) }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-[var(--color-text-secondary)]">Effective To</span>
+                @if (rate.effectiveTo) {
+                  <span class="text-sm font-medium text-[var(--color-text)]">{{ formatDate(rate.effectiveTo) }}</span>
+                } @else {
+                  <span class="text-sm text-[var(--color-text-muted)] italic">Ongoing</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Audit Group -->
+          <div class="bg-[var(--color-bg)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
+            <div class="bg-[var(--color-bg-muted)]/50 px-4 py-3 border-b border-[var(--color-border)]">
+              <h3 class="text-sm font-semibold text-[var(--color-text)]">Audit Information</h3>
+            </div>
+            <div class="p-4 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-[var(--color-text-secondary)]">Created At</span>
+                <span class="text-sm text-[var(--color-text)]">{{ rate.createdAt | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+}
+
+

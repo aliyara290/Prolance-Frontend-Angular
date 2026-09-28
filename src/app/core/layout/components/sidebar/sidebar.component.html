@@ -206,28 +206,28 @@
           <!-- Personal Settings -->
           <a [routerLink]="['/app/settings/personal']"
              routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
-             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)]  cursor-pointer  border-b border-border">
             <lucide-icon [img]="icons.user" size="16"></lucide-icon>
             Personal Settings
           </a>
           <!-- Workspace Settings -->
           <a [routerLink]="['/app/settings/workspace']"
              routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
-             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)]  cursor-pointer  border-b border-border">
             <lucide-icon [img]="icons.briefcase" size="16"></lucide-icon>
             Workspace Settings
           </a>
           <!-- Users -->
           <a [routerLink]="['/app/settings/users']"
              routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
-             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer  border-b border-border">
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)]  cursor-pointer  border-b border-border">
             <lucide-icon [img]="icons.users" size="16"></lucide-icon>
             Users
           </a>
           <!-- Notifications -->
           <a [routerLink]="['/app/settings/notifications']"
              routerLinkActive="bg-[var(--color-bg-active)] text-[var(--color-text)]"
-             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)] transition-colors cursor-pointer">
+             class="flex items-center gap-3 px-4 py-2 text-sm text-text-muted hover:text-[var(--color-text)] hover:bg-[var(--color-bg-hover)]  cursor-pointer">
             <lucide-icon [img]="icons.bell" size="16"></lucide-icon>
             Notifications
           </a>
@@ -237,7 +237,7 @@
 
     <!-- General Settings Button -->
     <button (click)="toggleSettingsMenu()"
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted hover:text-white bg-bg-hover hover:bg-primary transition-colors cursor-pointer border border-border-strong"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted hover:text-white bg-bg-hover hover:bg-primary  cursor-pointer border border-border-strong"
             [class.bg-primary]="isSettingsMenuOpen()"
             [class.!text-white]="isSettingsMenuOpen()">
       <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">

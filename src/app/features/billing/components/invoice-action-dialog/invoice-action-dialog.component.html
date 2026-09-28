@@ -1,0 +1,84 @@
+@if (isOpen && invoice) {
+  <div class="fixed inset-0 flex items-center justify-center p-4 z-[var(--z-modal-backdrop)]" (click)="close()">
+    <div class="absolute inset-0 bg-[var(--color-overlay)]"></div>
+    <div
+      class="relative bg-[var(--color-bg)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] w-full max-w-[600px] overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="config.title"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="px-6 pt-6 pb-4 flex flex-col items-center text-center">
+        <div
+          class="w-12 h-12 rounded-full mb-4 flex items-center justify-center shrink-0 border border-[var(--color-border-strong)]"
+          [class.bg-[var(--color-danger-soft)]]="config.danger"
+          [class.bg-[var(--color-primary-soft)]]="!config.danger"
+        >
+          @if (config.danger) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+            </svg>
+          }
+        </div>
+
+        <h3 class="text-lg font-semibold text-[var(--color-text)] mb-1">{{ config.title }}</h3>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{{ config.message }}</p>
+      </div>
+
+      <!-- Invoice Summary -->
+      <div class="mx-6 p-3 rounded-[var(--radius-md)] bg-[var(--color-bg-muted)] border border-[var(--color-border)] mb-4">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-[var(--color-text-secondary)]">{{ invoice.invoiceNumber }}</span>
+          <span class="font-semibold text-[var(--color-text)]">{{ invoiceSummary.split('—')[1] }}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs text-[var(--color-text-muted)] mt-1">
+          <span>Status: {{ statusLabel }}</span>
+        </div>
+      </div>
+
+      <!-- Optional Input -->
+      @if (config.showInput) {
+        <div class="px-6 pb-4">
+          <label class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">{{ config.inputLabel }}</label>
+          <textarea
+            [(ngModel)]="inputValue"
+            rows="2"
+            [placeholder]="config.inputPlaceholder"
+            class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)]"
+          ></textarea>
+        </div>
+      }
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-[var(--color-border)] bg-[var(--color-bg-muted)] flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="close()"
+          class="px-4 py-2 text-sm font-medium text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="onConfirm()"
+          [disabled]="isSubmitting"
+          class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-[var(--radius-md)] disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          [class.bg-[var(--color-danger)]]="config.danger"
+          [class.hover:bg-red-700]="config.danger"
+          [class.bg-[var(--color-primary)]]="!config.danger"
+          [class.hover:bg-[var(--color-primary-hover)]]="!config.danger"
+        >
+          @if (isSubmitting) {
+            <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+          }
+          {{ config.confirmLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,5 +1,6 @@
 import { Component, inject, signal, computed, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectsService } from '../../services/projects.service';
 import { ProjectsTableComponent } from '../../components/projects-table/projects-table.component';
 import { ProjectsKanbanComponent } from '../../components/projects-kanban/projects-kanban.component';
@@ -35,6 +36,7 @@ import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm
 export class ProjectsPageComponent implements OnInit {
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly confirmService = inject(ConfirmModalService);
 
@@ -57,6 +59,15 @@ export class ProjectsPageComponent implements OnInit {
     panelClose: PanelLeftClose,
     panelOpen: PanelLeftOpen,
   };
+
+  constructor() {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
+      const view = params['view'];
+      if (view === 'list' || view === 'kanban') {
+        this.activeView.set(view);
+      }
+    });
+  }
 
   readonly filteredProjects = computed<Project[]>(() => {
     const filters = this.activeFilters();
@@ -118,7 +129,11 @@ export class ProjectsPageComponent implements OnInit {
   }
 
   onViewChange(view: 'list' | 'kanban'): void {
-    this.activeView.set(view);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view },
+      queryParamsHandling: 'merge',
+    });
   }
 
   toggleSidebar(): void {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, input, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, input, OnInit, signal, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -9,6 +9,8 @@ import { switchMap, map, catchError, defaultIfEmpty } from 'rxjs/operators';
 import { LucideAngularModule, Paperclip, UploadCloud, X, Download, Trash2, FileText, Image as ImageIcon, FileArchive, File as FileIcon, Grid, List, MoreVertical, Loader2 } from 'lucide-angular';
 import { ConfirmModalService } from '../confirm-modal/confirm-modal.service';
 import { DetailsSkeletonComponent } from '../skeletons/details-skeleton/details-skeleton.component';
+import { Router, ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface AttachmentUIModel extends AttachmentResponse {
   uploaderName: string;
@@ -29,10 +31,21 @@ export class AttachmentsComponent implements OnInit {
   private readonly userApiService = inject(UserApiService);
   private readonly confirmService = inject(ConfirmModalService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly attachments = signal<AttachmentUIModel[]>([]);
   readonly loading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
+
+  constructor() {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
+      const view = params['attachment-view'];
+      if (view === 'grid' || view === 'list') {
+        this.viewMode.set(view);
+      }
+    });
+  }
 
   readonly isDragging = signal<boolean>(false);
   readonly uploadProgress = signal<number | null>(null);
@@ -123,7 +136,11 @@ export class AttachmentsComponent implements OnInit {
   }
 
   toggleView(mode: 'grid' | 'list'): void {
-    this.viewMode.set(mode);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { 'attachment-view': mode },
+      queryParamsHandling: 'merge',
+    });
   }
 
   openPreview(file: AttachmentUIModel): void {
@@ -161,18 +178,26 @@ export class AttachmentsComponent implements OnInit {
     this.rawPreviewUrl = null;
   }
 
+  @HostListener('window:dragover', ['$event'])
   onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging.set(true);
+    if (event.dataTransfer?.types.includes('Files')) {
+      this.isDragging.set(true);
+    }
   }
 
+  @HostListener('window:dragleave', ['$event'])
   onDragLeave(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging.set(false);
+    // Prevent flickering by only hiding if we leave the actual window
+    if (!event.relatedTarget || (event.relatedTarget as HTMLElement).nodeName === 'HTML') {
+      this.isDragging.set(false);
+    }
   }
 
+  @HostListener('window:drop', ['$event'])
   onDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();

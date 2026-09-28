@@ -24,7 +24,7 @@ export class UserListComponent {
   readonly searchQuery  = this.state.searchQuery;
 
   readonly tabs: { key: UserStatus; label: string }[] = [
-    { key: 'ACTIVE',      label: 'Active Users' },
+    { key: 'ACTIVE',      label: 'Active' },
     { key: 'PENDING',     label: 'Invited'       },
     { key: 'DEACTIVATED', label: 'Deactivated'   },
   ];

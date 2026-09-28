@@ -14,8 +14,8 @@
   max-width: 320px;
   display: flex;
   flex-direction: column;
-  max-height: 533px;
-  min-height: 533px;
+  max-height: calc(100vh - 300px);
+  min-height: 198px;
   background-color: var(--color-bg);
   padding: 10px;
   border-radius: var(--radius-md);
@@ -314,7 +314,7 @@
   text-align: center;
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-lg);
-  height: 470px;
+  height: 200px;
 }
 /* =========================================
    BOARD SCROLLBAR

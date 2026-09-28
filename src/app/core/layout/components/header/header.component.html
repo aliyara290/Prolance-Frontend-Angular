@@ -23,7 +23,7 @@
 <button
   type="button"
   (click)="toggleQuickActions($event)"
-  class="group flex justify-center items-center w-7 h-7 bg-primary hover:bg-primary-hover text-white hover:text-white rounded-sm cursor-pointer transition-colors focus:outline-none"
+  class="group flex justify-center items-center w-7 h-7 bg-primary hover:bg-primary-hover text-white hover:text-white rounded-sm cursor-pointer  focus:outline-none"
 >
   <lucide-icon
     [img]="icons.plus"
@@ -47,7 +47,7 @@
                 <button
                   type="button"
                   (click)="navigateQuickAction(action.route)"
-                  class="flex w-full items-center gap-3 px-3 py-2 text-left text-[15px] font-medium text-text-inverse hover:bg-bg-hover rounded-md transition-colors cursor-pointer mb-1"
+                  class="flex w-full items-center gap-3 px-3 py-2 text-left text-[15px] font-medium text-text-inverse hover:bg-bg-hover rounded-md  cursor-pointer mb-1"
                 >
                   <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white shadow-sm" [class]="action.color">
                     <lucide-icon [img]="action.icon" size="16"></lucide-icon>
@@ -78,7 +78,7 @@
     <div class="relative inline-block text-left">
       <button type="button"
               (click)="toggleNotifications($event)"
-              class="relative flex justify-center items-center w-7.5 h-7.5 rounded-sm text-text-muted hover:bg-bg-hover hover:text-primary cursor-pointer transition-colors focus:outline-none">
+              class="relative flex justify-center items-center w-7.5 h-7.5 rounded-sm text-text-muted hover:bg-bg-hover hover:text-primary cursor-pointer  focus:outline-none">
         <lucide-icon [img]="icons.notification"
                      size="20"
                      [class.animate-ring]="unreadCount() > 0"
@@ -100,7 +100,7 @@
               @if (unreadCount() > 0) {
                 <button
                   (click)="markAllAsRead($event)"
-                  class="text-xs font-medium text-text hover:text-primary flex items-center gap-1 transition-colors cursor-pointer"
+                  class="text-xs font-medium text-text hover:text-primary flex items-center gap-1  cursor-pointer"
                 >
                   <lucide-icon [img]="icons.checkAll" size="14"></lucide-icon>
                   Mark all as read
@@ -119,7 +119,7 @@
                   @for (notif of notifications(); track notif.id) {
                     <div
                       (click)="navigateNotification(notif)"
-                      class="flex gap-4 p-4 hover:bg-bg-hover cursor-pointer transition-colors"
+                      class="flex gap-4 p-4 hover:bg-bg-hover cursor-pointer "
                       [ngClass]="notif.readStatus === 'UNREAD' ? getNotificationPriorityColor(notif.priority, 'bg') : ''"
                     >
                       <div class="shrink-0 pt-1">

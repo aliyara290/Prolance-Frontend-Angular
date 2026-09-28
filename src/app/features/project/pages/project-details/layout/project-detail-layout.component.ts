@@ -44,6 +44,7 @@ export class ProjectDetailLayoutComponent implements OnInit, OnDestroy {
     { id: 'overview', label: 'Overview', route: 'overview' },
     { id: 'tasks', label: 'Tasks', route: 'tasks' },
     { id: 'members', label: 'Members', route: 'members' },
+    { id: 'rates', label: 'Bill Rates', route: 'rates' },
     // { id: 'issues', label: 'Issues', route: 'issues' },
     { id: 'milestones', label: 'Milestones', route: 'milestones' },
     { id: 'documents', label: 'Documents', route: 'documents' },

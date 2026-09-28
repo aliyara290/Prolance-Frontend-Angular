@@ -83,7 +83,7 @@ export class TaskDetailPanelComponent implements OnChanges {
   private currentTaskId: string | null = null;
 
   // ── Panel sections ──
-  readonly activeSection = signal<'details' | 'assignments' | 'comments' | 'dependencies' | 'history' | 'attachments'>('details');
+  readonly activeSection = signal<'details' | 'assignments' | 'comments' | 'dependencies' | 'attachments' | 'history'>('details');
 
   // ── Assignments ──
   readonly showAssignForm = signal(false);
@@ -175,13 +175,15 @@ export class TaskDetailPanelComponent implements OnChanges {
         this.currentTaskId = null;
         this.milestoneName.set(null);
         
-        // Remove fragment when closing modal
-        this.router.navigate([], {
-          relativeTo: this.route,
-          fragment: undefined,
-          queryParamsHandling: 'preserve',
-          replaceUrl: true
-        });
+        // Remove tab param when closing modal (but not on initial load)
+        if (!changes['isOpen'].isFirstChange()) {
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { tab: null },
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+          });
+        }
       } else if (this.task) {
         this.initializeTaskData(this.task);
       }
@@ -197,16 +199,15 @@ export class TaskDetailPanelComponent implements OnChanges {
   private initializeTaskData(task: TaskResponse): void {
     this.currentTaskId = task.id;
     
-    // Determine active tab from URL hash
-    const hash = window.location.hash.replace('#', '');
-    if (hash === 'comments') {
-      this.activeSection.set('comments');
-    } else if (hash === 'assignees' || hash === 'assignments') {
-      this.activeSection.set('assignments');
-    } else if (hash === 'dependencies') {
-      this.activeSection.set('dependencies');
-    } else if (hash === 'history') {
-      this.activeSection.set('history');
+    // Determine active tab from URL query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab === 'comments' || tab === 'assignments' || tab === 'assignees' || tab === 'dependencies' || tab === 'dependency' || tab === 'history' || tab === 'attachments') {
+      this.activeSection.set(
+        tab === 'assignees' ? 'assignments' : 
+        tab === 'dependency' ? 'dependencies' : 
+        (tab as any)
+      );
     } else {
       this.activeSection.set('details');
     }
@@ -271,8 +272,8 @@ export class TaskDetailPanelComponent implements OnChanges {
     
     this.router.navigate([], {
       relativeTo: this.route,
-      fragment: section === 'details' ? undefined : section,
-      queryParamsHandling: 'preserve',
+      queryParams: { tab: section === 'details' ? null : section },
+      queryParamsHandling: 'merge',
       replaceUrl: true
     });
   }

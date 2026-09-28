@@ -72,7 +72,7 @@ export class ContactFormPageComponent implements OnInit {
       notes: [''],
       department: ['', [Validators.maxLength(100)]],
       dateOfBirth: [''],
-      secondaryEmail: ['', [Validators.email], [Validators.maxLength(255)]],
+      secondaryEmail: ['', [Validators.email, Validators.maxLength(255)]],
       description: ['', [Validators.maxLength(2000)]],
       address: this.fb.group({
         street: ['', [Validators.maxLength(255)]],
