@@ -6,6 +6,8 @@ import {
   Camera, Check, ChevronDown, CheckCircle2, ExternalLink,
 } from 'lucide-angular';
 import {AuthService} from '../../../../../core/auth/services/auth.service';
+import {UserApiService} from '../../../../../core/auth/services/user-api.service';
+import {AttachmentService} from '../../../../../core/services/attachment.service';
 import {Store} from '@ngrx/store';
 import {selectAuthUser} from '../../../../../core/auth/store/auth.selectors';
 
@@ -35,6 +37,8 @@ export class PersonalSettingsComponent {
   avatarPreview = signal<string | null>(null);
 
   private readonly authService = inject(AuthService);
+  private readonly userApiService = inject(UserApiService);
+  private readonly attachmentService = inject(AttachmentService);
   private readonly store = inject(Store);
 
   protected readonly user$ = this.store.select(selectAuthUser);
@@ -67,13 +71,60 @@ export class PersonalSettingsComponent {
   selectedTimezone = 'UTC+01:00 — Casablanca, Morocco';
   selectedLanguage = 'en';
 
+  constructor() {
+    this.user$.subscribe(user => {
+      if (user?.avatarUrl && !this.avatarPreview()) {
+        const match = user.avatarUrl.match(/\/attachments\/([a-f0-9-]+)\/download/);
+        if (match && match[1]) {
+          this.attachmentService.download(match[1]).subscribe({
+            next: (res) => {
+              if (res.success && res.data?.url) {
+                this.avatarPreview.set(res.data.url);
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+
+
+  selectedPhotoFile = signal<File | null>(null);
+  isUploadingPhoto = signal(false);
 
   onAvatarChange(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
+
+    // Max 6MB
+    if (file.size > 6 * 1024 * 1024) {
+      alert('File size must be less than 6 MB.');
+      return;
+    }
+
+    this.selectedPhotoFile.set(file);
+
     const reader = new FileReader();
     reader.onload = (e) => this.avatarPreview.set(e.target?.result as string);
     reader.readAsDataURL(file);
+  }
+
+  uploadPhoto(userId: string): void {
+    const file = this.selectedPhotoFile();
+    if (!file) return;
+
+    this.isUploadingPhoto.set(true);
+    this.userApiService.uploadProfilePhoto(userId, file).subscribe({
+      next: (res) => {
+        console.log('Profile photo uploaded successfully');
+        this.selectedPhotoFile.set(null);
+        this.isUploadingPhoto.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to upload profile photo', err);
+        this.isUploadingPhoto.set(false);
+      }
+    });
   }
 
   async onUpdatePassword(): Promise<void> {
