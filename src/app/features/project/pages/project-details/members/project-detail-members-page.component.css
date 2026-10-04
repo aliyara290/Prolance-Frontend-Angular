@@ -970,3 +970,9 @@
   font-weight: 500;
   color: var(--color-text);
 }
+
+@media (max-width: 768px) {
+  .toolbar-search-input {
+    width: 150px !important;
+  }
+}

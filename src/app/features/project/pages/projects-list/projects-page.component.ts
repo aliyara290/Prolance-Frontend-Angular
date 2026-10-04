@@ -12,7 +12,7 @@ import {
   EntityListSkeletonComponent,
 } from '../../../../shared/ui/skeletons/entity-list-skeleton/entity-list-skeleton.component';
 import { ProjectFiltersComponent, ProjectFilters } from '../../components/project-filters/project-filters.component';
-import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
+import { LucideAngularModule, PanelLeftClose, PanelLeftOpen, Filter } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 import {ErrorMessageComponent} from '../../../../shared/ui/error-message/error-message.component';
 import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
@@ -48,7 +48,7 @@ export class ProjectsPageComponent implements OnInit {
   readonly activeView = signal<'list' | 'kanban'>('list');
 
   // Sidebar & Filters
-  readonly sidebarVisible = signal<boolean>(true);
+  readonly sidebarVisible = signal<boolean>(false);
   readonly activeFilters = signal<ProjectFilters>({
     statuses: [],
     priorities: [],
@@ -58,6 +58,7 @@ export class ProjectsPageComponent implements OnInit {
   readonly icons = {
     panelClose: PanelLeftClose,
     panelOpen: PanelLeftOpen,
+    filter: Filter,
   };
 
   constructor() {
@@ -137,7 +138,15 @@ export class ProjectsPageComponent implements OnInit {
   }
 
   toggleSidebar(): void {
-    this.sidebarVisible.update(v => !v);
+    const isVisible = !this.sidebarVisible();
+    this.sidebarVisible.set(isVisible);
+    if (!isVisible) {
+      this.activeFilters.set({
+        statuses: [],
+        priorities: [],
+        dueDateFilter: 'all',
+      });
+    }
   }
 
   onFiltersChanged(filters: ProjectFilters): void {
