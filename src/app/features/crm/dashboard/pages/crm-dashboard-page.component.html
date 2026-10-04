@@ -21,21 +21,21 @@
   } @else if (dashboardData(); as data) {
 
     <!-- Top Metrics Enterprise Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
       <!-- Metric 1 -->
       <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
-        <div class="p-6 flex flex-col h-full">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Total Leads</h3>
-            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-text">
+        <div class="p-4 sm:p-6 flex flex-col h-full">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-6 gap-2 sm:gap-0">
+            <h3 class="text-xs sm:text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Total Leads</h3>
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center bg-bg-active text-text self-start sm:self-auto">
               <lucide-icon [img]="icons.users" size="16"></lucide-icon>
             </div>
           </div>
           <div class="mt-auto">
-            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.totalLeads | number }}</div>
+            <div class="text-3xl sm:text-5xl font-[var(--font-bold)] text-text tracking-tight mb-1 sm:mb-3">{{ data.kpis.totalLeads | number }}</div>
             <div class="flex items-center gap-1.5">
-              <span class="text-sm font-medium text-text-muted">Currently active</span>
+              <span class="text-[10px] sm:text-sm font-medium text-text-muted">Currently active</span>
             </div>
           </div>
         </div>
@@ -43,17 +43,17 @@
 
       <!-- Metric 2 -->
       <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
-        <div class="p-6 flex flex-col h-full">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Conversion Rate</h3>
-            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-text">
+        <div class="p-4 sm:p-6 flex flex-col h-full">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-6 gap-2 sm:gap-0">
+            <h3 class="text-xs sm:text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Conversion Rate</h3>
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center bg-bg-active text-text self-start sm:self-auto">
               <lucide-icon [img]="icons.activity" size="16"></lucide-icon>
             </div>
           </div>
           <div class="mt-auto">
-            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.leadConversionRate | number:'1.0-2' }}%</div>
+            <div class="text-3xl sm:text-5xl font-[var(--font-bold)] text-text tracking-tight mb-1 sm:mb-3">{{ data.kpis.leadConversionRate | number:'1.0-2' }}%</div>
             <div class="flex items-center gap-1.5">
-              <span class="text-sm font-medium text-text-muted">Lead to Client</span>
+              <span class="text-[10px] sm:text-sm font-medium text-text-muted">Lead to Client</span>
             </div>
           </div>
         </div>
@@ -61,17 +61,17 @@
 
       <!-- Metric 3 -->
       <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
-        <div class="p-6 flex flex-col h-full">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Open Deals</h3>
-            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-text">
+        <div class="p-4 sm:p-6 flex flex-col h-full">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-6 gap-2 sm:gap-0">
+            <h3 class="text-xs sm:text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Open Deals</h3>
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center bg-bg-active text-text self-start sm:self-auto">
               <lucide-icon [img]="icons.briefcase" size="16"></lucide-icon>
             </div>
           </div>
           <div class="mt-auto">
-            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.openDeals | number }}</div>
+            <div class="text-3xl sm:text-5xl font-[var(--font-bold)] text-text tracking-tight mb-1 sm:mb-3">{{ data.kpis.openDeals | number }}</div>
             <div class="flex items-center gap-1.5">
-              <span class="text-sm font-medium text-text-muted">In pipeline stages</span>
+              <span class="text-[10px] sm:text-sm font-medium text-text-muted">In pipeline stages</span>
             </div>
           </div>
         </div>
@@ -79,17 +79,17 @@
 
       <!-- Metric 4 -->
       <div class="bg-bg border border-border-strong rounded-[var(--radius-md)] shadow-sm relative overflow-hidden group flex flex-col h-full ">
-        <div class="p-6 flex flex-col h-full">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Pipeline Value</h3>
-            <div class="w-8 h-8 rounded-md flex items-center justify-center bg-bg-active text-[var(--color-success)]">
+        <div class="p-4 sm:p-6 flex flex-col h-full">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-6 gap-2 sm:gap-0">
+            <h3 class="text-xs sm:text-sm font-[var(--font-medium)] text-text-muted tracking-tight">Pipeline Value</h3>
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-md flex items-center justify-center bg-bg-active text-[var(--color-success)] self-start sm:self-auto">
               <lucide-icon [img]="icons.trendingUp" size="16"></lucide-icon>
             </div>
           </div>
           <div class="mt-auto">
-            <div class="text-5xl font-[var(--font-bold)] text-text tracking-tight mb-3">{{ data.kpis.totalPipelineValue | currency:'USD':'symbol':'1.0-0' }}</div>
+            <div class="text-2xl sm:text-5xl font-[var(--font-bold)] text-text tracking-tight mb-1 sm:mb-3">{{ data.kpis.totalPipelineValue | currency:'USD':'symbol':'1.0-0' }}</div>
             <div class="flex items-center gap-1.5">
-              <span class="text-sm font-medium text-text-muted">Total projected revenue</span>
+              <span class="text-[10px] sm:text-sm font-medium text-text-muted">Total projected revenue</span>
             </div>
           </div>
         </div>
