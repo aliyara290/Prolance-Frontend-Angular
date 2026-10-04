@@ -92,8 +92,8 @@ export class TimeEntryDialogComponent implements OnInit, OnChanges {
     this.form = this.fb.group({
       projectId: [this.editEntry?.projectId ?? '', [Validators.required]],
       taskId: [this.editEntry?.taskId ?? ''],
-      startTime: [this.toLocalDateTimeValue(this.editEntry?.startTime), [Validators.required]],
-      endTime: [this.toLocalDateTimeValue(this.editEntry?.endTime), [Validators.required]],
+      startTime: [this.toLocalDateTimeValue(this.editEntry?.startTime || new Date().toISOString()), [Validators.required]],
+      endTime: [this.toLocalDateTimeValue(this.editEntry?.endTime || new Date().toISOString()), [Validators.required]],
       description: [this.editEntry?.description ?? '', [Validators.required, Validators.maxLength(500)]],
       billable: [this.editEntry?.billable ?? true],
     });

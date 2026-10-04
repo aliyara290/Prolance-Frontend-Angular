@@ -364,3 +364,15 @@
 .p-checkbox-input {
   color: white;
 }
+
+@media (max-width: 768px) {
+  .search-input, .toolbar-search-input {
+    width: 150px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .toolbar-search-input {
+    width: 150px !important;
+  }
+}

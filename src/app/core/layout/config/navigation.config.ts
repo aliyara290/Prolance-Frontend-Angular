@@ -107,15 +107,15 @@ export const CRM_NAV_SECTIONS: CrmNavSection[] = [
       
     ],
   },
-  {
-    title: 'RESOURCES',
-    items: [
-      {
-        id: 'documents',
-        label: 'Documents',
-        icon: Files,
-        route: '/app/documents',
-      },
-    ],
-  },
+  // {
+  //   title: 'RESOURCES',
+  //   items: [
+  //     {
+  //       id: 'documents',
+  //       label: 'Documents',
+  //       icon: Files,
+  //       route: '/app/documents',
+  //     },
+  //   ],
+  // },
 ];

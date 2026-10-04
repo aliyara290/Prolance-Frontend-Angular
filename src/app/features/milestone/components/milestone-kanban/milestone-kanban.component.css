@@ -13,7 +13,7 @@
   flex: 0 0 320px;
   min-width: 320px;
   max-width: 196px;
- max-height: calc(100vh - 300px);
+ max-height: calc(100dvh - 300px);
   min-height: 198px;
   display: flex;
   flex-direction: column;

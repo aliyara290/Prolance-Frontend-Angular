@@ -27,10 +27,13 @@
       />
     </div>
 
-    <div class="flex-1 flex overflow-hidden p-[var(--spacing-md)] pt-[var(--spacing-md)]">
+    <div class="flex-1 flex overflow-hidden p-[var(--spacing-md)] pt-[var(--spacing-md)] relative">
 
       @if (sidebarVisible()) {
-        <aside class="w-56 flex-shrink-0 overflow-hidden  duration-300 mr-md">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 z-0 bg-transparent" (click)="toggleSidebar()"></div>
+
+        <aside class="absolute z-10 bg-[var(--color-bg)] max-h-[calc(100%-10px)] h-max shadow-[var(--shadow-lg)] w-60 flex-shrink-0 overflow-y-auto overflow-x-hidden duration-300 rounded-[var(--radius-lg)] p-[7px] border border-[var(--color-border)]">
           <app-milestone-filters
             [projects]="projects()"
             [selectedProjectId]="scopedProjectId()"
@@ -47,8 +50,8 @@
           <button
             (click)="toggleSidebar()"
             title="{{ sidebarVisible() ? 'Hide filters' : 'Show filters' }}"
-            class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)]  cursor-pointer">
-            <lucide-icon [img]="sidebarVisible() ? icons.panelClose : icons.panelOpen" size="16"></lucide-icon>
+            class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] cursor-pointer">
+            <lucide-icon [img]="icons.filter" size="16"></lucide-icon>
           </button>
 
           @if (activeFilters().statuses.length > 0 || activeFilters().dueDateFilter !== 'all') {

@@ -815,3 +815,9 @@
   color: var(--color-text-secondary);
   white-space: pre-wrap;
 }
+
+@media (max-width: 768px) {
+  .toolbar-search-input {
+    width: 150px !important;
+  }
+}

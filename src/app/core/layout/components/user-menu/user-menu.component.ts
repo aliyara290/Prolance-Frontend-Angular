@@ -13,6 +13,7 @@ import {
   Settings
 } from 'lucide-angular';
 import {RouterLink} from '@angular/router';
+import {AttachmentService} from '../../../services/attachment.service';
 
 export type AppMode = 'light' | 'dark' | 'system';
 
@@ -27,10 +28,30 @@ export class UserMenuComponent {
   private readonly store = inject(Store);
   private readonly authService = inject(AuthService);
   private readonly elementRef = inject(ElementRef);
+  private readonly attachmentService = inject(AttachmentService);
 
   protected readonly user$ = this.store.select(selectAuthUser);
+  protected readonly avatarUrl = signal<string | null>(null);
 
   protected readonly isOpen = signal(false);
+
+  constructor() {
+    this.setMode(this.currentMode());
+    this.user$.subscribe(user => {
+      if (user?.avatarUrl && !this.avatarUrl()) {
+        const match = user.avatarUrl.match(/\/attachments\/([a-f0-9-]+)\/download/);
+        if (match && match[1]) {
+          this.attachmentService.download(match[1]).subscribe({
+            next: (res) => {
+              if (res.success && res.data?.url) {
+                this.avatarUrl.set(res.data.url);
+              }
+            }
+          });
+        }
+      }
+    });
+  }
 
   private getStoredMode(): AppMode {
     const mode = localStorage.getItem('prolance_theme');
@@ -43,9 +64,6 @@ export class UserMenuComponent {
   }
 
   protected readonly currentMode = signal<AppMode>(this.getStoredMode());
-  constructor() {
-    this.setMode(this.currentMode());
-  }
   protected readonly icons = {
     sun: Sun,
     moon: Moon,

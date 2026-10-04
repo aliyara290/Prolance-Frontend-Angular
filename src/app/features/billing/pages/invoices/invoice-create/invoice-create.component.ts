@@ -114,9 +114,9 @@ export class InvoiceCreateComponent implements OnInit {
       clientId: ['', Validators.required],
       billingType: [BillingType.HOURLY, Validators.required],
       issueDate: [this.todayDate(), Validators.required],
-      dueDate: ['', Validators.required],
-      periodStartDate: [''],
-      periodEndDate: [''],
+      dueDate: [this.todayDate(), Validators.required],
+      periodStartDate: [this.todayDate()],
+      periodEndDate: [this.todayDate()],
       taxRate: [0, [Validators.min(0), Validators.max(100)]],
       notes: [''],
     });
@@ -124,9 +124,9 @@ export class InvoiceCreateComponent implements OnInit {
     this.generateForm = this.fb.group({
       projectId: ['', Validators.required],
       clientId: ['', Validators.required],
-      periodStartDate: ['', Validators.required],
-      periodEndDate: ['', Validators.required],
-      dueDate: ['', Validators.required],
+      periodStartDate: [this.todayDate(), Validators.required],
+      periodEndDate: [this.todayDate(), Validators.required],
+      dueDate: [this.todayDate(), Validators.required],
       taxRate: [0, [Validators.min(0), Validators.max(100)]],
       notes: [''],
     });

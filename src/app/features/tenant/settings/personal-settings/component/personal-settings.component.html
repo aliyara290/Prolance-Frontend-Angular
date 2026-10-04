@@ -37,6 +37,7 @@
                     <div class="w-16 h-16 rounded-full bg-[var(--color-bg-muted)] border border-[var(--color-border-strong)] overflow-hidden flex items-center justify-center shadow-inner">
                       @if (avatarPreview()) {
                         <img [src]="avatarPreview()" alt="Avatar" class="w-full h-full object-cover" />
+                      
                       } @else {
                         <span class="text-xl font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
                           {{ user.firstName?.[0] }}{{ user.lastName?.[0] }}
@@ -53,12 +54,27 @@
                     <input id="avatarInput" type="file" accept="image/*" class="hidden" (change)="onAvatarChange($event)" />
                   </div>
 
-                  <div>
-                    <p class="text-sm font-bold text-[var(--color-text)]">Profile photo</p>
-                    <p class="text-xs text-[var(--color-text-muted)] mt-0.5 mb-2">JPG, PNG or GIF · Max 2 MB</p>
-                    <label for="avatarInput" class="inline-block px-3 py-1.5 text-xs font-bold border border-[var(--color-border-strong)] rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] cursor-pointer  shadow-sm">
-                      Upload new photo
-                    </label>
+                  <div class="flex flex-col items-start gap-2">
+                    <div>
+                      <p class="text-sm font-bold text-[var(--color-text)]">Profile photo</p>
+                      <p class="text-xs text-[var(--color-text-muted)] mt-0.5 mb-2">JPG, PNG or GIF · Max 6 MB</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label for="avatarInput" class="inline-block px-3 py-1.5 text-xs font-bold border border-[var(--color-border-strong)] rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text)] cursor-pointer shadow-sm">
+                        Select new photo
+                      </label>
+                      @if (selectedPhotoFile()) {
+                        <button (click)="uploadPhoto(user.id)" [disabled]="isUploadingPhoto()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-md bg-primary hover:bg-primary-hover text-white disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors">
+                          @if (isUploadingPhoto()) {
+                            <lucide-icon [img]="ClockIcon" size="14" class="animate-spin"></lucide-icon>
+                            Uploading...
+                          } @else {
+                            <lucide-icon [img]="CheckIcon" size="14"></lucide-icon>
+                            Save Photo
+                          }
+                        </button>
+                      }
+                    </div>
                   </div>
                 </div>
 

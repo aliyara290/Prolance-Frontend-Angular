@@ -14,7 +14,7 @@ import { LogTimeRequest } from '../../../../features/billing/types/time-entry.ty
   templateUrl: './footer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'flex justify-end w-full border-t border-[var(--color-border-strong)] bg-[var(--color-bg)] text-[var(--color-text-muted)] text-xs h-[30px] flex items-center pr-[var(--spacing-md)] justify-between shrink-0 shadow-[0_-2px_10px_rgba(0,0,0,0.10)]'
+    class: 'hidden sm:flex sm:flex-row justify-end w-full border-t border-[var(--color-border-strong)] bg-[var(--color-bg)] text-[var(--color-text-muted)] text-xs h-auto min-h-[48px] sm:min-h-[36px] py-2 sm:py-0 items-center px-4 shrink-0 shadow-[0_-2px_10px_rgba(0,0,0,0.10)] gap-2 sm:gap-0'
   }
 })
 export class FooterComponent implements OnInit {

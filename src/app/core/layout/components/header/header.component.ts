@@ -17,18 +17,26 @@ import {
   CheckCircle2,
   ClipboardList,
   MessageSquare,
-  Users
+  Users,
+  Timer,
+  ClockCheck
 } from 'lucide-angular';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {WorkspaceSwitcherComponent} from '../workspace-switcher/workspace-switcher.component';
 import {NotificationService, NotificationResponse} from '../../../services/notification.service';
 import {NotificationWebSocketService, WebSocketMessage} from '../../../services/notification-websocket.service';
-import { interval, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { TimeEntryDialogComponent } from '../../../../features/billing/components/time-entry-dialog/time-entry-dialog.component';
+import { TimeEntryService } from '../../../../features/billing/services/time-entry.service';
+import { ProjectsService } from '../../../../features/project/services/projects.service';
+import { ToastService } from '../../../../shared/ui/toast/toast.service';
+import { CustomSelectOption } from '../../../../shared/ui/custom-select/custom-select.component';
+import { LogTimeRequest } from '../../../../features/billing/types/time-entry.types';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, UserMenuComponent, LucideAngularModule, RouterLink, RouterLinkActive, WorkspaceSwitcherComponent],
+  imports: [CommonModule, UserMenuComponent, LucideAngularModule, RouterLink, RouterLinkActive, WorkspaceSwitcherComponent, TimeEntryDialogComponent],
   templateUrl: "header.component.html"
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -45,7 +53,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   notifications = signal<NotificationResponse[]>([]);
   unreadCount = this.notificationService.unreadCount;
-  private pollingSubscription?: Subscription;
   private wsSubscription?: Subscription;
 
   icons = {
@@ -58,7 +65,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     contact: ContactRound,
     client: Building2,
     notification: Bell,
-    checkAll: CheckCircle2
+    checkAll: CheckCircle2,
+    timer: ClockCheck
   };
 
   quickActions = [
@@ -133,20 +141,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
       }
     });
-
-    this.pollingSubscription = interval(50000).subscribe(() => {
-      // Keep polling as a fallback, but the websocket handles real-time
-      this.notificationService.fetchUnreadCount().subscribe();
-      if (this.isNotificationsOpen()) {
-        this.fetchNotifications();
-      }
-    });
   }
 
   ngOnDestroy() {
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
-    }
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
@@ -271,6 +268,54 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (element === 'iconBg') return 'bg-primary/10';
       return 'text-primary';
     }
+  }
+
+  // --- Log Time Logic ---
+  private readonly timeEntryService = inject(TimeEntryService);
+  private readonly projectsService = inject(ProjectsService);
+  private readonly toast = inject(ToastService);
+
+  readonly isDialogOpen = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly projectOptions = signal<CustomSelectOption[]>([]);
+
+  openLogTime(): void {
+    // Load projects if not already loaded
+    const existing = this.projectsService.projectNames();
+    if (existing.length === 0) {
+      this.projectsService.loadProjectNames();
+      setTimeout(() => {
+        const names = this.projectsService.projectNames();
+        this.projectOptions.set(
+          names.map(p => ({ value: p.id, label: p.name, subLabel: p.prefix }))
+        );
+      }, 500);
+    } else {
+      this.projectOptions.set(
+        existing.map(p => ({ value: p.id, label: p.name, subLabel: p.prefix }))
+      );
+    }
+    
+    this.isDialogOpen.set(true);
+  }
+
+  closeDialog(): void {
+    this.isDialogOpen.set(false);
+  }
+
+  onSubmitted(req: LogTimeRequest): void {
+    this.isSubmitting.set(true);
+    this.timeEntryService.logTime(req).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.closeDialog();
+        this.toast.success('Time logged successfully!');
+      },
+      error: () => {
+        this.isSubmitting.set(false);
+        this.toast.error('Failed to log time');
+      },
+    });
   }
 }
 

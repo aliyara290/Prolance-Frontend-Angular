@@ -152,8 +152,8 @@ export class TaskFormModalComponent implements OnInit, OnChanges {
       type: [TaskType.TASK, [Validators.required]],
       priority: [TaskPriority.MEDIUM, [Validators.required]],
       status: [TaskStatus.TODO],
-      startDate: ['', [Validators.required]],
-      dueDate: [''],
+      startDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16), [Validators.required]],
+      dueDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)],
       milestoneId: [''],
       reporterId: [''],
     });

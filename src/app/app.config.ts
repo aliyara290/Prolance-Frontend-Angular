@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideAppInitializer, inject } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideAppInitializer, inject, ErrorHandler, Injectable } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { Store, provideStore } from '@ngrx/store';
@@ -14,8 +14,43 @@ import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 import { AuthService } from './core/auth/services/auth.service';
 import { authInitSuccess, authInitFailure } from './core/auth/store/auth.actions';
 
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  handleError(error: any): void {
+    // Angular sometimes wraps errors. We need to check all possible properties.
+    const errorMessage = 
+      error?.message || 
+      error?.rejection?.message || 
+      error?.originalError?.message || 
+      error?.toString() || 
+      '';
+      
+    const errorString = JSON.stringify(error, Object.getOwnPropertyNames(error));
+    
+    // Check if the error is a chunk loading error (e.g. after a new deployment)
+    const isChunkLoadError = 
+      /Loading chunk/i.test(errorMessage) || 
+      /Failed to fetch dynamically imported module/i.test(errorMessage) ||
+      /Expected a JavaScript-or-Wasm module script/i.test(errorMessage) ||
+      /Loading chunk/i.test(errorString) || 
+      /Failed to fetch dynamically imported module/i.test(errorString) ||
+      /Expected a JavaScript-or-Wasm module script/i.test(errorString);
+
+    if (isChunkLoadError) {
+      console.warn('Chunk load error detected (new deployment). Reloading page...');
+      window.location.href = window.location.href.split('#')[0]; // force reload without hash
+      window.location.reload();
+      return;
+    }
+
+    // Default error logging
+    console.error('An error occurred:', error);
+  }
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAppInitializer(async () => {
       // Angular requires all injections to happen synchronously before any await

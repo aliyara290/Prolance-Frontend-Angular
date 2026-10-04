@@ -68,15 +68,15 @@ export class DealFormPageComponent implements OnInit {
       expectedRevenue: [null],
       probability: [null, [Validators.min(0), Validators.max(100)]],
       stage: ['PROSPECTING', [Validators.required]],
-      expectedStartDate: [''],
-      expectedEndDate: [''],
+      expectedStartDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)],
+      expectedEndDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)],
       priority: ['MEDIUM', [Validators.required]],
       type: ['NEW_BUSINESS'],
       source: ['COLD_CALL', [Validators.required]],
       // Edit only fields:
-      lastActivityAt: [''],
-      nextFollowUpAt: [''],
-      closingDate: [''],
+      lastActivityAt: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)],
+      nextFollowUpAt: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)],
+      closingDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)],
       lostReason: [''],
     });
   }
