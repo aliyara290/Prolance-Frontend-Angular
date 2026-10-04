@@ -79,8 +79,8 @@ export class MilestoneFormModalComponent implements OnInit, OnChanges {
       status: ['ACTIVE'],
       sequenceOrder: [1, [Validators.required, Validators.min(1)]],
       progressPercentage: [0, [Validators.min(0), Validators.max(100)]],
-      startDate: [''],
-      dueDate: [''],
+      startDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)],
+      dueDate: [new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)],
     });
   }
 

@@ -12,7 +12,7 @@ import { EntityListSkeletonComponent } from '../../../../shared/ui/skeletons/ent
 import { MilestoneFiltersComponent, MilestoneFilters } from '../../components/milestone-filters/milestone-filters.component';
 import { MilestoneFormModalComponent } from '../../components/milestone-form-modal/milestone-form-modal.component';
 import { MilestoneDetailPanelComponent } from '../../components/milestone-detail-panel/milestone-detail-panel.component';
-import { LucideAngularModule, PanelLeftClose, PanelLeftOpen } from 'lucide-angular';
+import { LucideAngularModule, PanelLeftClose, PanelLeftOpen, Filter } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
 import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
@@ -52,7 +52,7 @@ export class MilestonesPageComponent implements OnInit {
   readonly activeView = signal<'list' | 'kanban'>('list');
 
   // Sidebar & Filters
-  readonly sidebarVisible = signal<boolean>(true);
+  readonly sidebarVisible = signal<boolean>(false);
   readonly projects = this.projectsService.projectNames;
   readonly scopedProjectId = signal<string | null>(null);
 
@@ -65,6 +65,7 @@ export class MilestonesPageComponent implements OnInit {
   readonly icons = {
     panelClose: PanelLeftClose,
     panelOpen: PanelLeftOpen,
+    filter: Filter,
   };
 
   readonly filteredMilestones = computed<Milestone[]>(() => {
@@ -151,7 +152,15 @@ export class MilestonesPageComponent implements OnInit {
   }
 
   toggleSidebar(): void {
-    this.sidebarVisible.update(v => !v);
+    const isVisible = !this.sidebarVisible();
+    this.sidebarVisible.set(isVisible);
+    if (!isVisible) {
+      this.activeFilters.set({
+        statuses: [],
+        dueDateFilter: 'all',
+        projectId: null,
+      });
+    }
   }
 
   onFiltersChanged(filters: MilestoneFilters): void {
