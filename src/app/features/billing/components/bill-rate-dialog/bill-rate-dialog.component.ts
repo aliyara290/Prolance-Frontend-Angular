@@ -89,8 +89,8 @@ export class BillRateDialogComponent implements OnInit, OnChanges {
       educationLevel: [this.editRate?.educationLevel ?? EducationLevel.BAC_PLUS_5, [Validators.required]],
       hourlyRate: [this.editRate?.hourlyRate ?? 0, [Validators.required, Validators.min(0.01)]],
       dailyRate: [this.editRate?.dailyRate ?? null],
-      effectiveFrom: [this.editRate?.effectiveFrom ?? '', [Validators.required]],
-      effectiveTo: [this.editRate?.effectiveTo ?? ''],
+      effectiveFrom: [this.editRate?.effectiveFrom ?? new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10), [Validators.required]],
+      effectiveTo: [this.editRate?.effectiveTo ?? new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10)],
     });
   }
 }

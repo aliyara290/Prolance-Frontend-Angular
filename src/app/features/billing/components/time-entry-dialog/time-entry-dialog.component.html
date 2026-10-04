@@ -1,5 +1,5 @@
 @if (isOpen) {
-  <div class="fixed inset-0 flex items-center justify-center p-4 z-[var(--z-modal-backdrop)]" (click)="close()">
+  <div class="fixed inset-0 flex items-center justify-center p-4 z-[23456789876543234567876]" (click)="close()">
     <div class="absolute inset-0 bg-[var(--color-overlay)]"></div>
     <div
       class="relative bg-[var(--color-bg)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] w-full max-w-[600px] overflow-hidden"
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Task ID -->
-        <div>
+        <!-- <div>
           <label for="te-task" class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">Task ID</label>
           <input
             id="te-task"
@@ -42,10 +42,10 @@
             placeholder="Optional task identifier"
             class="w-full px-3 py-2 text-sm bg-[var(--color-bg-muted)] border border-[var(--color-border)] rounded-[var(--radius-md)] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)]"
           />
-        </div>
+        </div> -->
 
         <!-- Start / End Time -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label for="te-start" class="block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5">
               Start Time <span class="text-[var(--color-danger)]">*</span>
