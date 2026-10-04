@@ -11,7 +11,7 @@
 
   <div class="h-full flex flex-col overflow-hidden">
 
-    <div class="fixed bottom-12 right-5 z-[12345678934567]">
+    <div class="fixed bottom-5 sm:bottom-12 right-5 z-[12345678934567]">
       <button
         type="button"
         (click)="onCreate()"
@@ -28,11 +28,14 @@
       </button>
     </div>
 
-    <div class="flex-1 flex overflow-hidden p-[var(--spacing-md)] pr-0 pt-0">
+    <div class="flex-1 flex overflow-hidden p-[var(--spacing-md)] pr-0 pt-0 relative">
 
       @if (sidebarVisible()) {
+        <!-- Backdrop -->
+        <div class="fixed inset-0 z-0 bg-transparent" (click)="toggleSidebar()"></div>
+
         <aside
-          class="w-56 flex-shrink-0 overflow-hidden  duration-300 mr-md">
+          class="absolute z-10 bg-[var(--color-bg)] max-h-[calc(100%-10px)] h-max shadow-[var(--shadow-lg)] w-60 flex-shrink-0 overflow-y-auto overflow-x-hidden duration-300 rounded-[var(--radius-lg)] p-[7px] border border-[var(--color-border)]">
           <app-task-filters
             [projects]="projects()"
             [selectedProjectId]="scopedProjectId()"
@@ -49,8 +52,8 @@
           <button
             (click)="toggleSidebar()"
             title="{{ sidebarVisible() ? 'Hide filters' : 'Show filters' }}"
-            class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)]  cursor-pointer">
-            <lucide-icon [img]="sidebarVisible() ? icons.panelClose : icons.panelOpen" size="16"></lucide-icon>
+            class="w-7 h-7 flex items-center justify-center rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] cursor-pointer">
+            <lucide-icon [img]="icons.filter" size="16"></lucide-icon>
           </button>
 
           <button

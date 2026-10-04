@@ -19,7 +19,7 @@ import { TaskFormModalComponent } from '../../components/task-form-modal/task-fo
 import { TaskFiltersComponent, TaskFilters } from '../../components/task-filters/task-filters.component';
 import { KanbanSkeletonComponent } from '../../../../shared/ui/skeletons/kanban-skeleton/kanban-skeleton.component';
 import { TaskResponse, TaskStatus, TaskPriority, TaskType, ChangeTaskStatusRequest } from '../../types/task.model';
-import { LucideAngularModule, PanelLeftClose, PanelLeftOpen, RefreshCw } from 'lucide-angular';
+import { LucideAngularModule, PanelLeftClose, PanelLeftOpen, RefreshCw, Filter } from 'lucide-angular';
 import {ErrorMessageComponent} from '../../../../shared/ui/error-message/error-message.component';
 
 import { ConfirmModalService } from '../../../../shared/ui/confirm-modal/confirm-modal.service';
@@ -60,7 +60,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   readonly activeTabId = signal<string>('all');
 
   // ── Sidebar ──
-  readonly sidebarVisible = signal<boolean>(true);
+  readonly sidebarVisible = signal<boolean>(false);
 
   // ── Filters ──
   readonly activeFilters = signal<TaskFilters>({
@@ -134,6 +134,7 @@ export class TasksListPageComponent implements OnInit, OnChanges {
     panelClose: PanelLeftClose,
     panelOpen: PanelLeftOpen,
     refresh: RefreshCw,
+    filter: Filter,
   };
 
 
@@ -211,7 +212,19 @@ export class TasksListPageComponent implements OnInit, OnChanges {
   }
 
   toggleSidebar(): void {
-    this.sidebarVisible.update(v => !v);
+    const isVisible = !this.sidebarVisible();
+    this.sidebarVisible.set(isVisible);
+    if (!isVisible) {
+      this.activeFilters.set({
+        statuses: [],
+        priorities: [],
+        types: [],
+        dueDateFilter: 'all',
+        projectId: null,
+      });
+      // Optionally also clear scopedProjectId if it was part of filters, but since we have a dedicated method onProjectSelected, maybe we can leave it or clear it.
+      // Wait, the prompt says "clear the filters", so resetting activeFilters is sufficient.
+    }
   }
 
   // ── Task Actions ──

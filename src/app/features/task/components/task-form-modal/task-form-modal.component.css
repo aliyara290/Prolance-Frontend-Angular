@@ -5,7 +5,7 @@
   position: fixed;
   inset: 0;
   background: var(--color-overlay);
-  z-index: var(--z-modal-backdrop);
+  z-index: 123456789123456782345678;
   display: flex;
   justify-content: flex-end;
   animation: fadeIn 150ms ease;
@@ -13,8 +13,8 @@
 
 .panel-container {
   width: 520px;
-  max-width: 90vw;
-  height: 100vh;
+  max-width: 92vw;
+  height: 100dvh !important;
   background: var(--color-bg);
   border-left: 1px solid var(--color-border);
   display: flex;

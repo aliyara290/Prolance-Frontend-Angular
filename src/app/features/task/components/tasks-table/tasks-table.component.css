@@ -95,3 +95,9 @@
 .task-row:hover {
   background-color: var(--color-bg-hover) !important;
 }
+
+@media (max-width: 768px) {
+  .search-input {
+    width: 150px !important;
+  }
+}
