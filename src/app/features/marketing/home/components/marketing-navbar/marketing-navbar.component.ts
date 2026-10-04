@@ -16,6 +16,15 @@ export class MarketingNavbarComponent {
   private readonly store = inject(Store);
 
   public isAuthenticated$ = this.store.select(selectIsAuthenticated);
+  public isMobileMenuOpen = false;
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
 
   login() {
     this.authService.login();

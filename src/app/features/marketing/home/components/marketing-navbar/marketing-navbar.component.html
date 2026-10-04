@@ -28,9 +28,9 @@
       </a>
     </div>
 
-    <!-- Actions -->
+    <!-- Actions (Desktop) -->
     @if (!(isAuthenticated$ | async)) {
-      <div class="flex items-center gap-[var(--spacing-md)]">
+      <div class="hidden md:flex items-center gap-[var(--spacing-md)]">
         <a (click)="login()" class="cursor-pointer font-[var(--font-medium)] text-[var(--text-sm)] text-[var(--color-text)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)]">
           Log in
         </a>
@@ -39,7 +39,7 @@
         </a>
       </div>
     } @else {
-      <div class="flex items-center gap-[var(--spacing-md)]">
+      <div class="hidden md:flex items-center gap-[var(--spacing-md)]">
         <a routerLink="/app/projects/dashboard" class="hidden sm:flex text-[var(--text-sm)] font-[var(--font-medium)] text-[var(--color-text)] hover:text-[var(--color-primary)] transition-[var(--transition-fast)] mr-2">
           Go to Dashboard
         </a>
@@ -50,5 +50,45 @@
         </button>
       </div>
     }
+
+    <!-- Mobile Menu Toggle -->
+    <div class="md:hidden flex items-center">
+      <button (click)="toggleMobileMenu()" class="text-[var(--color-text)] hover:text-[var(--color-primary)] focus:outline-none p-2">
+        @if (!isMobileMenuOpen) {
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        } @else {
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        }
+      </button>
+    </div>
   </div>
+
+  <!-- Mobile Menu Overlay -->
+  @if (isMobileMenuOpen) {
+    <div class="md:hidden absolute top-[var(--header-height)] left-0 w-full bg-[var(--color-bg)] border-b border-[var(--color-border)] shadow-lg flex flex-col items-center py-[var(--spacing-lg)] gap-[var(--spacing-md)] px-[var(--spacing-xl)] animate-fade-in z-50">
+      <a href="#features" (click)="closeMobileMenu()" class="w-full text-center font-[var(--font-medium)] text-[var(--text-lg)] text-[var(--color-text)] hover:text-[var(--color-primary)] py-2 border-b border-[var(--color-border)]">Features</a>
+      <a href="#solutions" (click)="closeMobileMenu()" class="w-full text-center font-[var(--font-medium)] text-[var(--text-lg)] text-[var(--color-text)] hover:text-[var(--color-primary)] py-2 border-b border-[var(--color-border)]">Solutions</a>
+      <a href="#pricing" (click)="closeMobileMenu()" class="w-full text-center font-[var(--font-medium)] text-[var(--text-lg)] text-[var(--color-text)] hover:text-[var(--color-primary)] py-2 border-b border-[var(--color-border)]">Pricing</a>
+      <a href="#resources" (click)="closeMobileMenu()" class="w-full text-center font-[var(--font-medium)] text-[var(--text-lg)] text-[var(--color-text)] hover:text-[var(--color-primary)] py-2 border-b border-[var(--color-border)]">Resources</a>
+      
+      <div class="w-full pt-4 flex flex-col gap-4">
+        @if (!(isAuthenticated$ | async)) {
+          <a (click)="login(); closeMobileMenu()" class="w-full cursor-pointer text-center font-[var(--font-medium)] text-[var(--text-md)] text-[var(--color-text)] hover:text-[var(--color-primary)] py-2 border border-[var(--color-border)] rounded-[var(--radius-full)]">
+            Log in
+          </a>
+          <a (click)="register(); closeMobileMenu()" class="w-full cursor-pointer bg-primary text-center text-white hover:bg-primary-hover font-[var(--font-medium)] text-[var(--text-md)] py-3 rounded-[var(--radius-full)] shadow-sm">
+            Start Free Trial
+          </a>
+        } @else {
+          <a routerLink="/app/projects/dashboard" (click)="closeMobileMenu()" class="w-full cursor-pointer bg-primary text-center text-white hover:bg-primary-hover font-[var(--font-medium)] text-[var(--text-md)] py-3 rounded-[var(--radius-full)] shadow-sm">
+            Go to Dashboard
+          </a>
+        }
+      </div>
+    </div>
+  }
 </nav>
