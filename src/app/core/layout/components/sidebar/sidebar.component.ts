@@ -59,6 +59,7 @@ export class SidebarComponent implements OnInit {
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
       this.isSettingsMenuOpen.set(false); // Close menu on navigation
+      this.layoutState.closeMobileDrawer(); // Close drawer on mobile navigation
       if (event.urlAfterRedirects.includes('/app/projects')) {
         this.activeTab.set('projects');
       } else {

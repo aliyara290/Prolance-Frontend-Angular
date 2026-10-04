@@ -15,4 +15,8 @@ export class LayoutStateService {
   toggleMobileDrawer() {
     this.mobileDrawerOpen.update(o => !o);
   }
+
+  closeMobileDrawer() {
+    this.mobileDrawerOpen.set(false);
+  }
 }

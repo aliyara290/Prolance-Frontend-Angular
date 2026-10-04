@@ -1,12 +1,12 @@
 @if (layoutState.mobileDrawerOpen()) {
   <div
     (click)="layoutState.toggleMobileDrawer()"
-    class="fixed inset-0 bg-overlay z-modal-backdrop md:hidden transition-opacity">
+    class="fixed inset-0 top-[60px] bg-overlay z-[var(--z-modal-backdrop)] md:hidden transition-opacity">
   </div>
 }
 
 <aside
-  [class]="'h-full border-r border-border-strong fixed md:static inset-y-0 left-0 z-modal md:z-auto bg-sidebar text-text-inverse flex flex-col ' +
+  [class]="'border-r border-border-strong fixed md:static top-[60px] md:top-auto h-[calc(100dvh-60px)] md:h-full left-0 z-[var(--z-modal)] md:z-auto bg-[var(--color-bg)] text-text-inverse flex flex-col transition-transform duration-300 ease-in-out ' +
                (layoutState.sidebarCollapsed() ? 'w-[64px]' : 'w-[240px]') +
                (layoutState.mobileDrawerOpen() ? ' translate-x-0' : ' -translate-x-full md:translate-x-0')">
 
