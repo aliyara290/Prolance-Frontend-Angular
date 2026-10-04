@@ -10,6 +10,39 @@
 }
 
 /* =========================================
+   GLOBAL FIXES (OUTSIDE LAYERS TO OVERRIDE)
+========================================= */
+
+/* Fix for iOS Safari date inputs overflowing their containers.
+   iOS date inputs have a native intrinsic width. When placed inside flex/grid items, 
+   they force the item to expand unless the item has min-width: 0. */
+div:has(> input[type="date"]),
+div:has(> input[type="time"]),
+div:has(> input[type="datetime-local"]) {
+  min-width: 0 !important;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* Kill iOS WebKit intrinsic minimum width on mobile entirely */
+@media (max-width: 768px) {
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+}
+
+/* =========================================
    THEME TOKENS
 ========================================= */
 
@@ -138,7 +171,7 @@
   --z-dropdown: 1000;
   --z-sticky: 1020;
   --z-fixed: 1030;
-  --z-modal-backdrop: 1000000000000000000040;
+  --z-modal-backdrop: 1040;
   --z-modal: 1050;
   --z-tooltip: 1060;
 }
@@ -307,4 +340,11 @@ input:focus {
 
 select:focus {
   outline: none !important;
+}
+
+
+input,
+textarea,
+select {
+  font-size: 16px !important;
 }
